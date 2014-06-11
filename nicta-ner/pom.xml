@@ -1,18 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>nicta</groupId>
-    <version>0.1</version>
+    <parent>
+        <groupId>org.t3as</groupId>
+        <artifactId>t3as-nicta-ner</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
     <artifactId>nicta-ner</artifactId>
     <packaging>jar</packaging>
 
-    <name>TODO</name>
+    <name>NICTA Named Entity Recogniser library</name>
     <description>
-        TODO
+        The NICTA Named Entity Recogniser is a Java based Named Entity Recogniser which extracts named entities from
+        text such as Organisation, Location and Person names. This is the main library that does the actual NER work.
     </description>
+    <url>http://t3as.org/</url>
+    <inceptionYear>2010</inceptionYear>
+    <organization>
+        <name>NICTA</name>
+        <url>http://nicta.com.au/</url>
+    </organization>
+    <developers>
+        <developer>
+            <name>Mats Henrikson</name>
+            <email>mats.henrikson@nicta.com.au</email>
+            <organization>NICTA</organization>
+            <organizationUrl>http://nicta.com.au/</organizationUrl>
+        </developer>
+        <developer>
+            <name>William Han</name>
+            <email>william.han@nicta.com.au</email>
+            <organization>NICTA</organization>
+            <organizationUrl>http://nicta.com.au/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Scott Sanner</name>
+            <email>Scott.Sanner@nicta.com.au</email>
+            <organization>NICTA</organization>
+            <organizationUrl>http://nicta.com.au/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Kishor Gawande</name>
+            <email>kishor.gawande@nicta.com.au</email>
+            <organization>NICTA</organization>
+            <organizationUrl>http://nicta.com.au/</organizationUrl>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>GNU GENERAL PUBLIC LICENSE Version 3</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/NICTA/nicta-ner.git</connection>
+        <developerConnection>scm:git:https://github.com/NICTA/nicta-ner.git</developerConnection>
+        <url>https://github.com/NICTA/nicta-ner</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,7 +89,7 @@
                 </configuration>
             </plugin>
 
-<!--             <plugin>
+             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.3</version>
@@ -64,7 +112,6 @@
                     </execution>
                 </executions>
             </plugin>
- -->
         </plugins>
     </build>
 
