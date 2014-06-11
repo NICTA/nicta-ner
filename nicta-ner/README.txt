@@ -28,7 +28,7 @@ LICENSE
 Copyright (c) 2010, National ICT Australia
 All rights reserved.
 
-This software is under the MOZILLA PUBLIC LICENSE (MPL).
+This software is under the GPL version 3.
 Please see the license file LICENSE.txt
 
 The contents (data/documentation/artwork) is under the Creative Commons 3.0 BY-SA 
