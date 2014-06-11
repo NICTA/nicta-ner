@@ -111,7 +111,6 @@
                 <version>1.7</version>
                 <configuration>
                     <licenseName>gpl_v3</licenseName>
-                    <!--<licenseResolver>file:${project.rootdir}/licensing</licenseResolver>-->
                 </configuration>
                 <executions>
                     <execution>
@@ -130,11 +129,6 @@
                 <configuration>
                     <generateChildNotices>true</generateChildNotices>
                     <noticeTemplate>${project.rootdir}/licensing/notice-template</noticeTemplate>
-<!--
-                    <licenseMapping>
-                        <param>${project.rootdir}/licensing/license-mappings.xml</param>
-                    </licenseMapping>
--->
                 </configuration>
                 <executions>
                     <execution>
