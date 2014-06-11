@@ -1,0 +1,40 @@
+# Copyright (c) 2006, National ICT Australia
+# All rights reserved.
+#
+# The contents of this file are subject to the Mozilla Public License Version
+# 1.1 (the 'License'); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+#
+# Software distributed under the License is distributed on an 'AS IS' basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+# Authors: William Han (william.han@nicta.com.au)
+# Created: 2010-11-05
+# Last Updated: --
+
+
+# NAME TYPES:
+Name Types: LOCATION PERSON ORGANIZATION
+
+# FEATURES:
+Feature: RuledWordFeature PERSON_NAME
+Feature: RuledWordFeature PERSON_KEYWORD
+Feature: RuledWordFeature COUNTRY_NAME
+Feature: RuledWordFeature CITY_NAME
+Feature: RuledWordFeature ORG_KEYWORD
+Feature: ExistingPhraseFeature WIKI_ORG
+Feature: ExistingPhraseFeature WIKI_PERSON
+Feature: ExistingPhraseFeature WIKI_PLACE
+Feature: RuledWordFeature PLACE_KEYWORD
+Feature: RuledWordFeature STATES
+Feature: PrepositionContextFeature PREP_LOCATION
+Feature: PrepositionContextFeature PREP_ORG
+Feature: RuledWordFeature WIKI_ORG_EXTRACTION
+Feature: RuledWordFeature WIKI_PER_EXTRACTION
+Feature: RuledWordFeature WIKI_LOC_EXTRACTION
+
+# W:
+w: 0 0 15 15 0 0 0 25 20 10 10 0 0 0 10 | 20 30 0 0 0 -10 25 -10 0 0 0 0 -10 10 -10 | 0 0 0 0 25 25 -10 -10 0 0 0 10 10 -10 -10
