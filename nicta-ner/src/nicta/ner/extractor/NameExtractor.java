@@ -1,30 +1,27 @@
-/* Copyright (c) 2010, National ICT Australia
- * All rights reserved.
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the 'License'); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an 'AS IS' basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * Authors: William Han (william.han@nicta.com.au)
- * Created: 2010-11-05
- * Last Updated: --
+/*
+ * #%L
+ * NICTA Named Entity Recogniser library
+ * %%
+ * Copyright (C) 2010 - 2014 NICTA
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
  */
-
 package nicta.ner.extractor;
 
-import java.util.*;
-import java.io.*;
-import java.net.URLDecoder;
-
-
 import nicta.ner.NERResultSet;
-import nicta.ner.classifier.feature.Feature;
 import nicta.ner.data.DatePhraseModel;
 import nicta.ner.data.Phrase;
 import nicta.ner.data.Phrase_Date;
@@ -32,6 +29,13 @@ import nicta.ner.data.Phrase_Name;
 import nicta.ner.resource.Configuration;
 import nicta.ner.util.Dictionary;
 import nicta.ner.util.JTokenizer;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Rule-based expert system.
@@ -86,9 +90,9 @@ public class NameExtractor {
 	 */
 	public void process(String _text) {
 		// handling the illegal characters:
-		_text = _text.replace("”", "\"");
-		_text = _text.replace("“", "\"");
-		_text = _text.replace("’", "'");
+		_text = _text.replace("ï¿½", "\"");
+		_text = _text.replace("ï¿½", "\"");
+		_text = _text.replace("ï¿½", "'");
 		//_text = _text.replace("", "");
 		
 		// tokenization
