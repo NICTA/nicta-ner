@@ -39,17 +39,17 @@ Find named entities from the text document:
 Using jar in the java code:
   
         // import ner package
-        import nicta.ner.NamedEntityAnalyzer;
+        import nicta.ner.NamedEntityAnalyser;
         import nicta.ner.NERResultSet;
 
         // Create analyser
-        NamedEntityAnalyzer namedEntityAnalyzer = new NamedEntityAnalyzer();
+        NamedEntityAnalyser namedEntityAnalyzer = new NamedEntityAnalyser();
 
         // string analysis
         NERResultSet nerResultSet = namedEntityAnalyzer.process("String input here.");
  
         // file analysis
-        NERResultSet nerResultSet = namedEntityAnalyzer.process(NamedEntityAnalyzer.ReadFileAsString("File name"));
+        NERResultSet nerResultSet = namedEntityAnalyzer.process(NamedEntityAnalyser.ReadFileAsString("File name"));
   
         // output to string
         String result = nerResultSet.toString();
