@@ -1,6 +1,6 @@
 # NICTA Named Entity Recognizer (NER)
 
-NICTA Named Entity Recogniser is a Java based Named Entity Recogniser which extracts named entities from text such as Organisation, Location and Person names.
+NICTA Named Entity Recogniser is a Java based Named Entity Recogniser which extracts named entities from text, such as Organisation, Location and Person names.
 
 
 ## Contributed by:
@@ -11,7 +11,7 @@ NICTA Named Entity Recogniser is a Java based Named Entity Recogniser which extr
 - Kishor Gawande
 
 
-## LICENSE
+## License
 
 Copyright (c) 2010, National ICT Australia
 All rights reserved.
@@ -24,7 +24,7 @@ More information about "Creative Commons" license can be found at
 http://creativecommons.org/licenses/by-sa/3.0/
 
 
-## QUICK START
+## Quick start
 
 Command line shell interface to process the input text
 
@@ -58,7 +58,7 @@ Using jar in the java code:
         HashMap<String, String> resultMap = nerResultSet.getMappedResult();
 
 
-## PACKAGE OUTLINE
+## Package outline
 
 ### nicta.ner                        
 The package which contains the main class `NamedEntityAnalyser` and the output result set `NERResultSet`. The program follows the pipe-line:
