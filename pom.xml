@@ -69,8 +69,6 @@
         <project.rootdir>${basedir}</project.rootdir>
         <maven-notice-plugin.version>1.0.6.1</maven-notice-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.2</nexus-staging-maven-plugin.version>
-        <com.sun.jersey.version>1.18.1</com.sun.jersey.version>
-        <com.beust.jcommander.version>1.35</com.beust.jcommander.version>
     </properties>
 
     <distributionManagement>
@@ -267,5 +265,14 @@
             </build>
         </profile>
     </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8.8</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
