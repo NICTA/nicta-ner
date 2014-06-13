@@ -26,6 +26,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -80,7 +82,7 @@ public class NamedEntityAnalyserTest {
                      put("Glumsø", new Result("UNKNOWN", 0, 0, 0));
                  }}},
 
-                {NamedEntityAnalyser.ReadFileAsString("src/test/resources/test1.txt"),
+                {new String(Files.readAllBytes(Paths.get("src/test/resources/test1.txt"))),
                  new LinkedHashMap<String, Result>() {{
                      // 4: UK	LOCATION	21.25, 0.0, 10.0	in	4:5:1:2
                      put("UK", new Result("LOCATION", 21.25, 0, 10));
@@ -128,9 +130,18 @@ public class NamedEntityAnalyserTest {
 
     @BeforeClass
     public void init() throws Exception {
-        // TODO: because of how the NEA reads the config file in nicta.ner.resource.Configuration you can only do this
-        // once per JVM!!!
         this.namedEntityAnalyser = new NamedEntityAnalyser();
+    }
+
+    @Test
+    public void doubleCreateNea() throws Exception {
+        // check that we don't have any leaky static references
+        final NERResultSet result1 = new NamedEntityAnalyser().process("John");
+        assertEquals(result1.getMappedResult().size(), 1);
+        assertEquals(result1.getMappedResult().get("John"), "PERSON");
+        final NERResultSet result2 = new NamedEntityAnalyser().process("Gwen");
+        assertEquals(result2.getMappedResult().size(), 1);
+        assertEquals(result2.getMappedResult().get("Gwen"), "PERSON");
     }
 
     @Test(dataProvider = "testProcess")
