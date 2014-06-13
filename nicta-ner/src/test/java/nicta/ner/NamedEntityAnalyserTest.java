@@ -40,6 +40,11 @@ public class NamedEntityAnalyserTest {
     @DataProvider(name = "testProcess")
     public static Object[][] primeNumbers() {
         return new Object[][]{
+                {"John", new LinkedHashMap<String, Result>() {{
+                    // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
+                    put("John", new Result("PERSON", 11.25, 40, -10));
+                }}},
+
                 {"John and Jane Doe Doe live in New Zealand in November.", new LinkedHashMap<String, Result>() {{
                     // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
                     put("John", new Result("PERSON", 11.25, 40, -10));
@@ -51,10 +56,14 @@ public class NamedEntityAnalyserTest {
                     put("November", new Result("DATE", 0, 0, 0));
                 }}},
 
-                {"John", new LinkedHashMap<String, Result>() {{
-                    // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
-                    put("John", new Result("PERSON", 11.25, 40, -10));
-                }}}
+                {"Jim bought 300 shares of Acme Corp. in 2006.", new LinkedHashMap<String, Result>() {{
+                    //0: Jim	PERSON	0.0, 40.0, -10.0	null	0:0:1:1
+                    put("Jim", new Result("PERSON", 0, 40, -10));
+                    //5: Acme Corp	PERSON	0.0, 20.0, 0.0	of	5:5:2:2
+                    put("Acme Corp", new Result("PERSON", 0, 20, 0)); // should probably be ORG or UNKNOWN
+                    //1: 2006	DATE	0.0, 0.0, 0.0	in	1:1:1:1
+                    put("2006", new Result("DATE", 0, 0, 0));
+                }}},
         };
     }
 
