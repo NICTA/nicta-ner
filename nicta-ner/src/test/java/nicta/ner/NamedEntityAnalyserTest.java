@@ -98,6 +98,12 @@ public class NamedEntityAnalyserTest {
                      put("Tues", new Result("UNKNOWN", 0, 0, 0));
                      // 10: H123ABC	UNKNOWN	0.0, 0.0, 0.0	null	10:10:1:1
                      put("H123ABC", new Result("UNKNOWN", 0, 0, 0));
+                     // 5: Department of Health	ORGANIZATION	0.0, 0.0, 18.75	for	5:6:3:4
+                     put("Department of Health", new Result("ORGANIZATION", 0, 0, 18.75));
+                     // 19: Foreign	UNKNOWN	0.0, 0.0, 0.0	for	19:20:1:2
+                     put("Foreign", new Result("UNKNOWN", 0, 0, 0));
+                     // 22: Commonwealth Office	UNKNOWN	0.0, 0.0, 0.0	for	22:22:2:2
+                     put("Commonwealth Office", new Result("UNKNOWN", 0, 0, 0));
                  }}},
 
                 //{"",
