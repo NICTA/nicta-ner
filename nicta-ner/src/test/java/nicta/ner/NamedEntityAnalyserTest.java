@@ -21,14 +21,17 @@
  */
 package nicta.ner;
 
+import nicta.ner.data.Phrase;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class NamedEntityAnalyserTest {
 
@@ -37,20 +40,20 @@ public class NamedEntityAnalyserTest {
     @DataProvider(name = "testProcess")
     public static Object[][] primeNumbers() {
         return new Object[][]{
-                {"John and Jane Doe Doe live in New Zealand in November.", new HashMap<String, String>() {{
+                {"John and Jane Doe Doe live in New Zealand in November.", new LinkedHashMap<String, Result>() {{
                     // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
-                    put("John", "PERSON");
+                    put("John", new Result("PERSON", 11.25, 40, -10));
                     // 2: Jane Doe Doe	PERSON	0.0, 60.0, 0.0	null	2:2:3:3
-                    put("Jane Doe Doe", "PERSON");
+                    put("Jane Doe Doe", new Result("PERSON", 0, 60, 0));
                     // 7: New Zealand	LOCATION	95.0, 5.0, 0.0	in	7:7:2:2
-                    put("New Zealand", "LOCATION");
+                    put("New Zealand", new Result("LOCATION", 95, 5, 0));
                     // 10: November	DATE	0.0, 0.0, 0.0	in	10:10:1:1
-                    put("November", "DATE");
+                    put("November", new Result("DATE", 0, 0, 0));
                 }}},
 
-                {"John", new HashMap<String, String>() {{
+                {"John", new LinkedHashMap<String, Result>() {{
                     // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
-                    put("John", "PERSON");
+                    put("John", new Result("PERSON", 11.25, 40, -10));
                 }}}
         };
     }
@@ -63,10 +66,33 @@ public class NamedEntityAnalyserTest {
     }
 
     @Test(dataProvider = "testProcess")
-    public void testProcess(final String phrase, final Map<String, String> mappedResult) throws Exception {
+    public void testProcess(final String phrase, final Map<String, Result> resultMap) throws Exception {
         final NERResultSet result = namedEntityAnalyser.process(phrase);
-        assertEquals(result.getMappedResult(), mappedResult);
-        System.out.println(result);
-        System.out.println(result.getMappedResult());
+
+        // check that we have the correctly matched phrases and types
+        final Map<String, String> mappedResult = new HashMap<>(result.getMappedResult());
+        for (final Map.Entry<String, Result> e : resultMap.entrySet()) {
+            // remove each result from the mappedResult
+            final String type = mappedResult.remove(e.getKey());
+            assertEquals(type, e.getValue().type);
+        }
+        // all results should now have been removed from the results map
+        assertTrue(mappedResult.isEmpty());
+
+        // now match the scores
+        for (final Phrase p : result.phrases.get(0)) { // when might this be non-0?
+            final Result r = resultMap.get(p.toString());// not good to depend on toString()...
+            assertEquals(p.score, r.scores);
+        }
+    }
+
+    private static class Result {
+        final String type;
+        final double[] scores;
+
+        private Result(final String type, final double... scores) {
+            this.type = type;
+            this.scores = scores;
+        }
     }
 }
