@@ -106,11 +106,13 @@ public class NamedEntityAnalyserTest {
                      put("Commonwealth Office", new Result("UNKNOWN", 0, 0, 0));
                  }}},
 
-                //{"",
-                // new LinkedHashMap<String, Result>() {{
-                //     //
-                //     put("", new Result("", , , ));
-                // }}},
+                /*
+                {"",
+                new LinkedHashMap<String, Result>() {{
+                     //
+                     put("", new Result("", , , ));
+                }}},
+                */
         };
     }
 
