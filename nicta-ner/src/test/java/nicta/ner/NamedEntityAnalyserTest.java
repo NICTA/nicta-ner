@@ -106,6 +106,16 @@ public class NamedEntityAnalyserTest {
                      put("Commonwealth Office", new Result("UNKNOWN", 0, 0, 0));
                  }}},
 
+                {"Apple (Apple Inc.) is a company with the stock symbol AAPL.",
+                 new LinkedHashMap<String, Result>() {{
+                     // 0: Apple	PERSON	0.0, 15.0, 0.0	null	0:0:1:1
+                     put("Apple", new Result("PERSON", 0, 15, 0.0));
+                     // 2: Apple Inc	PERSON	0.0, 15.0, 0.0	null	2:2:2:2
+                     put("Apple Inc", new Result("PERSON", 0, 15, 0));
+                     // 8: AAPL	UNKNOWN	0.0, 0.0, 0.0	null	8:8:1:1
+                     put("AAPL", new Result("UNKNOWN", 0, 0, 0));
+                 }}},
+
                 /*
                 {"",
                 new LinkedHashMap<String, Result>() {{
