@@ -38,32 +38,73 @@ public class NamedEntityAnalyserTest {
     private NamedEntityAnalyser namedEntityAnalyser;
 
     @DataProvider(name = "testProcess")
-    public static Object[][] primeNumbers() {
+    public static Object[][] primeNumbers() throws Exception {
         return new Object[][]{
-                {"John", new LinkedHashMap<String, Result>() {{
-                    // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
-                    put("John", new Result("PERSON", 11.25, 40, -10));
-                }}},
+                {"John",
+                 new LinkedHashMap<String, Result>() {{
+                     // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
+                     put("John", new Result("PERSON", 11.25, 40, -10));
+                 }}},
 
-                {"John and Jane Doe Doe live in New Zealand in November.", new LinkedHashMap<String, Result>() {{
-                    // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
-                    put("John", new Result("PERSON", 11.25, 40, -10));
-                    // 2: Jane Doe Doe	PERSON	0.0, 60.0, 0.0	null	2:2:3:3
-                    put("Jane Doe Doe", new Result("PERSON", 0, 60, 0));
-                    // 7: New Zealand	LOCATION	95.0, 5.0, 0.0	in	7:7:2:2
-                    put("New Zealand", new Result("LOCATION", 95, 5, 0));
-                    // 10: November	DATE	0.0, 0.0, 0.0	in	10:10:1:1
-                    put("November", new Result("DATE", 0, 0, 0));
-                }}},
+                {"John and Jane Doe Doe live in New Zealand in November.",
+                 new LinkedHashMap<String, Result>() {{
+                     // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
+                     put("John", new Result("PERSON", 11.25, 40, -10));
+                     // 2: Jane Doe Doe	PERSON	0.0, 60.0, 0.0	null	2:2:3:3
+                     put("Jane Doe Doe", new Result("PERSON", 0, 60, 0));
+                     // 7: New Zealand	LOCATION	95.0, 5.0, 0.0	in	7:7:2:2
+                     put("New Zealand", new Result("LOCATION", 95, 5, 0));
+                     // 10: November	DATE	0.0, 0.0, 0.0	in	10:10:1:1
+                     put("November", new Result("DATE", 0, 0, 0));
+                 }}},
 
-                {"Jim bought 300 shares of Acme Corp. in 2006.", new LinkedHashMap<String, Result>() {{
-                    //0: Jim	PERSON	0.0, 40.0, -10.0	null	0:0:1:1
-                    put("Jim", new Result("PERSON", 0, 40, -10));
-                    //5: Acme Corp	PERSON	0.0, 20.0, 0.0	of	5:5:2:2
-                    put("Acme Corp", new Result("PERSON", 0, 20, 0)); // should probably be ORG or UNKNOWN
-                    //1: 2006	DATE	0.0, 0.0, 0.0	in	1:1:1:1
-                    put("2006", new Result("DATE", 0, 0, 0));
-                }}},
+                {"Jim bought 300 shares of Acme Corp. in 2006.",
+                 new LinkedHashMap<String, Result>() {{
+                     // 0: Jim	PERSON	0.0, 40.0, -10.0	null	0:0:1:1
+                     put("Jim", new Result("PERSON", 0, 40, -10));
+                     // 5: Acme Corp	PERSON	0.0, 20.0, 0.0	of	5:5:2:2
+                     put("Acme Corp", new Result("PERSON", 0, 20, 0));
+                     // 1: 2006	DATE	0.0, 0.0, 0.0	in	1:1:1:1
+                     put("2006", new Result("DATE", 0, 0, 0));
+                 }}},
+
+                {"Næsby is in Denmark, as is Næsbyholm Slot, which is outside the town of Glumsø.",
+                 new LinkedHashMap<String, Result>() {{
+                     // 0: Næsby	ORGANIZATION	0.0, -7.5, 7.5	null	0:0:1:1
+                     put("Næsby", new Result("ORGANIZATION", 0, -7.5, 7.5));
+                     // 3: Denmark	LOCATION	46.25, -5.0, 25.0	in	3:3:1:1
+                     put("Denmark", new Result("LOCATION", 46.25, -5, 25));
+                     // 7: Næsbyholm Slot UNKNOWN 0.0, 0.0, 0.0	null	7:7:2:2
+                     put("Næsbyholm Slot", new Result("UNKNOWN", 0, 0, 0));
+                     // 16: Glumsø	UNKNOWN	0.0, 0.0, 0.0	of	16:16:1:1
+                     put("Glumsø", new Result("UNKNOWN", 0, 0, 0));
+                 }}},
+
+                {NamedEntityAnalyser.ReadFileAsString("src/test/resources/test1.txt"),
+                 new LinkedHashMap<String, Result>() {{
+                     // 4: UK	LOCATION	21.25, 0.0, 10.0	in	4:5:1:2
+                     put("UK", new Result("LOCATION", 21.25, 0, 10));
+                     // 13: 1965	DATE	0.0, 0.0, 0.0	null	13:13:1:1
+                     put("1965", new Result("DATE", 0, 0, 0));
+                     // 2: Eoghan	PERSON	0.0, 7.5, -7.5	null	2:2:1:1
+                     put("Eoghan", new Result("PERSON", 0, 7.5, -7.5));
+                     // 6: Ford Escort	PERSON	11.25, 15.0, 0.0	null	6:7:2:3
+                     put("Ford Escort", new Result("PERSON", 11.25, 15, 0));
+                     // 3: Toyota Camry	PERSON	0.0, 35.0, -20.0	null	3:4:2:3
+                     put("Toyota Camry", new Result("PERSON", 0, 35, -20));
+                     // 13: Feb	UNKNOWN	0.0, 0.0, 0.0	of	13:13:1:1
+                     put("Feb", new Result("UNKNOWN", 0, 0, 0));
+                     // 16: Tues	UNKNOWN	0.0, 0.0, 0.0	on	16:17:1:2
+                     put("Tues", new Result("UNKNOWN", 0, 0, 0));
+                     // 10: H123ABC	UNKNOWN	0.0, 0.0, 0.0	null	10:10:1:1
+                     put("H123ABC", new Result("UNKNOWN", 0, 0, 0));
+                 }}},
+
+                //{"",
+                // new LinkedHashMap<String, Result>() {{
+                //     //
+                //     put("", new Result("", , , ));
+                // }}},
         };
     }
 
