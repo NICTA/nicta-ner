@@ -23,20 +23,20 @@ package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
 
-import java.util.HashSet;
+import java.io.IOException;
+import java.util.Set;
 
 public class RuledPhraseFeature extends Feature {
-	
-	HashSet<String> phraseSet = null;
-	
-	public RuledPhraseFeature(String filename) {
-		phraseSet = Feature.createPhraseSet(filename);
-	}
-	
-	@Override
-	public double score(Phrase _p) {
-		
-		return 0.0f;
-	}
-	
+
+    Set<String> phraseSet = null;
+
+    public RuledPhraseFeature(final String resource) throws IOException {
+        phraseSet = Feature.createPhraseSet(resource);
+    }
+
+    @Override
+    public double score(final Phrase _p) {
+        return 0.0f;
+    }
+
 }

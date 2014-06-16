@@ -23,18 +23,18 @@ package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
 
-import java.util.HashSet;
+import java.util.Set;
 
 public class PrepositionContextFeature extends Feature {
-	
-	HashSet<String> wordSet = null;
-	
-	public PrepositionContextFeature(String filename) {
-		wordSet = Feature.createSingleWordSet(filename, false);
-	}
 
-	@Override
-	public double score(Phrase _p) {
-		return wordSet.contains(_p.attachedWordMap.get("prep")) ? 1.0f : 0.0f;
-	}
+    Set<String> wordSet = null;
+
+    public PrepositionContextFeature(final String filename) {
+        wordSet = Feature.createSingleWordSet(filename, false);
+    }
+
+    @Override
+    public double score(final Phrase _p) {
+        return wordSet.contains(_p.attachedWordMap.get("prep")) ? 1.0f : 0.0f;
+    }
 }

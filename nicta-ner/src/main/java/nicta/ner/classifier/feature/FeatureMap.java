@@ -23,17 +23,19 @@ package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
 
+import java.util.List;
+
 public class FeatureMap {
 	
-	Feature[] feature_array = null;
-	double[][] w = null;
+	private final Feature[] feature_array;
+	private final double[][] w;
 	
-	public FeatureMap(Feature[] _fa, double[][] _w) {
-		feature_array = _fa;
+	public FeatureMap(final List<Feature> features, final double[][] _w) {
+		feature_array = features.toArray(new Feature[features.size()]);
 		w = _w;
 	}
 	
-	public double score(Phrase _p, int wi) {
+	public double score(final Phrase _p, final int wi) {
 		double score = 0.0f;
 		for(int i = 0; i < feature_array.length; i++) {
 			if(w[wi][i] == 0) continue;

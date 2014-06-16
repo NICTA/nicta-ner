@@ -23,24 +23,25 @@ package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
 
-import java.util.HashSet;
+import java.io.IOException;
+import java.util.Set;
 
 public class ExistingPhraseFeature extends Feature {
-	HashSet<String> phraseSet = null;
-	
-	public ExistingPhraseFeature(String filename) {
-		phraseSet = Feature.createPhraseSet(filename);
-	}
-	
-	@Override
-	public double score(Phrase _p) {
-		String phrase = "";
-		for(int i = 0; i < _p.phrase.length; i++) {
-			phrase += _p.phrase[i] + " ";
-		}
-		phrase = phrase.trim();
-		
-		return phraseSet.contains(phrase) ? 1.0f : 0.0f;
-	}
+    Set<String> phraseSet = null;
+
+    public ExistingPhraseFeature(final String filename) throws IOException {
+        phraseSet = Feature.createPhraseSet(filename);
+    }
+
+    @Override
+    public double score(final Phrase _p) {
+        String phrase = "";
+        for (int i = 0; i < _p.phrase.length; i++) {
+            phrase += _p.phrase[i] + " ";
+        }
+        phrase = phrase.trim();
+
+        return phraseSet.contains(phrase) ? 1.0f : 0.0f;
+    }
 
 }

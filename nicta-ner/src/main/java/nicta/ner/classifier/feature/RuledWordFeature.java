@@ -23,28 +23,28 @@ package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
 
-import java.util.HashSet;
+import java.util.Set;
 
 public class RuledWordFeature extends Feature {
-	
-	HashSet<String> wordSet = null;
-	
-	public RuledWordFeature(String filename) {
-		wordSet = Feature.createSingleWordSet(filename, true);
-	}
-	
-	@Override
-	public double score(Phrase _p) {
-		double score = 0.0f;
-		double weight = 0.75f;	// weight increases 0.2 every word backward till the word "of" appears.
-		for(int i = 0; i < _p.phrase.length; i++) {
-			String word = _p.phrase[i];
-			if(word.equalsIgnoreCase("of")) break;
-			double x = (wordSet.contains(word)) ? 1.0f : 0.0f;
-			score += weight * x;
-			weight += 0.25;
-		}
-		return score;
-	}
+
+    Set<String> wordSet = null;
+
+    public RuledWordFeature(final String filename) {
+        wordSet = Feature.createSingleWordSet(filename, true);
+    }
+
+    @Override
+    public double score(final Phrase _p) {
+        double score = 0.0f;
+        double weight = 0.75f;    // weight increases 0.2 every word backward till the word "of" appears.
+        for (int i = 0; i < _p.phrase.length; i++) {
+            final String word = _p.phrase[i];
+            if (word.equalsIgnoreCase("of")) break;
+            final double x = (wordSet.contains(word)) ? 1.0f : 0.0f;
+            score += weight * x;
+            weight += 0.25;
+        }
+        return score;
+    }
 
 }

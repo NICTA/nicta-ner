@@ -21,121 +21,112 @@
  */
 package nicta.ner.classifier.feature;
 
+import com.google.common.io.LineProcessor;
+import com.google.common.io.Resources;
 import nicta.ner.data.Phrase;
 import nicta.ner.util.Dictionary;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This abstract class is a parent of features.
- * 
- * @author William Han
- *
  */
 public abstract class Feature {
-	/**
-	 * Returns a score of the phrase according to the particular feature.
-	 * 
-	 * @param _p
-	 * @return
-	 */
-	public abstract double score(Phrase _p);
-	
-	/**
-	 * Factory method create features by name.
-	 * 
-	 * @param args
-	 * @return
-	 * @throws Exception
-	 */
-	public static Feature generateFeatureByName(String[] args) throws Exception {
-		Feature f = null;
-		if(args[0].equalsIgnoreCase("RuledWordFeature")) {
-			f = new RuledWordFeature(args[1]);
-		} else if(args[0].equalsIgnoreCase("RuledPhraseFeature")) {
-			f = new RuledPhraseFeature(args[1]);
-		} else if(args[0].equalsIgnoreCase("PrepositionContextFeature")) {
-			f = new PrepositionContextFeature(args[1]);
-		} else if(args[0].equalsIgnoreCase("ExistingPhraseFeature")) {
-			f = new ExistingPhraseFeature(args[1]);
-		}
-		if(f == null) throw new Exception("Feature not found.");
-		return f;
-	}
-	
-	/**
-	 * Return a HashSet contains phrases (multi-words).
-	 * 
-	 * @param filename
-	 * @return
-	 */
-	public static HashSet<String> createPhraseSet(String filename) {
-		//System.out.println("Creating Phrase Set: " + filename);
-		HashSet<String> _set = new HashSet<String>();
-		int count = 0;
-		try {
-			BufferedReader br = new BufferedReader(
-					new InputStreamReader(
-							Feature.class.getResourceAsStream(filename)));
-			
-			String line = null;
-			while((line = br.readLine()) != null) {
-				if(line.startsWith("#")) continue;
-				_set.add(line);
-				count++;
-			}
-			
-			br.close();
-		} catch(IOException ioe) {
-			System.out.println("ERROR: Error in reading Feature file: " + filename);
-			System.out.println("       at Configuration File: Feature");
-			// e1.printStackTrace();
-			System.exit(-1);
-		}
-		//System.out.println(count + " words added.");
-		return _set;
-	}
-	
-	/**
-	 * Returns a HashSet contains only single words.
-	 * 
-	 * @param filename
-	 * @return
-	 */
-	public static HashSet<String> createSingleWordSet(String filename, boolean eliminatePrepAndConj) {
-		//System.out.println("Creating Word Set: " + filename);
-		InputStream is = Feature.class.getResourceAsStream(filename);
-		Dictionary dict = Dictionary.getSharedDictionary();
-		HashSet<String> set = new HashSet<String>();
-		int count = 0;
-		try {
-			BufferedReader br = new BufferedReader(
-					new InputStreamReader(is));
-			
-			String line = null;
-			while((line = br.readLine()) != null) {
-				if(line.startsWith("#")) continue;
-				String[] splited = line.split(" ");
-				for(String word : splited) {
-					String wordType = dict.checkup(word);
-					if(eliminatePrepAndConj && wordType != null && (wordType.startsWith("IN") || wordType.startsWith("CC"))) continue;
-					set.add(word);
-					count++;
-				}
-			}
-			
-			br.close();
-		} catch(IOException e1) {
-			System.out.println("ERROR: Error in reading Feature file: " + filename);
-			System.out.println("       at Configuration File: Feature");
-			// e1.printStackTrace();
-			System.exit(-1);
-		}
-		//System.out.println(count + " words added.");
-		return set;
-	}
+
+    /**
+     * Returns a score of the phrase according to the particular feature.
+     */
+    public abstract double score(Phrase _p);
+
+    /**
+     * Factory method create features by name.
+     */
+    public static Feature generateFeatureByName(final String feature, final String resource)
+            throws IllegalArgumentException, IOException {
+        final Feature f;
+        switch (feature) {
+            case "RuledWordFeature":
+                f = new RuledWordFeature(resource);
+                break;
+            case "RuledPhraseFeature":
+                f = new RuledPhraseFeature(resource);
+                break;
+            case "PrepositionContextFeature":
+                f = new PrepositionContextFeature(resource);
+                break;
+            case "ExistingPhraseFeature":
+                f = new ExistingPhraseFeature(resource);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown feature: '" + feature + "'");
+        }
+        return f;
+    }
+
+    /**
+     * Return a HashSet contains phrases (multi-words).
+     */
+
+    protected static Set<String> createPhraseSet(final String resource) throws IOException {
+        try {
+            return Resources.readLines(Resources.getResource(Feature.class, resource),
+                                       Charset.forName("UTF-8"), new LineReader());
+        }
+        catch (final IOException ioe) {
+            throw new IOException("Error in reading Feature file: " + resource, ioe);
+        }
+    }
+
+    /**
+     * Returns a HashSet contains only single words.
+     */
+    protected static Set<String> createSingleWordSet(final String filename, final boolean eliminatePrepAndConj) {
+        final Dictionary dict = Dictionary.getSharedDictionary();
+        final Set<String> set = new HashSet<>();
+        try (final BufferedReader br = new BufferedReader(
+                new InputStreamReader(Feature.class.getResourceAsStream(filename)))) {
+
+            for (String line; (line = br.readLine()) != null; ) {
+                if (line.startsWith("#")) continue;
+                final String[] splited = line.split(" ");
+                for (final String word : splited) {
+                    final String wordType = dict.checkup(word);
+                    if (eliminatePrepAndConj && wordType != null && (wordType.startsWith("IN")
+                                                                     || wordType.startsWith("CC"))) {
+                        continue;
+                    }
+                    set.add(word);
+                }
+            }
+        }
+        catch (final IOException e1) {
+            System.out.println("ERROR: Error in reading Feature file: " + filename);
+            System.out.println("       at Configuration File: Feature");
+            // e1.printStackTrace();
+            System.exit(-1);
+        }
+        return set;
+    }
+
+    private static class LineReader implements LineProcessor<Set<String>> {
+        Set<String> s = new HashSet<>();
+
+        @Override
+        @SuppressWarnings("NullableProblems")
+        public boolean processLine(final String line) throws IOException {
+            final String l = line.trim();
+            if (!l.startsWith("#") && !"".equals(l)) s.add(l);
+            return true;
+        }
+
+        @Override
+        public Set<String> getResult() {
+            return s;
+        }
+    }
 }

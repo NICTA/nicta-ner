@@ -25,33 +25,33 @@ import nicta.ner.data.Phrase;
 import nicta.ner.util.Dictionary;
 
 public class OrganizationFeature extends Feature {
-	
-	Dictionary dict = null;
 
-	public OrganizationFeature() {
-		dict = Dictionary.getSharedDictionary();
-	}
-	
-	public double score(Phrase _p) {
-		for(String word : _p.phrase) {
-			if(hasMultiUppercase(word)) {
-				return 1.0f;
-			}
-		}
-		return 0;
-	}
-	
-	private boolean hasMultiUppercase(String _word) {
-		if(_word.length() <= 1) return false;
-		int capCharCount = 0;
-		for(int i = 0; i < _word.length(); i++) {
-			if(Character.isUpperCase(_word.charAt(i))) capCharCount++;
-			if(capCharCount == 2) return true;
-		}
-		return false;
+    Dictionary dict = null;
 
-	}
-	
+    public OrganizationFeature() {
+        dict = Dictionary.getSharedDictionary();
+    }
+
+    public double score(final Phrase _p) {
+        for (final String word : _p.phrase) {
+            if (hasMultiUppercase(word)) {
+                return 1.0f;
+            }
+        }
+        return 0;
+    }
+
+    private static boolean hasMultiUppercase(final String _word) {
+        if (_word.length() <= 1) return false;
+        int capCharCount = 0;
+        for (int i = 0; i < _word.length(); i++) {
+            if (Character.isUpperCase(_word.charAt(i))) capCharCount++;
+            if (capCharCount == 2) return true;
+        }
+        return false;
+
+    }
+
 	/*
 	private String de_plural(String _word) {
 		String word = "";
