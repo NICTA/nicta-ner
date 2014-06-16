@@ -23,13 +23,14 @@ package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
 
+import java.io.IOException;
 import java.util.Set;
 
 public class RuledWordFeature extends Feature {
 
     Set<String> wordSet = null;
 
-    public RuledWordFeature(final String filename) {
+    public RuledWordFeature(final String filename) throws IOException {
         wordSet = Feature.createSingleWordSet(filename, true);
     }
 

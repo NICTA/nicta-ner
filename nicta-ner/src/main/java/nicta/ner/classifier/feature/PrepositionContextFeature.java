@@ -23,13 +23,14 @@ package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
 
+import java.io.IOException;
 import java.util.Set;
 
 public class PrepositionContextFeature extends Feature {
 
     Set<String> wordSet = null;
 
-    public PrepositionContextFeature(final String filename) {
+    public PrepositionContextFeature(final String filename) throws IOException {
         wordSet = Feature.createSingleWordSet(filename, false);
     }
 
