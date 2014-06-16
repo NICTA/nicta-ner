@@ -28,6 +28,7 @@ import org.testng.annotations.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -161,7 +162,8 @@ public class NamedEntityAnalyserTest {
         // now match the scores
         for (final Phrase p : result.phrases.get(0)) { // when might this be non-0?
             final Result r = resultMap.get(p.toString());// not good to depend on toString()...
-            assertEquals(p.score, r.scores);
+            assertEquals(p.score, r.scores,
+                         "Expected '" + Arrays.toString(p.score) + "' but found '" + Arrays.toString(r.scores) + "'");
         }
     }
 
