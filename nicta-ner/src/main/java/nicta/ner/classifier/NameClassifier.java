@@ -55,7 +55,7 @@ public class NameClassifier {
 	 */
 	public NameClassifier(Configuration _conf) {
 		_config = _conf;
-		_fm = _config.feature_map;
+		_fm = _config.getFeatureMap();
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class NameClassifier {
 				// for each phrase in the sentence
 				Phrase p = phrasesInSentence.get(pi);
 				if(p.isDate) continue;
-				for(int scoreIndex = 0; scoreIndex < _config.name_type.length; scoreIndex++) {
+				for(int scoreIndex = 0; scoreIndex < _config.getNameTypes().size(); scoreIndex++) {
 					// score all the dimensions
 					p.score[scoreIndex] = _fm.score(p, scoreIndex);
 				}
@@ -113,10 +113,10 @@ public class NameClassifier {
 			*/
 			double[] score = key.score;
 			for(Phrase phrase : aSet) {
-				phrase.classify(_config.name_type);
+				phrase.classify(_config.getNameTypes());
 				if(phrase.phraseType == NameType.NULL_TYPE) {
 					phrase.score = score;
-					phrase.classify(_config.name_type);
+					phrase.classify(_config.getNameTypes());
 				}
 			}
 			for(Phrase phrase : aSet) {

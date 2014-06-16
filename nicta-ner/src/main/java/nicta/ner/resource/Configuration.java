@@ -29,111 +29,99 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This class specifies the configurations.
- * @author William Han
  */
 public class Configuration {
 
     /** NameType array specifies the possible types of names. */
-    public NameType[] name_type = null;
+    private List<NameType> name_types = null;
 
-    public FeatureMap feature_map = null;
-
-    /** w is the coefficient array. */
-    public double[][] w;
+    private FeatureMap feature_map = null;
 
     /**
      * Constructor. Read in the config file.
      */
-    public Configuration() {
-        try { readConfigFile(); }
-        catch (final IOException | NullPointerException e1) {
-            System.out.println("ERROR: Config file reading error. Please check the config file syntax.");
-            e1.printStackTrace();
-            System.exit(-1);
-        }
-        catch (final Exception e3) {
-            e3.printStackTrace();
-            System.exit(-1);
-        }
-    }
-
-    /**
-     * Read the information in the config file.
-     */
-    private void readConfigFile() throws Exception {
-        // feature array texts
-        final ArrayList<String[]> featureTexts = new ArrayList<>();
+    public Configuration() throws IOException {
         // name type texts
-        String[] nameTypeTexts = null;
+        final List<NameType> nameTypes = new ArrayList<>();
         // w texts
         String[] wTexts = null;
+        // Feature array specifies the features used in name type recognition.
+        final List<Feature> features = new ArrayList<>();
 
-        try (final BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("config")))) {
+        try (final BufferedReader br = new BufferedReader(
+                new InputStreamReader(this.getClass().getResourceAsStream("config")))) {
 
             // read each line from the file and put the information
             // in the temperate variables
             // need further process to extract the information
-            String line;
-            while ((line = br.readLine()) != null) {
+            for (String line; (line = br.readLine()) != null; ) {
                 if (line.startsWith("#")) continue;
                 if (line.trim().equals("")) continue;
-                final int co_pos = line.indexOf(":");
-                final String command = line.substring(0, co_pos).trim();
-                String content = line.substring(co_pos + 1).trim();
-                if (command.equalsIgnoreCase("Name Types")) {
-                    nameTypeTexts = content.split(" ");
-                }
-                else if (command.equalsIgnoreCase("Feature")) {
-                    final String[] c = content.split(" ");
-                    if (c.length != 2) throw new Exception("Config File Syntax Error!");
-                    featureTexts.add(c);
-                }
-                else if (command.equalsIgnoreCase("w")) {
-                    content = content.replace("| ", "");
-                    wTexts = content.split(" ");
+
+                final String[] parts = line.split(":", 2);
+                switch (parts[0]) {
+                    case "Name Types":
+                        final String[] types = parts[1].trim().split(" ");
+                        for (final String s : types) {
+                            nameTypes.add(new NameType(s));
+                        }
+                        break;
+
+                    case "Feature":
+                        final String[] c = parts[1].trim().split(" ");
+                        if (c.length != 2) {
+                            throw new IllegalArgumentException("Config File Syntax Error: '" + line + "'");
+                        }
+                        features.add(Feature.generateFeatureByName(c[0], c[1]));
+                        break;
+
+                    case "w":
+                        wTexts = parts[1].trim().replace("| ", "").split(" ");
+                        break;
+
+                    default:
+                        throw new IllegalArgumentException("Unexpected config keyword: '" + parts[0] + "'");
                 }
             }
         }
 
-        if (nameTypeTexts == null || featureTexts.isEmpty() || wTexts == null)
-            throw new Exception("Config File Syntax Error!");
+        if (nameTypes.isEmpty() || features.isEmpty() || wTexts == null)
+            throw new IllegalArgumentException("Config File Syntax Error, no Name Types, Features, or w params.");
 
-        final int featureDimension = featureTexts.size();
-        final int nameTypeDimension = nameTypeTexts.length;
         // if syntax error, throw exception.
-        if (wTexts.length != featureDimension * nameTypeDimension)
-            throw new Exception("Config File Syntax Error!");
+        if (wTexts.length != features.size() * nameTypes.size())
+            throw new IllegalArgumentException(
+                    "Config File Syntax Error, number of w params do not equal (num Name Types * num Features)");
 
-        /* Feature array specifies the features used in name type recognition. */
-        final Feature[] feature_array = new Feature[featureDimension];
-        name_type = new NameType[nameTypeDimension];
-        w = new double[nameTypeDimension][featureDimension];
+        /* w is the coefficient array. */
+        final double[][] w = new double[nameTypes.size()][features.size()];
 
-        // feature information
-        for (int i = 0; i < featureDimension; i++) {
-            final String[] line_splited = featureTexts.get(i);
-            final Feature f = Feature.generateFeatureByName(line_splited);
-            feature_array[i] = f;
-        }
-
-        // name_type information
-        for (int i = 0; i < nameTypeDimension; i++) {
-            name_type[i] = new NameType(nameTypeTexts[i]);
-        }
+        // name_types information
+        name_types = Collections.unmodifiableList(nameTypes);
 
         // weight array
         int wi = 0;
-        for (int i = 0; i < nameTypeDimension; i++) {
-            for (int j = 0; j < featureDimension; j++) {
+        for (int i = 0; i < name_types.size(); i++) {
+            for (int j = 0; j < features.size(); j++) {
                 w[i][j] = Double.parseDouble(wTexts[wi]);
                 wi++;
             }
         }
 
         // create feature map
-        feature_map = new FeatureMap(feature_array, w);
+        feature_map = new FeatureMap(features, w);
+    }
+
+    public FeatureMap getFeatureMap() {
+        return feature_map;
+    }
+
+    public List<NameType> getNameTypes() {
+        return name_types;
     }
 }

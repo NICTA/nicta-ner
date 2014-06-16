@@ -63,11 +63,11 @@ public class NameExtractor {
 	 * 
 	 * @param scoreDimension
 	 */
-	public NameExtractor(Configuration conf) throws Exception {
+	public NameExtractor(Configuration conf) {
 		if(TOKENIZER == null) TOKENIZER = new JTokenizer(JTokenizer.TOKENIZER_MODE.WITH_PUNCTUATE);
 		if(NON_NAME_WORDS == null) NON_NAME_WORDS = generateWordSet(NameExtractor.class.getResourceAsStream("NON_NAME_WORDS"));
 		config = conf;
-		nameTypeScoreDimension = config.name_type.length;
+		nameTypeScoreDimension = config.getNameTypes().size();
 	}
 	
 	/**

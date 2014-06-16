@@ -22,6 +22,8 @@
 package nicta.ner.data;
 
 import java.util.HashMap;
+import java.util.List;
+
 /**
  * Instance of this class indicates a Phrase.
  * A phrase can have one or more than one word.
@@ -121,12 +123,13 @@ public class Phrase {
 	
 	/**
 	 *  This method will do the classification.
-	 */
-	public void classify(NameType[] _nta) {
+     * @param _nta
+     */
+	public void classify(List<NameType> _nta) {
 		int argmaxIndex = 0;
 		double argmaxValue = this.score[argmaxIndex];
 		boolean ambious = false;
-		for(int scoreIndex = 1; scoreIndex < _nta.length; scoreIndex++) {
+		for(int scoreIndex = 1; scoreIndex < _nta.size(); scoreIndex++) {
 			if(this.score[scoreIndex] > argmaxValue) {
 				argmaxValue = this.score[scoreIndex];
 				argmaxIndex = scoreIndex;
@@ -136,7 +139,7 @@ public class Phrase {
 			}
 		}
 		if(!ambious)
-			this.phraseType = _nta[argmaxIndex];
+			this.phraseType = _nta.get(argmaxIndex);
 		else
 			this.phraseType = NameType.NULL_TYPE;
 	}
