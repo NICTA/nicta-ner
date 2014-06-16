@@ -25,6 +25,7 @@ import nicta.ner.classifier.NameClassifier;
 import nicta.ner.extractor.NameExtractor;
 import nicta.ner.resource.Configuration;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
@@ -34,7 +35,6 @@ import java.util.Scanner;
  * This is the main class of the Named Entity Recognition system.
  * <p/>
  * This system contains two parts: named entity extraction and named entity classification.
- * @author William Han
  */
 public class NamedEntityAnalyser {
 
@@ -45,7 +45,7 @@ public class NamedEntityAnalyser {
      * Constructor to create a NamedEntityAnalyser. This Analyser will extract and classify
      * the named entities in the input text.
      */
-    public NamedEntityAnalyser() throws Exception {
+    public NamedEntityAnalyser() throws IOException {
         final Configuration config = new Configuration();
         extractor = new NameExtractor(config);
         classifier = new NameClassifier(config);
