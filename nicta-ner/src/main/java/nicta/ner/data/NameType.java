@@ -23,25 +23,22 @@ package nicta.ner.data;
 
 /**
  * This class is a name type class.
- * 
+ * <p/>
  * Each instance of this class represents a name type
  * such as:
  * ORGANIZATION, LOCATION, PERSON, DATE...
- * 
- * @author William Han
- *
  */
 public class NameType {
-	public String typeName = "";
-	
-	public static NameType NULL_TYPE = new NameType("UNKNOWN");
-	public static NameType DATE_TYPE = new NameType("DATE");
-	
-	public NameType(String _name) {
-		typeName = _name;
-	}
-	
-	public String toString() {
-		return typeName;
-	}
+    public final String typeName;
+
+    public static final NameType NULL_TYPE = new NameType("UNKNOWN");
+    public static final NameType DATE_TYPE = new NameType("DATE");
+
+    public NameType(final String name) {
+        typeName = name;
+    }
+
+    public String toString() {
+        return typeName;
+    }
 }
