@@ -154,7 +154,7 @@ public class NamedEntityAnalyserTest {
         for (final Map.Entry<String, Result> e : resultMap.entrySet()) {
             // remove each result from the mappedResult
             final String type = mappedResult.remove(e.getKey());
-            assertEquals(type, e.getValue().type);
+            assertEquals(type, e.getValue().type, "Entity '" + e.getKey() + "',");
         }
         // all results should now have been removed from the results map
         assertTrue(mappedResult.isEmpty());
@@ -163,7 +163,8 @@ public class NamedEntityAnalyserTest {
         for (final Phrase p : result.phrases.get(0)) { // when might this be non-0?
             final Result r = resultMap.get(p.toString());// not good to depend on toString()...
             assertEquals(p.score, r.scores,
-                         "Expected '" + Arrays.toString(p.score) + "' but found '" + Arrays.toString(r.scores) + "'");
+                         "Phrase '" + p + "', expected '" + Arrays.toString(p.score) + "' but found '" + Arrays
+                                 .toString(r.scores) + "'");
         }
     }
 
