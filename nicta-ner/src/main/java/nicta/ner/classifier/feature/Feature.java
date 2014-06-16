@@ -26,9 +26,7 @@ import com.google.common.io.Resources;
 import nicta.ner.data.Phrase;
 import nicta.ner.util.Dictionary;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
@@ -78,39 +76,52 @@ public abstract class Feature {
                                        Charset.forName("UTF-8"), new LineReader());
         }
         catch (final IOException ioe) {
-            throw new IOException("Error in reading Feature file: " + resource, ioe);
+            throw new IOException("Error reading Feature file: " + resource, ioe);
         }
     }
 
     /**
      * Returns a HashSet contains only single words.
      */
-    protected static Set<String> createSingleWordSet(final String filename, final boolean eliminatePrepAndConj) {
-        final Dictionary dict = Dictionary.getSharedDictionary();
-        final Set<String> set = new HashSet<>();
-        try (final BufferedReader br = new BufferedReader(
-                new InputStreamReader(Feature.class.getResourceAsStream(filename)))) {
+    protected static Set<String> createSingleWordSet(final String resource, final boolean eliminatePrepAndConj)
+            throws IOException {
+        try {
+            return Resources.readLines(Resources.getResource(Feature.class, resource),
+                                       Charset.forName("UTF-8"), new WordSetReader(eliminatePrepAndConj));
+        }
+        catch (final IOException ioe) {
+            throw new IOException("Error reading Feature file: " + resource, ioe);
+        }
+    }
 
-            for (String line; (line = br.readLine()) != null; ) {
-                if (line.startsWith("#")) continue;
-                final String[] splited = line.split(" ");
-                for (final String word : splited) {
-                    final String wordType = dict.checkup(word);
-                    if (eliminatePrepAndConj && wordType != null && (wordType.startsWith("IN")
-                                                                     || wordType.startsWith("CC"))) {
-                        continue;
+    private static class WordSetReader implements LineProcessor<Set<String>> {
+
+        final Dictionary dict = Dictionary.getSharedDictionary();
+        final boolean eliminatePrepAndConj;
+        Set<String> s = new HashSet<>();
+
+        public WordSetReader(final boolean eliminatePrepAndConj) { this.eliminatePrepAndConj = eliminatePrepAndConj; }
+
+        @Override
+        @SuppressWarnings("NullableProblems")
+        public boolean processLine(final String line) throws IOException {
+            final String l = line.trim();
+            if (!l.startsWith("#") && !"".equals(l)) {
+                for (final String part : l.split(" ")) {
+                    if (eliminatePrepAndConj) {
+                        final String wordType = dict.checkup(part);
+                        if (wordType != null && (wordType.startsWith("IN") || wordType.startsWith("CC"))) {
+                            return true;
+                        }
                     }
-                    set.add(word);
+                    s.add(part);
                 }
             }
+            return true;
         }
-        catch (final IOException e1) {
-            System.out.println("ERROR: Error in reading Feature file: " + filename);
-            System.out.println("       at Configuration File: Feature");
-            // e1.printStackTrace();
-            System.exit(-1);
-        }
-        return set;
+
+        @Override
+        public Set<String> getResult() { return s; }
     }
 
     private static class LineReader implements LineProcessor<Set<String>> {
@@ -125,8 +136,6 @@ public abstract class Feature {
         }
 
         @Override
-        public Set<String> getResult() {
-            return s;
-        }
+        public Set<String> getResult() { return s; }
     }
 }
