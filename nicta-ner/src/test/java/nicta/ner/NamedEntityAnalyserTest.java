@@ -22,6 +22,7 @@
 package nicta.ner;
 
 import nicta.ner.data.Phrase;
+import nicta.ner.resource.Configuration;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -131,16 +132,17 @@ public class NamedEntityAnalyserTest {
 
     @BeforeClass
     public void init() throws Exception {
-        this.namedEntityAnalyser = new NamedEntityAnalyser();
+        this.namedEntityAnalyser = new NamedEntityAnalyser(new Configuration());
     }
 
     @Test
     public void doubleCreateNea() throws Exception {
         // check that we don't have any leaky static references
-        final NERResultSet result1 = new NamedEntityAnalyser().process("John");
+        final Configuration config = new Configuration();
+        final NERResultSet result1 = new NamedEntityAnalyser(config).process("John");
         assertEquals(result1.getMappedResult().size(), 1);
         assertEquals(result1.getMappedResult().get("John"), "PERSON");
-        final NERResultSet result2 = new NamedEntityAnalyser().process("Gwen");
+        final NERResultSet result2 = new NamedEntityAnalyser(config).process("Gwen");
         assertEquals(result2.getMappedResult().size(), 1);
         assertEquals(result2.getMappedResult().get("Gwen"), "PERSON");
     }

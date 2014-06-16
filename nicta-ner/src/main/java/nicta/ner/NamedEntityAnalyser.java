@@ -45,8 +45,7 @@ public class NamedEntityAnalyser {
      * Constructor to create a NamedEntityAnalyser. This Analyser will extract and classify
      * the named entities in the input text.
      */
-    public NamedEntityAnalyser() throws IOException {
-        final Configuration config = new Configuration();
+    public NamedEntityAnalyser(final Configuration config) throws IOException {
         extractor = new NameExtractor(config);
         classifier = new NameClassifier(config);
     }
@@ -69,7 +68,7 @@ public class NamedEntityAnalyser {
      * process result on the screen.
      */
     public static void main(final String[] args) throws Exception {
-        final NamedEntityAnalyser nea = new NamedEntityAnalyser();
+        final NamedEntityAnalyser nea = new NamedEntityAnalyser(new Configuration());
         if (args.length >= 1) {
             final String content = new String(Files.readAllBytes(Paths.get(args[0])));
             System.out.println(nea.process(content));
