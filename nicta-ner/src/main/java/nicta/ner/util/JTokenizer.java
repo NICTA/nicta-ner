@@ -47,7 +47,7 @@ public class JTokenizer {
 		WITHOUT_PUNCTUATE
 	}
 	
-	public JTokenizer(TOKENIZER_MODE _m) throws Exception {
+	public JTokenizer(TOKENIZER_MODE _m) {
 		if(_abbreException == null) {
 			ABBREVIATION_EXCEPTION = this.getClass().getResourceAsStream("TokenizerAbbreviation");
 			try {
