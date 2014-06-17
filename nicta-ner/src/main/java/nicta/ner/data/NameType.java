@@ -50,7 +50,5 @@ public class NameType {
     }
 
     @Override
-    public int hashCode() {
-        return typeName.hashCode();
-    }
+    public int hashCode() { return typeName.hashCode(); }
 }

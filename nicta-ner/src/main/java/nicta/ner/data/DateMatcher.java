@@ -29,7 +29,6 @@ import java.util.Vector;
 
 
 /**
- *
  * @author kgawande
  */
 public class DateMatcher {
@@ -42,9 +41,12 @@ public class DateMatcher {
 
         String dd = "([1-9]|0[1-9]|[1-2][0-9]|3[01])";
         String dds = "((^[1-9]|0[1-9]|[1-2][0-9]|3[01]))";
-        String mm = "(([1-9]|0[1-9]|1[0-2])|(January|February|March|April|May|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
-        String mms = "((^[1-9]|0[1-9]|1[0-2])|(January|February|March|April|May|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
-        String mm1 = "((January|February|March|April|May|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
+        String mm =
+                "(([1-9]|0[1-9]|1[0-2])|(January|February|March|April|May|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
+        String mms =
+                "((^[1-9]|0[1-9]|1[0-2])|(January|February|March|April|May|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
+        String mm1 =
+                "((January|February|March|April|May|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
         String yyyy = "(\\d\\d\\d\\d)";
         String sep = "(/|\\s|-|.)";
 
@@ -63,7 +65,6 @@ public class DateMatcher {
         //January 2, 2008 or January 2 2008
         p = Pattern.compile(".*" + mm1 + "(\\s)" + dd + "(,\\s|\\s)" + yyyy + ".*");
         patterns.add(p);
-        
 
 
     }
@@ -78,9 +79,9 @@ public class DateMatcher {
         }
         return false;
     }
-    
+
     public static void main(String[] args) {
-    	DateMatcher dm = new DateMatcher();
-    	System.out.println(dm.isDate("13/12/07"));
+        DateMatcher dm = new DateMatcher();
+        System.out.println(dm.isDate("13/12/07"));
     }
 }

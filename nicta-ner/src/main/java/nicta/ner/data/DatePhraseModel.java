@@ -26,28 +26,27 @@ import java.util.HashSet;
 /**
  * Date Phrase Model
  * @author William Han
- *
  */
 public class DatePhraseModel {
-	
-	HashSet<Integer> contents = null;
-	
-	public DatePhraseModel() {
-		contents = new HashSet<Integer>();
-	}
-	
-	public void addType(int _type) {
-		contents.add(_type);
-	}
-	
-	public boolean isDate() {
-		if(
-				contents.contains(1) ||
-				contents.contains(2) ||
-				contents.contains(3) ||
-				contents.contains(7) ||
-				contents.contains(8)
-				) return true;
-		return false;
-	}
+
+    HashSet<Integer> contents = null;
+
+    public DatePhraseModel() {
+        contents = new HashSet<Integer>();
+    }
+
+    public void addType(int _type) {
+        contents.add(_type);
+    }
+
+    public boolean isDate() {
+        if (
+                contents.contains(1) ||
+                contents.contains(2) ||
+                contents.contains(3) ||
+                contents.contains(7) ||
+                contents.contains(8)
+                ) return true;
+        return false;
+    }
 }
