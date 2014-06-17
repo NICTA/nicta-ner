@@ -27,6 +27,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -41,8 +42,10 @@ public class NamedEntityAnalyserTest {
 
     private NamedEntityAnalyser namedEntityAnalyser;
 
+    @SuppressWarnings("MagicNumber")
     @DataProvider(name = "testProcess")
-    public static Object[][] primeNumbers() throws Exception {
+    public static Object[][] primeNumbers() throws IOException {
+        //noinspection HardcodedFileSeparator
         return new Object[][]{
                 {"John",
                  new LinkedHashMap<String, Result>() {{
@@ -131,12 +134,12 @@ public class NamedEntityAnalyserTest {
     }
 
     @BeforeClass
-    public void init() throws Exception {
+    public void init() throws IOException {
         this.namedEntityAnalyser = new NamedEntityAnalyser(new Configuration());
     }
 
     @Test
-    public void doubleCreateNea() throws Exception {
+    public void doubleCreateNea() throws IOException {
         // check that we don't have any leaky static references
         final Configuration config = new Configuration();
         final NERResultSet result1 = new NamedEntityAnalyser(config).process("John");
@@ -148,7 +151,7 @@ public class NamedEntityAnalyserTest {
     }
 
     @Test(dataProvider = "testProcess")
-    public void testProcess(final String phrase, final Map<String, Result> resultMap) throws Exception {
+    public void testProcess(final String phrase, final Map<String, Result> resultMap) {
         final NERResultSet result = namedEntityAnalyser.process(phrase);
 
         // check that we have the correctly matched phrases and types
