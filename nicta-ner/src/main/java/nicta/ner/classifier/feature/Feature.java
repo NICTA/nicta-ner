@@ -114,7 +114,9 @@ public abstract class Feature {
 
     @Override
     public int hashCode() {
-        return resource.hashCode();
+        int result = getClass().hashCode();
+        result = 31 * result + resource.hashCode();
+        return result;
     }
 
     private static class WordSetReader implements LineProcessor<Set<String>> {
