@@ -38,14 +38,14 @@ import java.util.Scanner;
  */
 public class NamedEntityAnalyser {
 
-    private NameExtractor extractor = null;
-    private NameClassifier classifier = null;
+    private final NameExtractor extractor;
+    private final NameClassifier classifier;
 
     /**
      * Constructor to create a NamedEntityAnalyser. This Analyser will extract and classify
      * the named entities in the input text.
      */
-    public NamedEntityAnalyser(final Configuration config) throws IOException {
+    public NamedEntityAnalyser(final Configuration config) {
         extractor = new NameExtractor(config);
         classifier = new NameClassifier(config);
     }
@@ -67,19 +67,21 @@ public class NamedEntityAnalyser {
      * The main() method takes a file as input and output the
      * process result on the screen.
      */
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) throws IOException {
         final NamedEntityAnalyser nea = new NamedEntityAnalyser(new Configuration());
         if (args.length >= 1) {
             final String content = new String(Files.readAllBytes(Paths.get(args[0])));
             System.out.println(nea.process(content));
         }
         else {
-            final Scanner in = new Scanner(System.in);
-            while (true) {
-                System.out.print("Type in texts, -q for quit.\n> ");
-                final String processString = in.nextLine();
-                if (processString.equalsIgnoreCase("-q")) break;
-                System.out.println(nea.process(processString).getMappedResult());
+            try (final Scanner in = new Scanner(System.in)) {
+                while (true) {
+                    System.out.println("Type in texts, -q for quit.");
+                    System.out.println("> ");
+                    final String processString = in.nextLine();
+                    if ("-q".equalsIgnoreCase(processString)) break;
+                    System.out.println(nea.process(processString).getMappedResult());
+                }
             }
         }
     }
