@@ -27,9 +27,11 @@ import java.io.IOException;
 import java.util.Set;
 
 public class ExistingPhraseFeature extends Feature {
-    Set<String> phraseSet = null;
+
+    private final Set<String> phraseSet;
 
     public ExistingPhraseFeature(final String filename) throws IOException {
+        super(filename);
         phraseSet = Feature.createPhraseSet(filename);
     }
 
@@ -43,5 +45,4 @@ public class ExistingPhraseFeature extends Feature {
 
         return phraseSet.contains(phrase) ? 1.0f : 0.0f;
     }
-
 }

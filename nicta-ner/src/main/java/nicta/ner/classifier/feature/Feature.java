@@ -21,6 +21,7 @@
  */
 package nicta.ner.classifier.feature;
 
+import com.google.common.base.Objects;
 import com.google.common.io.LineProcessor;
 import com.google.common.io.Resources;
 import nicta.ner.data.Phrase;
@@ -30,11 +31,23 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * This abstract class is a parent of features.
  */
 public abstract class Feature {
+
+    private final String resource;
+
+    protected Feature(final String resource) { this.resource = resource; }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                      .add("resource", resource)
+                      .toString();
+    }
 
     /**
      * Returns a score of the phrase according to the particular feature.
@@ -50,9 +63,6 @@ public abstract class Feature {
         switch (feature) {
             case "RuledWordFeature":
                 f = new RuledWordFeature(resource);
-                break;
-            case "RuledPhraseFeature":
-                f = new RuledPhraseFeature(resource);
                 break;
             case "PrepositionContextFeature":
                 f = new PrepositionContextFeature(resource);
@@ -94,20 +104,34 @@ public abstract class Feature {
         }
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Feature feature = (Feature) o;
+        return resource.equals(feature.resource);
+    }
+
+    @Override
+    public int hashCode() {
+        return resource.hashCode();
+    }
+
     private static class WordSetReader implements LineProcessor<Set<String>> {
 
+        private static final Pattern PATTERN = Pattern.compile(" ");
         final Dictionary dict = Dictionary.getSharedDictionary();
         final boolean eliminatePrepAndConj;
         Set<String> s = new HashSet<>();
 
-        public WordSetReader(final boolean eliminatePrepAndConj) { this.eliminatePrepAndConj = eliminatePrepAndConj; }
+        WordSetReader(final boolean eliminatePrepAndConj) { this.eliminatePrepAndConj = eliminatePrepAndConj; }
 
         @Override
         @SuppressWarnings("NullableProblems")
         public boolean processLine(final String line) throws IOException {
             final String l = line.trim();
-            if (!l.startsWith("#") && !"".equals(l)) {
-                for (final String part : l.split(" ")) {
+            if (!l.startsWith("#") && !l.isEmpty()) {
+                for (final String part : PATTERN.split(l)) {
                     if (eliminatePrepAndConj) {
                         final String wordType = dict.checkup(part);
                         if (wordType != null && (wordType.startsWith("IN") || wordType.startsWith("CC"))) {
@@ -131,7 +155,7 @@ public abstract class Feature {
         @SuppressWarnings("NullableProblems")
         public boolean processLine(final String line) throws IOException {
             final String l = line.trim();
-            if (!l.startsWith("#") && !"".equals(l)) s.add(l);
+            if (!l.startsWith("#") && !l.isEmpty()) s.add(l);
             return true;
         }
 

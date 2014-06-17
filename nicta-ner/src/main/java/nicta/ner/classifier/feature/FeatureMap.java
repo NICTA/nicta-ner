@@ -23,24 +23,48 @@ package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class FeatureMap {
-	
-	private final Feature[] feature_array;
-	private final double[][] w;
-	
-	public FeatureMap(final List<Feature> features, final double[][] _w) {
-		feature_array = features.toArray(new Feature[features.size()]);
-		w = _w;
-	}
-	
-	public double score(final Phrase _p, final int wi) {
-		double score = 0.0f;
-		for(int i = 0; i < feature_array.length; i++) {
-			if(w[wi][i] == 0) continue;
-			score += feature_array[i].score(_p) * w[wi][i];
-		}
-		return score;
-	}
+
+    private final Feature[] feature_array;
+    private final double[][] w;
+
+    public FeatureMap(final List<Feature> features, final double[][] _w) {
+        feature_array = features.toArray(new Feature[features.size()]);
+        w = _w.clone();
+    }
+
+    public double score(final Phrase _p, final int wi) {
+        double score = 0.0f;
+        for (int i = 0; i < feature_array.length; i++) {
+            if (w[wi][i] == 0) continue;
+            score += feature_array[i].score(_p) * w[wi][i];
+        }
+        return score;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FeatureMap)) return false;
+        final FeatureMap that = (FeatureMap) o;
+        return Arrays.equals(feature_array, that.feature_array) && Arrays.deepEquals(w, that.w);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(feature_array);
+        result = 31 * result + Arrays.deepHashCode(w);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "FeatureMap{" +
+               "feature_array=" + Arrays.toString(feature_array) +
+               ", w=" + Arrays.deepToString(w) +
+               '}';
+    }
 }

@@ -28,9 +28,10 @@ import java.util.Set;
 
 public class PrepositionContextFeature extends Feature {
 
-    Set<String> wordSet = null;
+    private final Set<String> wordSet;
 
     public PrepositionContextFeature(final String filename) throws IOException {
+        super(filename);
         wordSet = Feature.createSingleWordSet(filename, false);
     }
 
