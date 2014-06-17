@@ -31,21 +31,29 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * This class specifies the configurations.
  */
 public class Configuration {
 
-    /** NameType array specifies the possible types of names. */
-    private List<NameType> name_types = null;
+    public static final String DEFAULT_CONFIG_RESOURCE = "config";
 
-    private FeatureMap feature_map = null;
+    /** NameType array specifies the possible types of names. */
+    private final List<NameType> name_types;
+
+    private final FeatureMap feature_map;
+
+    public Configuration() throws IOException { this(DEFAULT_CONFIG_RESOURCE); }
 
     /**
      * Constructor. Read in the config file.
      */
-    public Configuration() throws IOException {
+    public Configuration(final String configResource) throws IOException {
+        final Pattern COLONS = Pattern.compile(":");
+        final Pattern SPACES = Pattern.compile(" ");
+
         // name type texts
         final List<NameType> nameTypes = new ArrayList<>();
         // w texts
@@ -54,26 +62,26 @@ public class Configuration {
         final List<Feature> features = new ArrayList<>();
 
         try (final BufferedReader br = new BufferedReader(
-                new InputStreamReader(this.getClass().getResourceAsStream("config")))) {
+                new InputStreamReader(this.getClass().getResourceAsStream(configResource)))) {
 
             // read each line from the file and put the information
             // in the temperate variables
             // need further process to extract the information
             for (String line; (line = br.readLine()) != null; ) {
                 if (line.startsWith("#")) continue;
-                if (line.trim().equals("")) continue;
+                if (line.trim().isEmpty()) continue;
 
-                final String[] parts = line.split(":", 2);
+                final String[] parts = COLONS.split(line, 2);
                 switch (parts[0]) {
                     case "Name Types":
-                        final String[] types = parts[1].trim().split(" ");
+                        final String[] types = SPACES.split(parts[1].trim());
                         for (final String s : types) {
                             nameTypes.add(new NameType(s));
                         }
                         break;
 
                     case "Feature":
-                        final String[] c = parts[1].trim().split(" ");
+                        final String[] c = SPACES.split(parts[1].trim());
                         if (c.length != 2) {
                             throw new IllegalArgumentException("Config File Syntax Error: '" + line + "'");
                         }
@@ -81,7 +89,7 @@ public class Configuration {
                         break;
 
                     case "w":
-                        wTexts = parts[1].trim().replace("| ", "").split(" ");
+                        wTexts = SPACES.split(parts[1].trim().replace("| ", ""));
                         break;
 
                     default:
