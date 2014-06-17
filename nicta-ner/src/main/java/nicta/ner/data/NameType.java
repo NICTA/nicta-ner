@@ -29,16 +29,28 @@ package nicta.ner.data;
  * ORGANIZATION, LOCATION, PERSON, DATE...
  */
 public class NameType {
+
     public final String typeName;
 
     public static final NameType NULL_TYPE = new NameType("UNKNOWN");
     public static final NameType DATE_TYPE = new NameType("DATE");
 
-    public NameType(final String name) {
-        typeName = name;
-    }
+    public NameType(final String name) { typeName = name; }
 
     public String toString() {
         return typeName;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final NameType nameType = (NameType) o;
+        return typeName.equals(nameType.typeName);
+    }
+
+    @Override
+    public int hashCode() {
+        return typeName.hashCode();
     }
 }
