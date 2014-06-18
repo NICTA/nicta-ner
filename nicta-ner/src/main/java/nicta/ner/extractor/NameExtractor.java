@@ -36,6 +36,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Rule-based expert system.
@@ -46,35 +48,30 @@ import java.util.HashSet;
  */
 public class NameExtractor {
 
-    static JTokenizer TOKENIZER = null;
-    static HashSet<String> NON_NAME_WORDS = null;
-    Dictionary dict = Dictionary.getSharedDictionary();
+    private static JTokenizer TOKENIZER;
+    private static Set<String> NON_NAME_WORDS;
+    private Dictionary dict = Dictionary.getSharedDictionary();
 
-    private ArrayList<ArrayList<Phrase>> phrases = null;
-    private ArrayList<ArrayList<String>> tokens = null;
+    private List<List<Phrase>> phrases;
+    private List<List<String>> tokens;
 
-    private Configuration config = null;
-
-    int nameTypeScoreDimension = -1;
+    private int nameTypeScoreDimension = -1;
 
     /**
      * Constructor to build the Named Entity Extractor instance.
-     * @param scoreDimension
      */
-    public NameExtractor(Configuration conf) {
+    public NameExtractor(final Configuration conf) {
         if (TOKENIZER == null) TOKENIZER = new JTokenizer(JTokenizer.TOKENIZER_MODE.WITH_PUNCTUATE);
         if (NON_NAME_WORDS == null)
             NON_NAME_WORDS = generateWordSet(NameExtractor.class.getResourceAsStream("NON_NAME_WORDS"));
-        config = conf;
-        nameTypeScoreDimension = config.getNameTypes().size();
+        nameTypeScoreDimension = conf.getNameTypes().size();
     }
 
     /**
      * Call this method to return the name phrase result <b>after</b> the process(String _text) method had been called.
-     * @return
      */
     public NERResultSet getResult() {
-        NERResultSet ner = new NERResultSet();
+        final NERResultSet ner = new NERResultSet();
         ner.phrases = phrases;
         ner.tokens = tokens;
         return ner;
@@ -83,56 +80,53 @@ public class NameExtractor {
     /**
      * This method will parse the text input into tokens and name phrases.
      * Call getResult() method to get the processed result.
-     * @param _text
      */
     public void process(String _text) {
         // handling the illegal characters:
         _text = _text.replace("�", "\"");
         _text = _text.replace("�", "\"");
         _text = _text.replace("�", "'");
-        //_text = _text.replace("", "");
 
         // tokenization
         tokens = TOKENIZER.process(_text);
-        int sentenceCount = tokens.size();
+        final int sentenceCount = tokens.size();
 
         // extract name phrase:
-        phrases = new ArrayList<ArrayList<Phrase>>();
+        phrases = new ArrayList<>();
 
-        for (int si = 0; si < sentenceCount; si++) {
+        for (final List<String> token : tokens) {
             // for each sentence
-            ArrayList<Phrase> sentencePhrase = new ArrayList<Phrase>();
-            ArrayList<String> sentenceToken = tokens.get(si);
+            final List<Phrase> sentencePhrase = new ArrayList<>();
             int wordPtr = 0;
             int phraseStubStartPtr = 0;
             int phraseStubLength = 0;
-            while (wordPtr < sentenceToken.size()) {
+            while (wordPtr < token.size()) {
 
                 // iterate through every words in the sentence
-                ArrayList<String> currentPhrase = new ArrayList<String>();
+                final List<String> currentPhrase = new ArrayList<>();
 
                 // get the phrase stub
                 while (true) {
                     boolean mergeAndFlag = false;    // we merge the names combined with the word 'and'
                     // if the second phrase is much shorter than the first phrase
                     // example: Canberra Institution of Science and Technology
-                    if (!sentenceToken.get(wordPtr).equalsIgnoreCase("and")) {
+                    if (!token.get(wordPtr).equalsIgnoreCase("and")) {
                         //mergeAndFlag = false;
                     }
                     else if (currentPhrase.isEmpty()) {
                         //mergeAndFlag = false;
                     }
-                    else if (!(wordPtr + 1 < sentenceToken.size() && detectNameWordInSentenceByPosition(sentenceToken,
-                                                                                                        wordPtr + 1))) {
+                    else if (!(wordPtr + 1 < token.size() && detectNameWordInSentenceByPosition(token,
+                                                                                                wordPtr + 1))) {
                         //mergeAndFlag = false;
                     }
                     else {
-                        if (wordPtr + currentPhrase.size() - 1 >= sentenceToken.size()) {
+                        if (wordPtr + currentPhrase.size() - 1 >= token.size()) {
                             mergeAndFlag = true;
                         }
                         else {
                             for (int i = wordPtr + 1; i <= wordPtr + currentPhrase.size() - 1; i++) {
-                                if (!detectNameWordInSentenceByPosition(sentenceToken, i)) {
+                                if (!detectNameWordInSentenceByPosition(token, i)) {
                                     mergeAndFlag = true;
                                     break;
                                 }
@@ -140,26 +134,26 @@ public class NameExtractor {
                         }
                     }
                     if
-                            (detectNameWordInSentenceByPosition(sentenceToken, wordPtr) ||
+                            (detectNameWordInSentenceByPosition(token, wordPtr) ||
                              (
-                                     (sentenceToken.get(wordPtr).equalsIgnoreCase("of") || sentenceToken.get(wordPtr)
-                                                                                                        .equalsIgnoreCase(
-                                                                                                                "the")
+                                     (token.get(wordPtr).equalsIgnoreCase("of") || token.get(wordPtr)
+                                                                                        .equalsIgnoreCase(
+                                                                                                "the")
                                       ||
-                                      sentenceToken.get(wordPtr).equalsIgnoreCase("'s"))
+                                      token.get(wordPtr).equalsIgnoreCase("'s"))
                                      &&
                                      !currentPhrase.isEmpty() &&
-                                     wordPtr + 1 < sentenceToken.size() && detectNameWordInSentenceByPosition(
-                                             sentenceToken, wordPtr + 1)
+                                     wordPtr + 1 < token.size() && detectNameWordInSentenceByPosition(
+                                             token, wordPtr + 1)
                              ) ||
                              (
                                      mergeAndFlag
                              )
                             ) {
                         if (currentPhrase.isEmpty()) phraseStubStartPtr = wordPtr; // record the index of the first word
-                        currentPhrase.add(sentenceToken.get(wordPtr));
+                        currentPhrase.add(token.get(wordPtr));
                         wordPtr++;
-                        if (wordPtr == sentenceToken.size()) break;
+                        if (wordPtr == token.size()) break;
                     }
                     else {
                         break;
@@ -173,8 +167,8 @@ public class NameExtractor {
 
                 if (phrasePos
                     > 0) {    // if phrasePos is zero, then it is the first word, there won't be any 'the' or 'a' attached to this word.
-                    String attachedArticle = sentenceToken.get(phrasePos - 1);
-                    if (attachedArticle.equalsIgnoreCase("the") || attachedArticle.equalsIgnoreCase("a")) {
+                    final String attachedArticle = token.get(phrasePos - 1);
+                    if ("the".equalsIgnoreCase(attachedArticle) || "a".equalsIgnoreCase(attachedArticle)) {
                         phrasePos--;
                         phraseLen++;
                     }
@@ -192,7 +186,7 @@ public class NameExtractor {
                     if (!(currentPhrase.size() == 1 &&
                           (Dictionary.isPastTense(currentPhrase.get(0)) || Dictionary.isPlural(currentPhrase.get(0)))
                     )) {
-                        String[] currentPhraseArray = new String[currentPhrase.size()];
+                        final String[] currentPhraseArray = new String[currentPhrase.size()];
                         for (int i = 0; i < currentPhrase.size(); i++)
                             currentPhraseArray[i] = currentPhrase.get(i);
                         sentencePhrase.add(new Phrase_Name(currentPhraseArray, phrasePos, phraseLen, phraseStubStartPtr,
@@ -202,12 +196,12 @@ public class NameExtractor {
                 else {
                     // if the current pointed word is not a name phrase
                     // ESTIMATE IF IT IS A TIME/DATE
-                    ArrayList<String> currentDatePhrase = new ArrayList<String>();
-                    DatePhraseModel dpm = new DatePhraseModel();
+                    final List<String> currentDatePhrase = new ArrayList<>();
+                    final DatePhraseModel dpm = new DatePhraseModel();
                     int tempPtr = wordPtr;
                     while (true) {
-                        String word = sentenceToken.get(tempPtr);
-                        int type = Phrase_Date.getDateType(word);
+                        final String word = token.get(tempPtr);
+                        final int type = Phrase_Date.getDateType(word);
                         if (
                                 (
                                         type >= 0
@@ -215,16 +209,16 @@ public class NameExtractor {
                                 (
                                         (word.equalsIgnoreCase("of") || word.equalsIgnoreCase(",") || word
                                                 .equalsIgnoreCase("the")) &&
-                                        !currentDatePhrase.isEmpty() && tempPtr + 1 != sentenceToken.size() &&
-                                        Phrase_Date.getDateType(sentenceToken.get(tempPtr + 1)) >= 0 &&
-                                        Phrase_Date.getDateType(sentenceToken.get(tempPtr - 1)) >= 0
+                                        !currentDatePhrase.isEmpty() && tempPtr + 1 != token.size() &&
+                                        Phrase_Date.getDateType(token.get(tempPtr + 1)) >= 0 &&
+                                        Phrase_Date.getDateType(token.get(tempPtr - 1)) >= 0
                                 )
                                 ) {
                             // is date word:
                             currentDatePhrase.add(word);
                             dpm.addType(type);
                             tempPtr++;
-                            if (tempPtr == sentenceToken.size()) break;
+                            if (tempPtr == token.size()) break;
                         }
                         else {
                             break;
@@ -232,10 +226,10 @@ public class NameExtractor {
                     }
                     if (dpm.isDate()) {
                         // add the phrase to phrase array
-                        String[] currentPhraseArray = new String[currentDatePhrase.size()];
+                        final String[] currentPhraseArray = new String[currentDatePhrase.size()];
                         for (int i = 0; i < currentDatePhrase.size(); i++)
                             currentPhraseArray[i] = currentDatePhrase.get(i);
-                        Phrase newPhrase =
+                        final Phrase newPhrase =
                                 new Phrase_Date(currentPhraseArray, wordPtr, currentPhraseArray.length, wordPtr,
                                                 nameTypeScoreDimension);
                         sentencePhrase.add(newPhrase);
@@ -251,8 +245,8 @@ public class NameExtractor {
 
         // find attached words(preps):
         for (int si = 0; si < tokens.size(); si++) {
-            ArrayList<String> sentenceToken = tokens.get(si);
-            ArrayList<Phrase> sentencePhrase = phrases.get(si);
+            final List<String> sentenceToken = tokens.get(si);
+            final List<Phrase> sentencePhrase = phrases.get(si);
             for (int pi = 0; pi < sentencePhrase.size(); pi++) {
                 getAttachedPrep(sentenceToken, sentencePhrase, pi);
             }
@@ -261,11 +255,8 @@ public class NameExtractor {
 
     /**
      * Detects if a particular word in a sentence is a name.
-     * @param _text
-     * @param _pos
-     * @return
      */
-    private boolean detectNameWordInSentenceByPosition(ArrayList<String> _text, int _pos) {
+    private boolean detectNameWordInSentenceByPosition(final List<String> _text, final int _pos) {
         boolean isFirstWord = false;
         boolean nextWordIsName = false;
         if (_pos == 0
@@ -284,7 +275,8 @@ public class NameExtractor {
                                      detectNameWord(_text.get(_pos + 1), false, false)
                              ) : false;
         }
-        boolean isName = detectNameWord(_text.get(_pos), isFirstWord, nextWordIsName);
+        //noinspection UnnecessaryLocalVariable
+        final boolean isName = detectNameWord(_text.get(_pos), isFirstWord, nextWordIsName);
 
         /*
         String wordType = dict.checkup(_text.get(_pos).toLowerCase());
@@ -301,11 +293,8 @@ public class NameExtractor {
 
     /**
      * This method detects a word if it is a potential name word.
-     * @param _text
-     * @param isFirstWord
-     * @return
      */
-    private boolean detectNameWord(String _text, boolean isFirstWord, boolean nextWordIsName) {
+    private boolean detectNameWord(final String _text, final boolean isFirstWord, final boolean nextWordIsName) {
         if (detectMultiCharCapital(_text)) {
             return true;
         }
@@ -319,8 +308,8 @@ public class NameExtractor {
                     return false;
                 // we need to deal with the first word in the sentence very carefully.
                 // as we can not tell if the first word is a name by detecting upper case characters.
-                String type_original = dict.checkup(_text);
-                String type_lowercase = dict.checkup(_text.toLowerCase());
+                final String type_original = dict.checkup(_text);
+                final String type_lowercase = dict.checkup(_text.toLowerCase());
                 if (type_original == null) {
                     if (type_lowercase == null) {
                         return true;    // if the word cannot be found in the dictionary, we consider it as a name entity.
@@ -341,10 +330,7 @@ public class NameExtractor {
                         // || type_lowercase.startsWith("JJ")
                         || type_lowercase.startsWith("."))) return false;
                 else {
-                    if (nextWordIsName)
-                        return true;
-                    else
-                        return false;
+                    return nextWordIsName;
                 }
             }
         }
@@ -355,18 +341,16 @@ public class NameExtractor {
 
     /**
      * This method will find all the attached preps of a phrase.
-     * @param sentenceToken
-     * @param sentencePhrase
-     * @param index
      */
-    protected void getAttachedPrep(ArrayList<String> sentenceToken, ArrayList<Phrase> sentencePhrase, int index) {
+    protected void getAttachedPrep(final List<String> sentenceToken, final List<Phrase> sentencePhrase,
+                                   final int index) {
         String prep = null;
         boolean nameSequenceMeetEnd = true;
-        HashSet<Phrase> phraseSequence = new HashSet<Phrase>();
+        final Set<Phrase> phraseSequence = new HashSet<>();
 
         int phrasePtr = index;
         Phrase currentNamePhrase = sentencePhrase.get(phrasePtr);
-        int phrasePtrInSentence = currentNamePhrase.phrasePosition;
+        int phrasePtrInSentence;
 
         if (currentNamePhrase.attachedWordMap.get("prep") != null) return;
 
@@ -380,14 +364,14 @@ public class NameExtractor {
 
             if (phrasePtrInSentence == 0) return;
 
-            String attachedWord = sentenceToken.get(phrasePtrInSentence - 1);
+            final String attachedWord = sentenceToken.get(phrasePtrInSentence - 1);
 
             // if the attached word is a comma or 'and'/'or', we consider it as a conj.
-            if (attachedWord.equalsIgnoreCase(",")) {
+            if (",".equalsIgnoreCase(attachedWord)) {
                 nameSequenceMeetEnd = false;
                 phraseSequence.add(currentNamePhrase);
             }
-            else if (attachedWord.equalsIgnoreCase("and") || attachedWord.equalsIgnoreCase("or")) {
+            else if ("and".equalsIgnoreCase(attachedWord) || "or".equalsIgnoreCase(attachedWord)) {
                 // meet end
                 phraseSequence.add(currentNamePhrase);
                 nameSequenceMeetEnd = true;
@@ -426,12 +410,12 @@ public class NameExtractor {
                 != currentNamePhrase.phrasePosition) return;
             // method terminates if the phrase after is not next to this phrase.
 
-            String attachedWord = sentenceToken.get(phrasePtrInSentence - 1);
+            final String attachedWord = sentenceToken.get(phrasePtrInSentence - 1);
             // if the attached word is a comma or 'and'/'or', we consider it as a conj.
-            if (attachedWord.equalsIgnoreCase(",")) {
+            if (",".equalsIgnoreCase(attachedWord)) {
                 phraseSequence.add(currentNamePhrase);
             }
-            else if (attachedWord.equalsIgnoreCase("and") || attachedWord.equalsIgnoreCase("or")) {
+            else if ("and".equalsIgnoreCase(attachedWord) || "or".equalsIgnoreCase(attachedWord)) {
                 // meet end
                 phraseSequence.add(currentNamePhrase);
                 nameSequenceMeetEnd = true;
@@ -445,7 +429,7 @@ public class NameExtractor {
         }
 
         // finally, attach the prep with the words in the phraseSequence
-        for (Phrase name : phraseSequence) {
+        for (final Phrase name : phraseSequence) {
             name.attachedWordMap.put("prep", prep);
         }
     }
@@ -454,23 +438,19 @@ public class NameExtractor {
     /**
      * This method detects if the word's first character is in capital size.
      * Returns true if it is; false if it is not.
-     * @param word
-     * @return
      */
-    private boolean detectFirstCharCapital(String word) {
-        if (word.equalsIgnoreCase("i")) return false;
-        if (!detectLegalCharacter(word.charAt(0))) return false;
-        return Character.isUpperCase(word.charAt(0));
+    private boolean detectFirstCharCapital(final String word) {
+        return !"i".equalsIgnoreCase(word)
+               && detectLegalCharacter(word.charAt(0))
+               && Character.isUpperCase(word.charAt(0));
     }
 
     /**
      * This method detects if the word has more than one character which is capital sized.
      * Returns true if there are more than one character upper cased; return false if less than one character is upper cased.
-     * @param word
-     * @return
      */
-    private boolean detectMultiCharCapital(String word) {
-        if (word.equalsIgnoreCase("i")) return false;
+    private static boolean detectMultiCharCapital(final String word) {
+        if ("i".equalsIgnoreCase(word)) return false;
         int capCharCount = 0;
         for (int i = 0; i < word.length(); i++) {
             if (Character.isUpperCase(word.charAt(i))) capCharCount++;
@@ -481,42 +461,30 @@ public class NameExtractor {
 
     /**
      * This method tests if the input character is a legal character (a-z || A-Z).
-     * @param _c
-     * @return
      */
-    private boolean detectLegalCharacter(char _c) {
-        char c = Character.toLowerCase(_c);
-        if ("abcdefghijklmnopqrstuvwxyz".indexOf(c) == -1) return false;
-        else return true;
+    private static boolean detectLegalCharacter(final char _c) {
+        final char c = Character.toLowerCase(_c);
+        return "abcdefghijklmnopqrstuvwxyz".indexOf(c) != -1;
     }
 
     /**
      * This method returns a HashSet of words by reading a text file.
-     * @param filePath
-     * @return
      */
-    private HashSet<String> generateWordSet(InputStream filePath) {
-        HashSet<String> _set = new HashSet<String>();
-        //System.out.println("Creating word map: " + filePath);
-        int count = 0;
-        try {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(
-                            filePath));
+    private static Set<String> generateWordSet(final InputStream filePath) {
+        final Set<String> _set = new HashSet<>();
+        try (final BufferedReader br = new BufferedReader(new InputStreamReader(filePath))) {
 
-            String line = null;
+            String line;
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("#")) continue;
                 _set.add(line.trim().toLowerCase());
-                count++;
             }
 
             br.close();
         }
-        catch (IOException ioe) {
-            System.out.println("ERROR: " + filePath + " reading error.");
+        catch (final IOException ioe) {
+            System.out.println("ERROR: " + filePath + " reading error: " + ioe.getMessage());
         }
-        //System.out.println(count + " words added.");
 
         return _set;
     }

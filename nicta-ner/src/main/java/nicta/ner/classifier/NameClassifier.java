@@ -27,9 +27,10 @@ import nicta.ner.data.NameType;
 import nicta.ner.data.Phrase;
 import nicta.ner.resource.Configuration;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Classifier get the phrase input and classifies the phrase
@@ -61,14 +62,14 @@ public class NameClassifier {
      */
     public NERResultSet process(NERResultSet resultSet) {
         // store the relationship of _phrases in memory for further use
-        HashMap<Phrase, HashSet<Phrase>> phraseInMemory =
+        Map<Phrase, HashSet<Phrase>> phraseInMemory =
                 new HashMap<Phrase, HashSet<Phrase>>();
 
         // scoring
-        ArrayList<ArrayList<Phrase>> _phrases = resultSet.phrases;
+        List<List<Phrase>> _phrases = resultSet.phrases;
         for (int si = 0; si < _phrases.size(); si++) {
             // for each sentence
-            ArrayList<Phrase> phrasesInSentence = _phrases.get(si);
+            List<Phrase> phrasesInSentence = _phrases.get(si);
             for (int pi = 0; pi < phrasesInSentence.size(); pi++) {
                 // for each phrase in the sentence
                 Phrase p = phrasesInSentence.get(pi);

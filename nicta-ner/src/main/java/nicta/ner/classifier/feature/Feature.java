@@ -129,7 +129,6 @@ public abstract class Feature {
         WordSetReader(final boolean eliminatePrepAndConj) { this.eliminatePrepAndConj = eliminatePrepAndConj; }
 
         @Override
-        @SuppressWarnings("NullableProblems")
         public boolean processLine(final String line) throws IOException {
             final String l = line.trim();
             if (!l.startsWith("#") && !l.isEmpty()) {

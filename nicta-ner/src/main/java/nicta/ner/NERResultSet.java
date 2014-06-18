@@ -23,8 +23,8 @@ package nicta.ner;
 
 import nicta.ner.data.Phrase;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * This class encapsulated the two result set used in the NameExtractor class
@@ -34,8 +34,8 @@ import java.util.HashMap;
  * @author William Han
  */
 public class NERResultSet {
-    public ArrayList<ArrayList<String>> tokens;
-    public ArrayList<ArrayList<Phrase>> phrases;
+    public List<List<String>> tokens;
+    public List<List<Phrase>> phrases;
 
     private HashMap<String, String> _result = null;
 
@@ -46,7 +46,7 @@ public class NERResultSet {
     public HashMap<String, String> getMappedResult() {
         if (_result != null) return _result;
         _result = new HashMap<String, String>();
-        for (ArrayList<Phrase> pa : phrases) {
+        for (List<Phrase> pa : phrases) {
             for (Phrase p : pa) {
                 String ps = p.toString();
                 _result.put(ps, p.phraseType.toString());
@@ -68,8 +68,8 @@ public class NERResultSet {
         StringBuilder sb = new StringBuilder();
 
         for (int si = 0; si < _ner.tokens.size(); si++) {
-            ArrayList<String> sentence = _ner.tokens.get(si);
-            ArrayList<Phrase> phrases = _ner.phrases.get(si);
+            List<String> sentence = _ner.tokens.get(si);
+            List<Phrase> phrases = _ner.phrases.get(si);
             for (int wi = 0; wi < sentence.size(); wi++)
                 sb.append(sentence.get(wi) + " ");
             sb.append("\n===============================================\n");

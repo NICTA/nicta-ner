@@ -78,9 +78,9 @@ public class JTokenizer {
         return returnValue;
     }
 
-    public ArrayList<ArrayList<String>> process(String text) {
+    public List<List<String>> process(String text) {
 
-        ArrayList<ArrayList<String>> paragraph = new ArrayList<ArrayList<String>>();
+        List<List<String>> paragraph = new ArrayList<>();
 
         Locale currentLocale = new Locale("en", "US");
         BreakIterator wordIterator = BreakIterator.getWordInstance(currentLocale);
@@ -89,7 +89,7 @@ public class JTokenizer {
         int sPtr = wordIterator.first();
         int ePtr = wordIterator.next();
 
-        ArrayList<String> currentSentence = new ArrayList<String>();
+        List<String> currentSentence = new ArrayList<>();
 
         while (ePtr != BreakIterator.DONE) {
             String word = text.substring(sPtr, ePtr);
@@ -121,15 +121,17 @@ public class JTokenizer {
                     else {
                         currentSentence.add(word);
                     }
-                    /* else {
-						int p = word.indexOf("'");
-						String w1 = word.substring(0, p);
-						String w2 = word.substring(p);
-						if(!w1.equals(""))
-							currentSentence.add(w1);
-						if(!w2.equals(""))
-							currentSentence.add(w2);
-					}*/
+                    /*
+                    else{
+                        int p = word.indexOf("'");
+                        String w1 = word.substring(0, p);
+                        String w2 = word.substring(p);
+                        if (!w1.equals(""))
+                            currentSentence.add(w1);
+                        if (!w2.equals(""))
+                            currentSentence.add(w2);
+                    }
+                    */
                 }
                 else if (word.trim().equals(".")) {
                     int formerIndex = currentSentence.size() - 1;
