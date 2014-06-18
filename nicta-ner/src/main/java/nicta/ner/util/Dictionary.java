@@ -21,78 +21,29 @@
  */
 package nicta.ner.util;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Dictionary
- * @author William Han
- */
-public class Dictionary {
+public final class Dictionary {
 
-    // get the file name from configuration
-    private InputStream DICT_FILE = null;
+    private static final Map<String, String> dict;
 
-    /** this is the only instance that can be used of this class. */
-    private static Dictionary sharedDictionary = null;
-
-    /**
-     * This method returns the shared instance of this class.
-     * @return
-     */
-    public static Dictionary getSharedDictionary() {
-        try {
-            if (sharedDictionary == null)
-                sharedDictionary = new Dictionary();
-        }
-        catch (Exception e) {
-            System.out.println("Unexcepted exception in Dictionary: getSharedDictionary()");
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        return sharedDictionary;
+    static {
+        try { dict = IO.dictionary(Dictionary.class, "DICT"); }
+        catch (final IOException e) { throw new RuntimeException(e); }
     }
-
-    /** dictionary map: word maps to its type */
-    private HashMap<String, String> dict = null;
 
     /**
      * Private constructor which creates the only dictionary instance.
-     * Call getSharedDictionary() method to get the shared dictionary.
+     * Call getDict() method to get the shared dictionary.
      */
-    private Dictionary() throws Exception {
-        if (DICT_FILE == null) {
-            DICT_FILE = this.getClass().getResourceAsStream("DICT");
-            dict = new HashMap<String, String>();
-            try {
-                BufferedReader br = new BufferedReader(new InputStreamReader(DICT_FILE));
-                //System.out.println("Creating dictionary: " + DICT_FILE);
-                String line = null;
-                while ((line = br.readLine()) != null) {
-                    if (line.startsWith("#")) continue;
-                    String[] splited = line.split("\t");
-                    dict.put(splited[0], splited[1]);
-                }
-                //System.out.println(count + " words added.");
-            }
-            catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-        }
-    }
+    private Dictionary() {}
 
-    public String checkup(String word) {
+    public static String checkup(String word) {
         return dict.get(word);
     }
 
-    /**
-     * This method checks if the word is a plural form.
-     * @param _word
-     * @return
-     */
+    /** This method checks if the word is a plural form. */
     public static boolean isPlural(String _word) {
         String word = _word.toLowerCase();
         String wordStub = null;
@@ -100,19 +51,19 @@ public class Dictionary {
         // word + s
         if (word.endsWith("s")) {
             wordStub = word.substring(0, word.length() - 1);
-            if (getSharedDictionary().checkup(wordStub) != null) return true;
+            if (checkup(wordStub) != null) return true;
         }
 
         // word + ed
         if (word.endsWith("ed")) {
             wordStub = word.substring(0, word.length() - 2);
-            if (getSharedDictionary().checkup(wordStub) != null) return true;
+            if (checkup(wordStub) != null) return true;
         }
 
         // word(-y) + ied
         if (word.endsWith("ied")) {
             wordStub = word.substring(0, word.length() - 3) + "y";
-            if (getSharedDictionary().checkup(wordStub) != null) return true;
+            if (checkup(wordStub) != null) return true;
         }
 
         return false;
@@ -130,19 +81,19 @@ public class Dictionary {
         // word(e) + d
         if (word.endsWith("d")) {
             wordStub = word.substring(0, word.length() - 1);
-            if (getSharedDictionary().checkup(wordStub) != null) return true;
+            if (checkup(wordStub) != null) return true;
         }
 
         // word + ed
         if (word.endsWith("ces") || word.endsWith("ses")) {
             wordStub = word.substring(0, word.length() - 2);
-            if (getSharedDictionary().checkup(wordStub) != null) return true;
+            if (checkup(wordStub) != null) return true;
         }
 
         // word(-y) + ies
         if (word.endsWith("ies")) {
             wordStub = word.substring(0, word.length() - 3) + "y";
-            if (getSharedDictionary().checkup(wordStub) != null) return true;
+            if (checkup(wordStub) != null) return true;
         }
 
         return false;

@@ -42,7 +42,6 @@ public class NameExtractor {
 
     private static final JTokenizer TOKENIZER = new JTokenizer(JTokenizer.TOKENIZER_MODE.WITH_PUNCTUATE);
     private static final Set<String> NON_NAME_WORDS;
-    private final Dictionary dict = Dictionary.getSharedDictionary();
 
     static {
         try { NON_NAME_WORDS = IO.lowerCasedWordSet(NameExtractor.class, "NON_NAME_WORDS"); }
@@ -294,8 +293,8 @@ public class NameExtractor {
                     return false;
                 // we need to deal with the first word in the sentence very carefully.
                 // as we can not tell if the first word is a name by detecting upper case characters.
-                final String type_original = dict.checkup(_text);
-                final String type_lowercase = dict.checkup(_text.toLowerCase());
+                final String type_original = Dictionary.checkup(_text);
+                final String type_lowercase = Dictionary.checkup(_text.toLowerCase());
                 if (type_original == null) {
                     if (type_lowercase == null) {
                         return true;    // if the word cannot be found in the dictionary, we consider it as a name entity.
@@ -362,7 +361,7 @@ public class NameExtractor {
                 phraseSequence.add(currentNamePhrase);
                 nameSequenceMeetEnd = true;
             }
-            else if (dict.checkup(attachedWord.toLowerCase()) != null && dict.checkup(attachedWord.toLowerCase())
+            else if (Dictionary.checkup(attachedWord.toLowerCase()) != null && Dictionary.checkup(attachedWord.toLowerCase())
                                                                              .startsWith("IN")) {
                 prep = attachedWord;
                 phraseSequence.add(currentNamePhrase);

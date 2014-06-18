@@ -26,7 +26,9 @@ import com.google.common.io.LineProcessor;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -36,15 +38,15 @@ import static com.google.common.io.Resources.readLines;
 public final class IO {
 
     private static final Pattern SPACES = Pattern.compile(" ");
+    private static final Pattern TABS = Pattern.compile("\t");
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     private IO() {}
 
     /** Return a Set containing phrases (multi-words). */
-    @SuppressWarnings("rawtypes")
-    public static Set<String> createPhraseSet(final Class origin, final String resource) throws IOException {
+    public static Set<String> createPhraseSet(final Class<?> origin, final String resource) throws IOException {
         return new HashSet<String>() {{
-            readResource(origin, resource, new NullReturnLineProcessor<Set<String>>() {
+            readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
                 public boolean processLine(@Nonnull final String line) {
                     final String l = line.trim();
@@ -57,12 +59,10 @@ public final class IO {
     }
 
     /** Returns a Set containing only single words. */
-    @SuppressWarnings("rawtypes")
-    public static Set<String> createSingleWordSet(final Class origin, final String resource,
+    public static Set<String> createSingleWordSet(final Class<?> origin, final String resource,
                                                   final boolean eliminatePrepAndConj) throws IOException {
-        final Dictionary dict = Dictionary.getSharedDictionary();
         return new HashSet<String>() {{
-            readResource(origin, resource, new NullReturnLineProcessor<Set<String>>() {
+            readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
                 public boolean processLine(@Nonnull final String line) {
                     final String l = line.trim();
@@ -70,7 +70,7 @@ public final class IO {
                         for (final String part : SPACES.split(l)) {
                             if (!part.isEmpty()) {
                                 if (eliminatePrepAndConj) {
-                                    final String wordType = dict.checkup(part);
+                                    final String wordType = Dictionary.checkup(part);
                                     if (wordType != null && (wordType.startsWith("IN") || wordType.startsWith("CC"))) {
                                         continue;
                                     }
@@ -87,10 +87,9 @@ public final class IO {
     }
 
     /** Return a set containing all non-comment non-empty lower cased words. */
-    @SuppressWarnings("rawtypes")
-    public static Set<String> lowerCasedWordSet(final Class origin, final String resource) throws IOException {
+    public static Set<String> lowerCasedWordSet(final Class<?> origin, final String resource) throws IOException {
         return new HashSet<String>() {{
-            readResource(origin, resource, new NullReturnLineProcessor<Set<String>>() {
+            readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
                 public boolean processLine(@Nonnull final String line) {
                     final String l = line.trim();
@@ -102,9 +101,25 @@ public final class IO {
         }};
     }
 
-    @SuppressWarnings("rawtypes")
-    private static Set<String> readResource(final Class origin, final String resource,
-                                            final LineProcessor<Set<String>> processor) throws IOException {
+    /** Return a map/dictionary of words. */
+    public static Map<String, String> dictionary(final Class<?> origin, final String resource) throws IOException {
+        return new HashMap<String, String>() {{
+            readResource(origin, resource, new NullReturnLineProcessor() {
+                @Override
+                public boolean processLine(@Nonnull final String line) {
+                    final String l = line.trim();
+                    if (!l.startsWith("#")) {
+                        final String[] parts = TABS.split(l);
+                        put(parts[0], parts[1]);
+                    }
+                    return true;
+                }
+            });
+        }};
+    }
+
+    private static <T> T readResource(final Class<?> origin, final String resource,
+                                      final LineProcessor<T> processor) throws IOException {
         try { return readLines(getResource(origin, resource), UTF8, processor); }
         catch (final IOException ioe) {
             throw new IOException("Error reading resource: '" + resource + "'", ioe);
@@ -112,9 +127,9 @@ public final class IO {
 
     }
 
-    private static abstract class NullReturnLineProcessor<T> implements LineProcessor<T> {
+    private static abstract class NullReturnLineProcessor implements LineProcessor<Object> {
         @SuppressWarnings("ReturnOfNull")
         @Override
-        public T getResult() { return null; }
+        public Object getResult() { return null; }
     }
 }
