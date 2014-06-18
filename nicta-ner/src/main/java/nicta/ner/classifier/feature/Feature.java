@@ -22,41 +22,21 @@
 package nicta.ner.classifier.feature;
 
 import com.google.common.base.Objects;
-import com.google.common.io.LineProcessor;
-import com.google.common.io.Resources;
 import nicta.ner.data.Phrase;
-import nicta.ner.util.Dictionary;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Pattern;
 
-/**
- * This abstract class is a parent of features.
- */
+/** This abstract class is a parent of features. */
 public abstract class Feature {
 
     private final String resource;
 
     protected Feature(final String resource) { this.resource = resource; }
 
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                      .add("resource", resource)
-                      .toString();
-    }
-
-    /**
-     * Returns a score of the phrase according to the particular feature.
-     */
+    /** Returns a score of the phrase according to the particular feature. */
     public abstract double score(Phrase _p);
 
-    /**
-     * Factory method create features by name.
-     */
+    /** Factory method create features by name. */
     public static Feature generateFeatureByName(final String feature, final String resource)
             throws IllegalArgumentException, IOException {
         final Feature f;
@@ -76,32 +56,12 @@ public abstract class Feature {
         return f;
     }
 
-    /**
-     * Return a HashSet contains phrases (multi-words).
-     */
-
-    protected static Set<String> createPhraseSet(final String resource) throws IOException {
-        try {
-            return Resources.readLines(Resources.getResource(Feature.class, resource),
-                                       Charset.forName("UTF-8"), new LineReader());
-        }
-        catch (final IOException ioe) {
-            throw new IOException("Error reading Feature file: " + resource, ioe);
-        }
-    }
-
-    /**
-     * Returns a HashSet contains only single words.
-     */
-    protected static Set<String> createSingleWordSet(final String resource, final boolean eliminatePrepAndConj)
-            throws IOException {
-        try {
-            return Resources.readLines(Resources.getResource(Feature.class, resource),
-                                       Charset.forName("UTF-8"), new WordSetReader(eliminatePrepAndConj));
-        }
-        catch (final IOException ioe) {
-            throw new IOException("Error reading Feature file: " + resource, ioe);
-        }
+    @Override
+    public String toString() {
+        // useful toString helper as it will also show class name - so we don't need an override in the subclasses
+        return Objects.toStringHelper(this)
+                      .add("resource", resource)
+                      .toString();
     }
 
     @Override
@@ -117,50 +77,5 @@ public abstract class Feature {
         int result = getClass().hashCode();
         result = 31 * result + resource.hashCode();
         return result;
-    }
-
-    private static class WordSetReader implements LineProcessor<Set<String>> {
-
-        private static final Pattern PATTERN = Pattern.compile(" ");
-        final Dictionary dict = Dictionary.getSharedDictionary();
-        final boolean eliminatePrepAndConj;
-        Set<String> s = new HashSet<>();
-
-        WordSetReader(final boolean eliminatePrepAndConj) { this.eliminatePrepAndConj = eliminatePrepAndConj; }
-
-        @Override
-        public boolean processLine(final String line) throws IOException {
-            final String l = line.trim();
-            if (!l.startsWith("#") && !l.isEmpty()) {
-                for (final String part : PATTERN.split(l)) {
-                    if (eliminatePrepAndConj) {
-                        final String wordType = dict.checkup(part);
-                        if (wordType != null && (wordType.startsWith("IN") || wordType.startsWith("CC"))) {
-                            return true;
-                        }
-                    }
-                    s.add(part);
-                }
-            }
-            return true;
-        }
-
-        @Override
-        public Set<String> getResult() { return s; }
-    }
-
-    private static class LineReader implements LineProcessor<Set<String>> {
-        Set<String> s = new HashSet<>();
-
-        @Override
-        @SuppressWarnings("NullableProblems")
-        public boolean processLine(final String line) throws IOException {
-            final String l = line.trim();
-            if (!l.startsWith("#") && !l.isEmpty()) s.add(l);
-            return true;
-        }
-
-        @Override
-        public Set<String> getResult() { return s; }
     }
 }

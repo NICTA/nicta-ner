@@ -28,48 +28,38 @@ import nicta.ner.data.Phrase_Date;
 import nicta.ner.data.Phrase_Name;
 import nicta.ner.resource.Configuration;
 import nicta.ner.util.Dictionary;
+import nicta.ner.util.IO;
 import nicta.ner.util.JTokenizer;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Rule-based expert system.
- * <p/>
- * by William Han, 2010-10-26
- * @author William Han
- * @version 1
- */
+/** Rule-based expert system. */
 public class NameExtractor {
 
-    private static JTokenizer TOKENIZER;
-    private static Set<String> NON_NAME_WORDS;
-    private Dictionary dict = Dictionary.getSharedDictionary();
+    private static final JTokenizer TOKENIZER = new JTokenizer(JTokenizer.TOKENIZER_MODE.WITH_PUNCTUATE);
+    private static final Set<String> NON_NAME_WORDS;
+    private final Dictionary dict = Dictionary.getSharedDictionary();
+
+    static {
+        try { NON_NAME_WORDS = IO.lowerCasedWordSet(NameExtractor.class, "NON_NAME_WORDS"); }
+        catch (final IOException ioe) { throw new RuntimeException(ioe); }
+    }
 
     private List<List<Phrase>> phrases;
     private List<List<String>> tokens;
 
-    private int nameTypeScoreDimension = -1;
+    private final int nameTypeScoreDimension;
 
-    /**
-     * Constructor to build the Named Entity Extractor instance.
-     */
+    /** Constructor to build the Named Entity Extractor instance. */
     public NameExtractor(final Configuration conf) {
-        if (TOKENIZER == null) TOKENIZER = new JTokenizer(JTokenizer.TOKENIZER_MODE.WITH_PUNCTUATE);
-        if (NON_NAME_WORDS == null)
-            NON_NAME_WORDS = generateWordSet(NameExtractor.class.getResourceAsStream("NON_NAME_WORDS"));
         nameTypeScoreDimension = conf.getNameTypes().size();
     }
 
-    /**
-     * Call this method to return the name phrase result <b>after</b> the process(String _text) method had been called.
-     */
+    /** Call this method to return the result <b>after</b> the process(String _text) method had been called. */
     public NERResultSet getResult() {
         final NERResultSet ner = new NERResultSet();
         ner.phrases = phrases;
@@ -81,15 +71,9 @@ public class NameExtractor {
      * This method will parse the text input into tokens and name phrases.
      * Call getResult() method to get the processed result.
      */
-    public void process(String _text) {
-        // handling the illegal characters:
-        _text = _text.replace("�", "\"");
-        _text = _text.replace("�", "\"");
-        _text = _text.replace("�", "'");
-
+    public void process(final String _text) {
         // tokenization
         tokens = TOKENIZER.process(_text);
-        final int sentenceCount = tokens.size();
 
         // extract name phrase:
         phrases = new ArrayList<>();
@@ -99,7 +83,7 @@ public class NameExtractor {
             final List<Phrase> sentencePhrase = new ArrayList<>();
             int wordPtr = 0;
             int phraseStubStartPtr = 0;
-            int phraseStubLength = 0;
+            int phraseStubLength;
             while (wordPtr < token.size()) {
 
                 // iterate through every words in the sentence
@@ -107,17 +91,18 @@ public class NameExtractor {
 
                 // get the phrase stub
                 while (true) {
-                    boolean mergeAndFlag = false;    // we merge the names combined with the word 'and'
+                    // we merge the names combined with the word 'and'
                     // if the second phrase is much shorter than the first phrase
                     // example: Canberra Institution of Science and Technology
-                    if (!token.get(wordPtr).equalsIgnoreCase("and")) {
+                    boolean mergeAndFlag = false;
+                    if (!"and".equalsIgnoreCase(token.get(wordPtr))) {
                         //mergeAndFlag = false;
                     }
                     else if (currentPhrase.isEmpty()) {
                         //mergeAndFlag = false;
                     }
-                    else if (!(wordPtr + 1 < token.size() && detectNameWordInSentenceByPosition(token,
-                                                                                                wordPtr + 1))) {
+                    else if (!(wordPtr + 1 < token.size()
+                               && detectNameWordInSentenceByPosition(token, wordPtr + 1))) {
                         //mergeAndFlag = false;
                     }
                     else {
@@ -133,6 +118,7 @@ public class NameExtractor {
                             }
                         }
                     }
+
                     if
                             (detectNameWordInSentenceByPosition(token, wordPtr) ||
                              (
@@ -439,7 +425,7 @@ public class NameExtractor {
      * This method detects if the word's first character is in capital size.
      * Returns true if it is; false if it is not.
      */
-    private boolean detectFirstCharCapital(final String word) {
+    private static boolean detectFirstCharCapital(final String word) {
         return !"i".equalsIgnoreCase(word)
                && detectLegalCharacter(word.charAt(0))
                && Character.isUpperCase(word.charAt(0));
@@ -465,27 +451,5 @@ public class NameExtractor {
     private static boolean detectLegalCharacter(final char _c) {
         final char c = Character.toLowerCase(_c);
         return "abcdefghijklmnopqrstuvwxyz".indexOf(c) != -1;
-    }
-
-    /**
-     * This method returns a HashSet of words by reading a text file.
-     */
-    private static Set<String> generateWordSet(final InputStream filePath) {
-        final Set<String> _set = new HashSet<>();
-        try (final BufferedReader br = new BufferedReader(new InputStreamReader(filePath))) {
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith("#")) continue;
-                _set.add(line.trim().toLowerCase());
-            }
-
-            br.close();
-        }
-        catch (final IOException ioe) {
-            System.out.println("ERROR: " + filePath + " reading error: " + ioe.getMessage());
-        }
-
-        return _set;
     }
 }

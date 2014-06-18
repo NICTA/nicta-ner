@@ -22,6 +22,7 @@
 package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
+import nicta.ner.util.IO;
 
 import java.io.IOException;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class ExistingPhraseFeature extends Feature {
 
     public ExistingPhraseFeature(final String filename) throws IOException {
         super(filename);
-        phraseSet = Feature.createPhraseSet(filename);
+        phraseSet = IO.createPhraseSet(getClass(), filename);
     }
 
     @Override

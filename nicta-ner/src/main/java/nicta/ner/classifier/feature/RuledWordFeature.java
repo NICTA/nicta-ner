@@ -22,6 +22,7 @@
 package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
+import nicta.ner.util.IO;
 
 import java.io.IOException;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class RuledWordFeature extends Feature {
 
     public RuledWordFeature(final String filename) throws IOException {
         super(filename);
-        wordSet = Feature.createSingleWordSet(filename, true);
+        wordSet = IO.createSingleWordSet(getClass(), filename, true);
     }
 
     @SuppressWarnings("MagicNumber")
