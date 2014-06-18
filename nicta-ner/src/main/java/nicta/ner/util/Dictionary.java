@@ -39,60 +39,56 @@ public final class Dictionary {
      */
     private Dictionary() {}
 
-    public static String checkup(String word) {
+    public static String checkup(final String word) {
         return dict.get(word);
     }
 
     /** This method checks if the word is a plural form. */
-    public static boolean isPlural(String _word) {
-        String word = _word.toLowerCase();
-        String wordStub = null;
+    public static boolean isPlural(final String _word) {
+        final String word = _word.toLowerCase();
 
         // word + s
         if (word.endsWith("s")) {
-            wordStub = word.substring(0, word.length() - 1);
+            final String wordStub = word.substring(0, word.length() - 1);
             if (checkup(wordStub) != null) return true;
         }
 
         // word + ed
         if (word.endsWith("ed")) {
-            wordStub = word.substring(0, word.length() - 2);
+            final String wordStub = word.substring(0, word.length() - 2);
             if (checkup(wordStub) != null) return true;
         }
 
         // word(-y) + ied
         if (word.endsWith("ied")) {
-            wordStub = word.substring(0, word.length() - 3) + "y";
+            //noinspection StringConcatenationMissingWhitespace
+            final String wordStub = word.substring(0, word.length() - 3) + "y";
             if (checkup(wordStub) != null) return true;
         }
 
         return false;
     }
 
-    /**
-     * This method checks if the word is a past tense word.
-     * @param _word
-     * @return
-     */
-    public static boolean isPastTense(String _word) {
-        String word = _word.toLowerCase();
-        String wordStub = null;
+    /** This method checks if the word is a past tense word. */
+    public static boolean isPastTense(final String _word) {
+        final String word = _word.toLowerCase();
 
         // word(e) + d
         if (word.endsWith("d")) {
-            wordStub = word.substring(0, word.length() - 1);
+            final String wordStub = word.substring(0, word.length() - 1);
             if (checkup(wordStub) != null) return true;
         }
 
         // word + ed
         if (word.endsWith("ces") || word.endsWith("ses")) {
-            wordStub = word.substring(0, word.length() - 2);
+            final String wordStub = word.substring(0, word.length() - 2);
             if (checkup(wordStub) != null) return true;
         }
 
         // word(-y) + ies
         if (word.endsWith("ies")) {
-            wordStub = word.substring(0, word.length() - 3) + "y";
+            //noinspection StringConcatenationMissingWhitespace
+            final String wordStub = word.substring(0, word.length() - 3) + "y";
             if (checkup(wordStub) != null) return true;
         }
 
