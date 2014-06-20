@@ -123,6 +123,24 @@ public class NamedEntityAnalyserTest {
                      put("AAPL", new Result("UNKNOWN", 0, 0, 0));
                  }}},
 
+                {new String(Files.readAllBytes(Paths.get("src/test/resources/date1.txt"))),
+                 new LinkedHashMap<String, Result>() {{
+                     //2: 1st of December , 2014	DATE	0.0, 0.0, 0.0	null	2:2:5:5
+                     put("1st of December , 2014", new Result("DATE", 0.0, 0.0, 0.0));
+                     //3: December 7th	DATE	0.0, 0.0, 0.0	null	3:3:2:2
+                     put("December 7th", new Result("DATE", 0.0, 0.0, 0.0));
+                     //2: February	DATE	0.0, 0.0, 0.0	in	2:2:1:1
+                     put("February", new Result("DATE", 0.0, 0.0, 0.0));
+                     //3: 2014	DATE	0.0, 0.0, 0.0	null	3:3:1:1
+                     put("2014", new Result("DATE", 0.0, 0.0, 0.0));
+                     //2: 2014	DATE	0.0, 0.0, 0.0	null	2:2:1:1
+                     put("2014", new Result("DATE", 0.0, 0.0, 0.0));
+                     //4: BC	UNKNOWN	0.0, 0.0, 0.0	null	4:4:1:1
+                     put("BC", new Result("UNKNOWN", 0.0, 0.0, 0.0));
+                     //9: 17:00	DATE	0.0, 0.0, 0.0	null	9:9:1:1
+                     put("17:00", new Result("DATE", 0.0, 0.0, 0.0));
+                 }}}
+
                 /*
                 {"",
                 new LinkedHashMap<String, Result>() {{
