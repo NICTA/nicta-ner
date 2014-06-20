@@ -38,6 +38,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.lang.Character.isLetterOrDigit;
+import static java.lang.Character.isUpperCase;
+import static nicta.ner.data.Phrase_Date.getDateType;
+
 /** Rule-based expert system. */
 public class NameExtractor {
 
@@ -83,7 +87,6 @@ public class NameExtractor {
             final List<Phrase> sentencePhrase = new ArrayList<>();
             int wordPtr = 0;
             int phraseStubStartPtr = 0;
-            int phraseStubLength;
             while (wordPtr < token.size()) {
 
                 // iterate through every words in the sentence
@@ -95,13 +98,10 @@ public class NameExtractor {
                     // if the second phrase is much shorter than the first phrase
                     // example: Canberra Institution of Science and Technology
                     boolean mergeAndFlag = false;
-                    if (!"and".equalsIgnoreCase(token.get(wordPtr))
-                        || currentPhrase.isEmpty()
-                        || !(wordPtr + 1 < token.size()
-                             && detectNameWordInSentenceByPosition(token, wordPtr + 1))) {
-                        //mergeAndFlag = false;
-                    }
-                    else {
+                    if ("and".equalsIgnoreCase(token.get(wordPtr))
+                        && !currentPhrase.isEmpty()
+                        && wordPtr + 1 < token.size()
+                        && detectNameWordInSentenceByPosition(token, wordPtr + 1)) {
                         if (wordPtr + currentPhrase.size() - 1 >= token.size()) {
                             mergeAndFlag = true;
                         }
@@ -132,7 +132,6 @@ public class NameExtractor {
                         break;
                     }
                 }
-                phraseStubLength = currentPhrase.size();
 
                 //get the attached 'the' or 'a'
                 int phrasePos = phraseStubStartPtr;
@@ -148,7 +147,7 @@ public class NameExtractor {
                 }
 
                 //handling non-name single words such as: Monday, January, etc.
-                if (phraseStubLength == 1 && phraseStubStartPtr == phrasePos) {
+                if (currentPhrase.size() == 1 && phraseStubStartPtr == phrasePos) {
                     if (NON_NAME_WORDS.contains(currentPhrase.get(0).toLowerCase())) {
                         currentPhrase.clear();
                         wordPtr--;
@@ -163,15 +162,15 @@ public class NameExtractor {
                     int tempPtr = wordPtr;
                     while (true) {
                         final String word = token.get(tempPtr);
-                        final int type = Phrase_Date.getDateType(word);
+                        final int type = getDateType(word);
                         if (type >= 0
                             || ((word.equalsIgnoreCase("of")
                                  || word.equalsIgnoreCase(",")
                                  || word.equalsIgnoreCase("the"))
                                 && !currentDatePhrase.isEmpty()
                                 && tempPtr + 1 != token.size()
-                                && Phrase_Date.getDateType(token.get(tempPtr + 1)) >= 0
-                                && Phrase_Date.getDateType(token.get(tempPtr - 1)) >= 0)) {
+                                && getDateType(token.get(tempPtr + 1)) >= 0
+                                && getDateType(token.get(tempPtr - 1)) >= 0)) {
                             // is date word:
                             currentDatePhrase.add(word);
                             dpm.addType(type);
@@ -226,25 +225,26 @@ public class NameExtractor {
     private static boolean detectNameWordInSentenceByPosition(final List<String> _text, final int _pos) {
         boolean isFirstWord = false;
         boolean nextWordIsName = false;
-        if (_pos == 0 || !Character.isLetterOrDigit((_text.get(_pos - 1).charAt(0)))) {
+        if (_pos == 0 || !isLetterOrDigit((_text.get(_pos - 1).charAt(0)))) {
             isFirstWord = true;
             //noinspection SimplifiableIfStatement
             if (_text.size() > _pos + 1) {
-                nextWordIsName = ("of".equalsIgnoreCase(_text.get(_pos + 1)) || "'s".equalsIgnoreCase(_text.get(_pos + 1)))
-                                  ? ((_text.size() > (_pos + 2)) && detectNameWord(_text.get(_pos + 2), false, false))
-                                  : detectNameWord(_text.get(_pos + 1), false, false);
+                nextWordIsName =
+                        ("of".equalsIgnoreCase(_text.get(_pos + 1)) || "'s".equalsIgnoreCase(_text.get(_pos + 1)))
+                        ? ((_text.size() > (_pos + 2)) && isName(_text.get(_pos + 2), false, false))
+                        : isName(_text.get(_pos + 1), false, false);
             }
             else nextWordIsName = false;
         }
         //noinspection UnnecessaryLocalVariable
-        final boolean isName = detectNameWord(_text.get(_pos), isFirstWord, nextWordIsName);
+        final boolean isName = isName(_text.get(_pos), isFirstWord, nextWordIsName);
 
         /*
         String wordType = dict.checkup(_text.get(_pos).toLowerCase());
         if (isFirstWord && !isName && wordType != null && wordType.startsWith("JJ")) {
             // if the first word is determined not to be a name but it is an adj.,
             // and if the second word is a name, we consider the first word to be a name as well.
-            if (detectNameWord(_text.get(_pos + 1), false))
+            if (isName(_text.get(_pos + 1), false))
                 return true;
         }
         */
@@ -252,14 +252,12 @@ public class NameExtractor {
         return isName;
     }
 
-    /**
-     * This method detects a word if it is a potential name word.
-     */
-    private static boolean detectNameWord(final String _text, final boolean isFirstWord, final boolean nextWordIsName) {
-        if (detectMultiCharCapital(_text)) {
+    /** This method detects a word if it is a potential name word. */
+    private static boolean isName(final String _text, final boolean isFirstWord, final boolean nextWordIsName) {
+        if (hasManyCaps(_text)) {
             return true;
         }
-        else if (detectFirstCharCapital(_text)) {
+        else if (startsWithCap(_text)) {
             if (isFirstWord) {
                 // if the word is the first word in a sentence and
                 // ends with -ly (adv) -> consider it not a name
@@ -273,16 +271,11 @@ public class NameExtractor {
                     if (type_lowercase == null) {
                         return true;    // if the word cannot be found in the dictionary, we consider it as a name entity.
                     }
-                    /*
-                    else {
-                        return false;
-                    }
-                    */
                 }
-                else if (type_original.equals("NNP"))
+                else if ("NNP".equals(type_original))
                     return true;
-                if (type_lowercase != null && (
-                        type_lowercase.startsWith("IN")
+                if (type_lowercase != null
+                    && (type_lowercase.startsWith("IN")
                         || type_lowercase.startsWith("CC")
                         || type_lowercase.startsWith("RB")
                         || type_lowercase.startsWith("WRB")
@@ -398,33 +391,31 @@ public class NameExtractor {
 
     /**
      * This method detects if the word's first character is in capital size.
-     * Returns true if it is; false if it is not.
+     * @return true if it is; false if it is not.
      */
-    private static boolean detectFirstCharCapital(final String word) {
+    private static boolean startsWithCap(final String word) {
         return !"i".equalsIgnoreCase(word)
-               && detectLegalCharacter(word.charAt(0))
-               && Character.isUpperCase(word.charAt(0));
+               && isAllowedChar(word.charAt(0))
+               && isUpperCase(word.charAt(0));
     }
 
     /**
      * This method detects if the word has more than one character which is capital sized.
-     * Returns true if there are more than one character upper cased; return false if less than one character is upper cased.
+     * @return true if there are more than one character upper cased; return false if less than one character is upper cased.
      */
-    private static boolean detectMultiCharCapital(final String word) {
+    private static boolean hasManyCaps(final String word) {
         if ("i".equalsIgnoreCase(word)) return false;
         int capCharCount = 0;
         for (int i = 0; i < word.length(); i++) {
-            if (Character.isUpperCase(word.charAt(i))) capCharCount++;
+            if (isUpperCase(word.charAt(i))) capCharCount++;
             if (capCharCount == 2) return true;
         }
         return false;
     }
 
-    /**
-     * This method tests if the input character is a legal character (a-z || A-Z).
-     */
-    private static boolean detectLegalCharacter(final char _c) {
-        final char c = Character.toLowerCase(_c);
-        return "abcdefghijklmnopqrstuvwxyz".indexOf(c) != -1;
+    /** This method tests if the input character is a legal character (a-z || A-Z). */
+    private static boolean isAllowedChar(final char c) {
+        //noinspection OverlyComplexBooleanExpression
+        return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
     }
 }
