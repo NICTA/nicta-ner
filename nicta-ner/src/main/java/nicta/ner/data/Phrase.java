@@ -61,20 +61,11 @@ public class Phrase {
         phraseStubLength = 0;
     }
 
-    ;
-
-    /**
-     * Constructor with param input
-     * @param _phrase
-     * @param _phrasePos
-     * @param _phraseLen
-     * @param _stubPos
-     * @param _typeDimension
-     */
-    public Phrase(String[] _phrase, int _phrasePos, int _phraseLen, int _stubPos, int _typeDimension) {
+    /** Constructor with param input */
+    public Phrase(List<String> _phrase, int _phrasePos, int _phraseLen, int _stubPos, int _typeDimension) {
         phrasePosition = _phrasePos;
         phraseLength = _phraseLen;
-        phrase = _phrase;
+        phrase = _phrase.toArray(new String[_phrase.size()]);
         phraseType = NameType.NULL_TYPE;
         score = new double[_typeDimension];
         attachedWordMap = new HashMap<String, String>();

@@ -21,9 +21,10 @@
  */
 package nicta.ner.data;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
-public class Phrase_Date extends Phrase {
+public class Date extends Phrase {
 
     private static final Pattern COLON = Pattern.compile(":");
 
@@ -53,9 +54,8 @@ public class Phrase_Date extends Phrase {
             "Thursday", "Friday", "Saturday"
     };
 
-    public Phrase_Date(final String[] _phrase, final int _phrasePos, final int _phraseLen, final int _stubPos,
-                       final int _typeDimension) {
-        super(_phrase, _phrasePos, _phraseLen, _stubPos, _typeDimension);
+    public Date(final List<String> phrase, final int pos, final int len, final int stubPos, final int typeDimension) {
+        super(phrase, pos, len, stubPos, typeDimension);
         this.phraseType = NameType.DATE_TYPE;
         this.isDate = true;
     }

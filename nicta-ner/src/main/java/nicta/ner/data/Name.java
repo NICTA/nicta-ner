@@ -21,8 +21,10 @@
  */
 package nicta.ner.data;
 
-public class Phrase_Name extends Phrase {
-    public Phrase_Name(String[] _phrase, int _phrasePos, int _phraseLen, int _stubPos, int _typeDimension) {
-        super(_phrase, _phrasePos, _phraseLen, _stubPos, _typeDimension);
+import java.util.List;
+
+public class Name extends Phrase {
+    public Name(final List<String> phrase, final int pos, final int len, final int stubPos, final int typeDimension) {
+        super(phrase, pos, len, stubPos, typeDimension);
     }
 }

@@ -28,6 +28,7 @@ package nicta.ner.data;
  * such as:
  * ORGANIZATION, LOCATION, PERSON, DATE...
  */
+// TODO: turn into enum
 public class NameType {
 
     public final String typeName;

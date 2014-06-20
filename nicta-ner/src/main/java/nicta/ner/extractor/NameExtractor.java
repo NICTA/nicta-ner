@@ -22,10 +22,10 @@
 package nicta.ner.extractor;
 
 import nicta.ner.NERResultSet;
+import nicta.ner.data.Date;
 import nicta.ner.data.DatePhraseModel;
+import nicta.ner.data.Name;
 import nicta.ner.data.Phrase;
-import nicta.ner.data.Phrase_Date;
-import nicta.ner.data.Phrase_Name;
 import nicta.ner.resource.Configuration;
 import nicta.ner.util.Dictionary;
 import nicta.ner.util.IO;
@@ -40,7 +40,11 @@ import java.util.Set;
 
 import static java.lang.Character.isLetterOrDigit;
 import static java.lang.Character.isUpperCase;
-import static nicta.ner.data.Phrase_Date.getDateType;
+import static nicta.ner.data.Date.getDateType;
+import static nicta.ner.util.Dictionary.isPastTense;
+import static nicta.ner.util.Dictionary.isPlural;
+import static nicta.ner.util.Strings.equalsIgnoreCase;
+import static nicta.ner.util.Strings.startsWith;
 
 /** Rule-based expert system. */
 public class NameExtractor {
@@ -116,9 +120,7 @@ public class NameExtractor {
                     }
 
                     if (detectNameWordInSentenceByPosition(token, wordPtr)
-                        || ((token.get(wordPtr).equalsIgnoreCase("of")
-                             || token.get(wordPtr).equalsIgnoreCase("the")
-                             || token.get(wordPtr).equalsIgnoreCase("'s"))
+                        || (equalsIgnoreCase(token.get(wordPtr), "of", "the", "'s")
                             && !currentPhrase.isEmpty()
                             && wordPtr + 1 < token.size()
                             && detectNameWordInSentenceByPosition(token, wordPtr + 1))
@@ -128,9 +130,7 @@ public class NameExtractor {
                         wordPtr++;
                         if (wordPtr == token.size()) break;
                     }
-                    else {
-                        break;
-                    }
+                    else break;
                 }
 
                 //get the attached 'the' or 'a'
@@ -164,45 +164,30 @@ public class NameExtractor {
                         final String word = token.get(tempPtr);
                         final int type = getDateType(word);
                         if (type >= 0
-                            || ((word.equalsIgnoreCase("of")
-                                 || word.equalsIgnoreCase(",")
-                                 || word.equalsIgnoreCase("the"))
-                                && !currentDatePhrase.isEmpty()
-                                && tempPtr + 1 != token.size()
-                                && getDateType(token.get(tempPtr + 1)) >= 0
-                                && getDateType(token.get(tempPtr - 1)) >= 0)) {
+                            || equalsIgnoreCase(word, "of", ",", "the")
+                               && !currentDatePhrase.isEmpty()
+                               && tempPtr + 1 != token.size()
+                               && getDateType(token.get(tempPtr + 1)) >= 0
+                               && getDateType(token.get(tempPtr - 1)) >= 0) {
                             // is date word:
                             currentDatePhrase.add(word);
                             dpm.addType(type);
                             tempPtr++;
                             if (tempPtr == token.size()) break;
                         }
-                        else {
-                            break;
-                        }
+                        else break;
                     }
                     if (dpm.isDate()) {
                         // add the phrase to phrase array
-                        final String[] currentPhraseArray = new String[currentDatePhrase.size()];
-                        for (int i = 0; i < currentDatePhrase.size(); i++)
-                            currentPhraseArray[i] = currentDatePhrase.get(i);
-                        final Phrase newPhrase =
-                                new Phrase_Date(currentPhraseArray, wordPtr, currentPhraseArray.length, wordPtr,
-                                                nameTypeScoreDimension);
-                        sentencePhrase.add(newPhrase);
+                        sentencePhrase.add(new Date(currentDatePhrase, wordPtr, currentDatePhrase.size(), wordPtr,
+                                                    nameTypeScoreDimension));
                         wordPtr = tempPtr;
                     }
                 }
-                else {
-                    if (!(currentPhrase.size() == 1
-                          && (Dictionary.isPastTense(currentPhrase.get(0)) || Dictionary.isPlural(currentPhrase.get(0)))
-                    )) {
-                        final String[] currentPhraseArray = new String[currentPhrase.size()];
-                        for (int i = 0; i < currentPhrase.size(); i++)
-                            currentPhraseArray[i] = currentPhrase.get(i);
-                        sentencePhrase.add(new Phrase_Name(currentPhraseArray, phrasePos, phraseLen, phraseStubStartPtr,
-                                                           nameTypeScoreDimension));
-                    }
+                else if (!(currentPhrase.size() == 1
+                           && (isPastTense(currentPhrase.get(0)) || isPlural(currentPhrase.get(0))))) {
+                    sentencePhrase.add(new Name(currentPhrase, phrasePos, phraseLen, phraseStubStartPtr,
+                                                nameTypeScoreDimension));
                 }
 
                 wordPtr++;
@@ -254,44 +239,29 @@ public class NameExtractor {
 
     /** This method detects a word if it is a potential name word. */
     private static boolean isName(final String _text, final boolean isFirstWord, final boolean nextWordIsName) {
-        if (hasManyCaps(_text)) {
-            return true;
-        }
+        if (hasManyCaps(_text)) return true;
         else if (startsWithCap(_text)) {
             if (isFirstWord) {
                 // if the word is the first word in a sentence and
                 // ends with -ly (adv) -> consider it not a name
-                if (_text.endsWith("ly"))
-                    return false;
+                if (_text.endsWith("ly")) return false;
+
                 // we need to deal with the first word in the sentence very carefully.
                 // as we can not tell if the first word is a name by detecting upper case characters.
                 final String type_original = Dictionary.checkup(_text);
                 final String type_lowercase = Dictionary.checkup(_text.toLowerCase());
                 if (type_original == null) {
-                    if (type_lowercase == null) {
-                        return true;    // if the word cannot be found in the dictionary, we consider it as a name entity.
-                    }
+                    // if the word cannot be found in the dictionary, we consider it as a name entity.
+                    if (type_lowercase == null) return true;
                 }
-                else if ("NNP".equals(type_original))
-                    return true;
-                if (type_lowercase != null
-                    && (type_lowercase.startsWith("IN")
-                        || type_lowercase.startsWith("CC")
-                        || type_lowercase.startsWith("RB")
-                        || type_lowercase.startsWith("WRB")
-                        // || type_lowercase.startsWith("JJ")
-                        || type_lowercase.startsWith("."))) {
-                    return false;
-                }
-                else {
-                    return nextWordIsName;
-                }
+                else if ("NNP".equals(type_original)) return true;
+                //noinspection IfMayBeConditional,SimplifiableIfStatement
+                if (startsWith(type_lowercase, "IN", "CC", "RB", "WRB"/*, "JJ"*/, ".")) return false;
+                else return nextWordIsName;
             }
             else return true;
         }
-        else {
-            return false;
-        }
+        else return false;
     }
 
     /** This method will find all the attached preps of a phrase. */
