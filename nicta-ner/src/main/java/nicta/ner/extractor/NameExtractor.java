@@ -33,6 +33,7 @@ import nicta.ner.util.JTokenizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -259,9 +260,7 @@ public class NameExtractor {
             return true;
         }
         else if (detectFirstCharCapital(_text)) {
-            if (!isFirstWord)
-                return true;
-            else {
+            if (isFirstWord) {
                 // if the word is the first word in a sentence and
                 // ends with -ly (adv) -> consider it not a name
                 if (_text.endsWith("ly"))
@@ -288,11 +287,14 @@ public class NameExtractor {
                         || type_lowercase.startsWith("RB")
                         || type_lowercase.startsWith("WRB")
                         // || type_lowercase.startsWith("JJ")
-                        || type_lowercase.startsWith("."))) return false;
+                        || type_lowercase.startsWith("."))) {
+                    return false;
+                }
                 else {
                     return nextWordIsName;
                 }
             }
+            else return true;
         }
         else {
             return false;
@@ -302,9 +304,9 @@ public class NameExtractor {
     /** This method will find all the attached preps of a phrase. */
     protected static void getAttachedPrep(final List<String> sentenceToken, final List<Phrase> sentencePhrase,
                                           final int index) {
-        String prep = null;
+        final String prep;
         boolean nameSequenceMeetEnd = true;
-        final Set<Phrase> phraseSequence = new HashSet<>();
+        final Collection<Phrase> phraseSequence = new HashSet<>();
 
         int phrasePtr = index;
         Phrase currentNamePhrase = sentencePhrase.get(phrasePtr);
