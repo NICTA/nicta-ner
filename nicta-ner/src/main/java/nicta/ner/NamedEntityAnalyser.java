@@ -77,7 +77,7 @@ public class NamedEntityAnalyser {
             try (final Scanner in = new Scanner(System.in)) {
                 while (true) {
                     System.out.println("Type in texts, -q for quit.");
-                    System.out.println("> ");
+                    System.out.print("> ");
                     final String processString = in.nextLine();
                     if ("-q".equalsIgnoreCase(processString)) break;
                     System.out.println(nea.process(processString).getMappedResult());
