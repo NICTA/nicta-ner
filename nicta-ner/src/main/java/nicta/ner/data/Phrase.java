@@ -114,9 +114,7 @@ public class Phrase {
                 argmaxIndex = scoreIndex;
                 ambious = false;
             }
-            // TODO: doing proper Double.compare breaks things, why?
-            //else if (Double.compare(this.score[scoreIndex], argmaxValue) != 0) {
-            else if (this.score[scoreIndex] == argmaxValue) {
+            else if (Double.compare(this.score[scoreIndex], argmaxValue) == 0) {
                 ambious = true;
             }
         }
