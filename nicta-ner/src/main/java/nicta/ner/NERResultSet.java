@@ -48,7 +48,7 @@ public class NERResultSet {
         _result = new HashMap<String, String>();
         for (List<Phrase> pa : phrases) {
             for (Phrase p : pa) {
-                String ps = p.toString();
+                String ps = p.phraseString();
                 _result.put(ps, p.phraseType.toString());
             }
         }

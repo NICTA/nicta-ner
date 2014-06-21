@@ -141,6 +141,12 @@ public class NamedEntityAnalyserTest {
                      put("17:00", new Result("DATE", 0.0, 0.0, 0.0));
                  }}}
 
+                // TODO: add these tests
+                // BC = British Columbia - this conflicts with 'years BC'...
+                // TX = Texas
+                // should AM/PM conflict?
+                // other locations
+
                 /*
                 {"",
                 new LinkedHashMap<String, Result>() {{
@@ -184,10 +190,10 @@ public class NamedEntityAnalyserTest {
 
         // now match the scores
         for (final Phrase p : result.phrases.get(0)) { // when might this be non-0?
-            final Result r = resultMap.get(p.toString());// not good to depend on toString()...
+            final Result r = resultMap.get(p.phraseString());
             assertEquals(p.score, r.scores,
-                         "Phrase '" + p + "', expected '" + Arrays.toString(p.score) + "' but found '" + Arrays
-                                 .toString(r.scores) + "'");
+                         "Phrase '" + p.phraseString() + "', expected '" + Arrays.toString(p.score) + "' but found '"
+                         + Arrays.toString(r.scores) + "'");
         }
     }
 

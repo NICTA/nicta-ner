@@ -21,78 +21,71 @@
  */
 package nicta.ner.data;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Instance of this class indicates a Phrase.
  * A phrase can have one or more than one word.
- * @author William Han
  */
 public class Phrase {
+    // TODO: getters and setters for these, or investigate making the entire class immutable?
     /** phrase string array */
-    public String[] phrase = null;
+    public final String[] phrase;
     /** corresponding name type */
     public NameType phraseType;
     /** the start position of the phase in a sentence */
-    public int phrasePosition;
+    public final int phrasePosition;
     /** the length of the phrase */
-    public int phraseLength;
+    public final int phraseLength;
     /** the start position of the phrase stub in a sentence */
-    public int phraseStubPosition;
+    public final int phraseStubPosition;
     /** the length of the phrase stub */
-    public int phraseStubLength;
+    public final int phraseStubLength;
     /** score array, dimension equals to name type array */
     public double[] score;
     /** attached word map */
-    public HashMap<String, String> attachedWordMap = null;
+    public Map<String, String> attachedWordMap;
     /** true if the phrase is a date; false if not */
-    public boolean isDate = false;
+    public boolean isDate;
 
-    /**
-     * Constructor
-     */
+    /** Constructor */
     public Phrase() {
         phrasePosition = 0;
         phraseLength = 0;
-        phrase = null;
+        phrase = new String[0];
         phraseType = NameType.NULL_TYPE;
         phraseStubPosition = 0;
         phraseStubLength = 0;
+        attachedWordMap = Collections.emptyMap();
     }
 
     /** Constructor with param input */
-    public Phrase(List<String> _phrase, int _phrasePos, int _phraseLen, int _stubPos, int _typeDimension) {
+    public Phrase(final List<String> _phrase, final int _phrasePos, final int _phraseLen, final int _stubPos,
+                  final int _typeDimension) {
         phrasePosition = _phrasePos;
         phraseLength = _phraseLen;
         phrase = _phrase.toArray(new String[_phrase.size()]);
         phraseType = NameType.NULL_TYPE;
         score = new double[_typeDimension];
-        attachedWordMap = new HashMap<String, String>();
+        attachedWordMap = new HashMap<>();
         phraseStubPosition = _stubPos;
         phraseStubLength = phrase.length;
     }
 
-    /**
-     * returns a standard string
-     */
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < phrase.length; i++) {
-            sb.append(phrase[i]).append(" ");
-        }
+    public String phraseString() {
+        final StringBuilder sb = new StringBuilder();
+        for (final String aPhrase : phrase) sb.append(aPhrase).append(" ");
         return sb.toString().trim();
     }
 
-    /**
-     * Test if the phrase is a sub phrase of the input phrase.
-     * @param _p
-     * @return
-     */
-    public boolean isSubPhraseOf(Phrase _p) {
-        int len_this = phrase.length;
+    /** Test if the phrase is a sub phrase of the input phrase. */
+    public boolean isSubPhraseOf(final Phrase _p) {
+        final int len_this = phrase.length;
         if (len_this == 0) return false;
-        int len_targ = _p.phrase.length;
+        final int len_targ = _p.phrase.length;
         boolean is = false;
         for (int i = 0; i < len_targ - len_this + 1; i++) {
             boolean flag = true;
@@ -110,11 +103,8 @@ public class Phrase {
         return is;
     }
 
-    /**
-     * This method will do the classification.
-     * @param _nta
-     */
-    public void classify(List<NameType> _nta) {
+    /** This method will do the classification. */
+    public void classify(final List<NameType> _nta) {
         int argmaxIndex = 0;
         double argmaxValue = this.score[argmaxIndex];
         boolean ambious = false;
@@ -124,14 +114,13 @@ public class Phrase {
                 argmaxIndex = scoreIndex;
                 ambious = false;
             }
+            // TODO: doing proper Double.compare breaks things, why?
+            //else if (Double.compare(this.score[scoreIndex], argmaxValue) != 0) {
             else if (this.score[scoreIndex] == argmaxValue) {
                 ambious = true;
             }
         }
-        if (!ambious)
-            this.phraseType = _nta.get(argmaxIndex);
-        else
-            this.phraseType = NameType.NULL_TYPE;
+        this.phraseType = ambious ? NameType.NULL_TYPE : _nta.get(argmaxIndex);
     }
 }
 
