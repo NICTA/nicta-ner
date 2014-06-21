@@ -25,59 +25,51 @@ import nicta.ner.data.Phrase;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static nicta.ner.util.Strings.NL;
 
 /**
  * This class encapsulated the two result set used in the NameExtractor class
  * into one single class.
  * <p/>
  * The map result can be got from this class as well.
- * @author William Han
  */
 public class NERResultSet {
-    public List<List<String>> tokens;
-    public List<List<Phrase>> phrases;
 
-    private HashMap<String, String> _result = null;
+    private final List<List<String>> tokens;
+    public final List<List<Phrase>> phrases;
 
-    /**
-     * This method returns a map format set of the result.
-     * @return
-     */
-    public HashMap<String, String> getMappedResult() {
-        if (_result != null) return _result;
-        _result = new HashMap<String, String>();
-        for (List<Phrase> pa : phrases) {
-            for (Phrase p : pa) {
-                String ps = p.phraseString();
-                _result.put(ps, p.phraseType.toString());
+    public NERResultSet(final List<List<Phrase>> phrases, final List<List<String>> tokens) {
+        // TODO: need these to be deep immutable lists
+        this.phrases = phrases;
+        this.tokens = tokens;
+    }
+
+    /** This method returns a map format set of the result. */
+    public Map<String, String> getMappedResult() {
+        final Map<String, String> r = new HashMap<>();
+        for (final List<Phrase> pa : phrases) {
+            for (final Phrase p : pa) {
+                final String ps = p.phraseString();
+                r.put(ps, p.phraseType.toString());
             }
         }
-        return _result;
+        return r;
     }
 
     public String toString() {
-        return NERResultSet.resultToString(this);
-    }
+        final StringBuilder sb = new StringBuilder();
 
-    /**
-     * Convert the result set into a standard String output.
-     * @param _ner
-     * @return
-     */
-    public static String resultToString(NERResultSet _ner) {
-        StringBuilder sb = new StringBuilder();
-
-        for (int si = 0; si < _ner.tokens.size(); si++) {
-            List<String> sentence = _ner.tokens.get(si);
-            List<Phrase> phrases = _ner.phrases.get(si);
-            for (int wi = 0; wi < sentence.size(); wi++)
-                sb.append(sentence.get(wi) + " ");
-            sb.append("\n===============================================\n");
-            for (int pi = 0; pi < phrases.size(); pi++) {
-                Phrase np = phrases.get(pi);
+        for (int si = 0; si < tokens.size(); si++) {
+            final List<String> sentence = tokens.get(si);
+            final List<Phrase> ps = this.phrases.get(si);
+            for (final String aSentence : sentence) sb.append(aSentence).append(" ");
+            sb.append(NL).append("===============================================").append(NL);
+            for (final Phrase np : ps) {
                 String ptext = "";
-                for (int wi = 0; wi < phrases.get(pi).phrase.length; wi++) {
-                    ptext += (phrases.get(pi).phrase[wi] + " ");
+                for (int wi = 0; wi < np.phrase.length; wi++) {
+                    ptext += (np.phrase[wi] + " ");
                 }
                 ptext = ptext.trim();
 
@@ -87,16 +79,12 @@ public class NERResultSet {
                     if (sci != 0) stext += ", ";
                     stext += np.score[sci];
                 }
-                sb.append(np.phrasePosition + ": " + ptext + "\t" + np.phraseType.toString() + "\t"
-                          + stext + "\t"
-                          + np.attachedWordMap.get("prep") + "\t"
-                          + np.phrasePosition + ":" + np.phraseStubPosition + ":" + np.phraseStubLength + ":"
-                          + np.phraseLength
-                          + "\n");
-                //*/
-                //sb.append(ptext + "=" + np.phraseType + "\n");
+                sb.append(np.phrasePosition).append(": ").append(ptext).append("\t").append(np.phraseType.toString())
+                  .append("\t").append(stext).append("\t").append(np.attachedWordMap.get("prep")).append("\t")
+                  .append(np.phrasePosition).append(":").append(np.phraseStubPosition).append(":")
+                  .append(np.phraseStubLength).append(":").append(np.phraseLength).append(NL);
             }
-            sb.append("\n\n");
+            sb.append(NL).append(NL);
         }
         return sb.toString();
     }

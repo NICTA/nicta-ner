@@ -23,6 +23,8 @@ package nicta.ner.util;
 
 public final class Strings {
 
+    public static final String NL = System.lineSeparator();
+
     private Strings() {}
 
     public static boolean equalsIgnoreCase(final String word, final String... words) {

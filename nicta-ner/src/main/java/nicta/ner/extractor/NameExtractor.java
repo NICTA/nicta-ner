@@ -68,12 +68,7 @@ public class NameExtractor {
     }
 
     /** Call this method to return the result <b>after</b> the process(String _text) method had been called. */
-    public NERResultSet getResult() {
-        final NERResultSet ner = new NERResultSet();
-        ner.phrases = phrases;
-        ner.tokens = tokens;
-        return ner;
-    }
+    public NERResultSet getResult() { return new NERResultSet(phrases, tokens); }
 
     /**
      * This method will parse the text input into tokens and name phrases.
