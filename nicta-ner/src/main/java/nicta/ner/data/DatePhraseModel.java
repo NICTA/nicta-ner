@@ -22,31 +22,20 @@
 package nicta.ner.data;
 
 import java.util.HashSet;
+import java.util.Set;
 
-/**
- * Date Phrase Model
- * @author William Han
- */
+// TODO: looks like this should be turned into an EnumSet, and the types should be enums
 public class DatePhraseModel {
 
-    HashSet<Integer> contents = null;
+    private final Set<Integer> contents = new HashSet<>();
 
-    public DatePhraseModel() {
-        contents = new HashSet<Integer>();
-    }
-
-    public void addType(int _type) {
-        contents.add(_type);
-    }
+    public void addType(final int _type) { contents.add(_type); }
 
     public boolean isDate() {
-        if (
-                contents.contains(1) ||
-                contents.contains(2) ||
-                contents.contains(3) ||
-                contents.contains(7) ||
-                contents.contains(8)
-                ) return true;
-        return false;
+        return contents.contains(1) ||
+               contents.contains(2) ||
+               contents.contains(3) ||
+               contents.contains(7) ||
+               contents.contains(8);
     }
 }
