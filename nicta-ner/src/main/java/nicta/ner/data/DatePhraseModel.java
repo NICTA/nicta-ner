@@ -21,21 +21,32 @@
  */
 package nicta.ner.data;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.EnumSet;
 
-// TODO: looks like this should be turned into an EnumSet, and the types should be enums
+import static nicta.ner.data.Date.DateType.DATE;
+import static nicta.ner.data.Date.DateType.DATE_MM;
+import static nicta.ner.data.Date.DateType.DATE_WEEKDAY;
+import static nicta.ner.data.Date.DateType.DATE_YY;
+import static nicta.ner.data.Date.DateType.TIME;
+
 public class DatePhraseModel {
 
-    private final Set<Integer> contents = new HashSet<>();
+    // no idea why these were considered special in the original source
+    private static final Collection<Date.DateType> SPECIAL = EnumSet.of(DATE_MM,
+                                                                        DATE_YY,
+                                                                        TIME,
+                                                                        DATE,
+                                                                        DATE_WEEKDAY);
 
-    public void addType(final int _type) { contents.add(_type); }
+    private final Collection<Date.DateType> contents = EnumSet.noneOf(Date.DateType.class);
+
+    public void addType(final Date.DateType _type) { contents.add(_type); }
 
     public boolean isDate() {
-        return contents.contains(1) ||
-               contents.contains(2) ||
-               contents.contains(3) ||
-               contents.contains(7) ||
-               contents.contains(8);
+        for (final Date.DateType t : contents) {
+            if (SPECIAL.contains(t)) return true;
+        }
+        return false;
     }
 }

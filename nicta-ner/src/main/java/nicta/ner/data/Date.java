@@ -24,22 +24,30 @@ package nicta.ner.data;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static nicta.ner.data.Date.DateType.DATE;
+import static nicta.ner.data.Date.DateType.DATE_DD;
+import static nicta.ner.data.Date.DateType.DATE_MM;
+import static nicta.ner.data.Date.DateType.DATE_WEEKDAY;
+import static nicta.ner.data.Date.DateType.DATE_YY;
+import static nicta.ner.data.Date.DateType.NONE;
+import static nicta.ner.data.Date.DateType.TIME;
+import static nicta.ner.data.Date.DateType.TIME_AM_PM;
 import static nicta.ner.util.Strings.equalsIgnoreCase;
 
 public class Date extends Phrase {
 
     private static final Pattern COLON = Pattern.compile(":");
 
-    // TODO: turn into enum
-    private static final int DATE_DD = 0;
-    private static final int DATE_MM = 1;
-    private static final int DATE_YY = 2;
-    //private static final int DATE_YEAR_AD_BC = 5;
-    private static final int DATE_WEEKDAY = 8;
-    private static final int DATE = 7; // satisfies Kishor's DateMatcher
-
-    private static final int TIME = 3;
-    private static final int TIME_AM_PM = 4;
+    public enum DateType {
+        NONE,
+        DATE_DD,
+        DATE_MM,
+        DATE_YY,
+        TIME,
+        TIME_AM_PM,
+        DATE,
+        DATE_WEEKDAY,
+    }
 
     private static final int MAX_MONTH_DAYS = 31;
     private static final int MIN_YEAR = 1900;
@@ -63,7 +71,7 @@ public class Date extends Phrase {
         this.isDate = true;
     }
 
-    public static int getDateType(final String _word) {
+    public static DateType getDateType(final String _word) {
         final String clean_word = _word.replace(".", "");
         // TIME_AM_PM
         if (equalsIgnoreCase(clean_word, "am", "pm")) return TIME_AM_PM;
@@ -117,6 +125,6 @@ public class Date extends Phrase {
         // Kishor's DateMatcher
         if (DateMatcher.isDate(_word)) return DATE;
 
-        return -1;
+        return NONE;
     }
 }

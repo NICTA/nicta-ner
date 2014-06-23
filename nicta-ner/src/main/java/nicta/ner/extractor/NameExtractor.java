@@ -40,6 +40,8 @@ import java.util.Set;
 
 import static java.lang.Character.isLetterOrDigit;
 import static java.lang.Character.isUpperCase;
+import static nicta.ner.data.Date.DateType;
+import static nicta.ner.data.Date.DateType.NONE;
 import static nicta.ner.data.Date.getDateType;
 import static nicta.ner.util.Dictionary.isPastTense;
 import static nicta.ner.util.Dictionary.isPlural;
@@ -158,13 +160,13 @@ public class NameExtractor {
                     int tempPtr = wordPtr;
                     while (true) {
                         final String word = token.get(tempPtr);
-                        final int type = getDateType(word);
-                        if (type >= 0
+                        final DateType type = getDateType(word);
+                        if (type != NONE
                             || equalsIgnoreCase(word, "of", ",", "the")
                                && !currentDatePhrase.isEmpty()
                                && tempPtr + 1 != token.size()
-                               && getDateType(token.get(tempPtr + 1)) >= 0
-                               && getDateType(token.get(tempPtr - 1)) >= 0) {
+                               && getDateType(token.get(tempPtr + 1)) != NONE
+                               && getDateType(token.get(tempPtr - 1)) != NONE) {
                             // is date word:
                             currentDatePhrase.add(word);
                             dpm.addType(type);
