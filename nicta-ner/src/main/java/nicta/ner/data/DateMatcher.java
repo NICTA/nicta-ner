@@ -43,8 +43,6 @@ public final class DateMatcher {
 
         final String mm = "(([1-9]|0[1-9]|1[0-2])|" + mm1 + ")";
 
-        final String mms = "((^[1-9]|0[1-9]|1[0-2])|" + mm1 + ")";
-
         final String yyyy = "\\d{4}";
 
         final String sep = "(/|\\s|-|.)";
@@ -53,14 +51,17 @@ public final class DateMatcher {
                 // dd/mm/yyyy  or dd mm yyyy  or dd-mm-yyyy or dd January yyyy or dd Jan 2009
                 Pattern.compile(".*" + dd + sep + mm + sep + yyyy + ".*"),
 
+                // mm/dd/yyyy  or mm dd yyyy  or mm-dd-yyyy or January dd yyyy or Jan dd 2009
+                Pattern.compile(".*" + mm + sep + dd + sep + yyyy + ".*"),
+
                 // yyyy/mm/dd or 2009 January 1 or 2009 Jan 1
                 Pattern.compile(".*" + yyyy + sep + mm + sep + dd + ".*"),
 
-                // mm dd yyyy
-                Pattern.compile(".*" + mms + sep + dd + sep + yyyy + ".*"),
-
                 //January 2, 2008 or January 2 2008
-                Pattern.compile(".*" + mm1 + "(\\s)" + dd + "(,\\s|\\s)" + yyyy + ".*")
+                Pattern.compile(".*" + mm1 + sep + dd + "(?:,)" + "\\s" + yyyy + ".*"),
+
+                //2 January, 2008 or 2 January 2008
+                Pattern.compile(".*" + dd + sep + mm1 + "(?:,)" + "\\s" + yyyy + ".*")
         );
     }
 
