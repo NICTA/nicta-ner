@@ -25,42 +25,37 @@ import java.io.IOException;
 import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static java.lang.Character.isDigit;
-import static java.lang.Character.isLetter;
 import static java.lang.Character.isLetterOrDigit;
 import static java.lang.Character.isUpperCase;
+import static java.util.Collections.unmodifiableCollection;
 import static nicta.ner.util.Strings.endsWith;
 import static nicta.ner.util.Strings.equalss;
+import static nicta.ner.util.Tokenizer.Mode.WITHOUT_PUNCTUATE;
+import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATE;
 
 /** This class utilizes a Java standard class to token the input sentence. */
-public class JTokenizer {
+public class Tokenizer {
 
-    private static final int _MODE_WITH_PUNCTUATE = 0;
-    private static final int _MODE_WITHOUT_PUNCTUATE = 1;
-    private final Collection<String> ABBREVIATION_EXCEPTION;
-
-    private int mode;
-
-    public enum TOKENIZER_MODE {
+    public enum Mode {
         WITH_PUNCTUATE,
         WITHOUT_PUNCTUATE
     }
 
+    private static final Collection<String> ABBREVIATION_EXCEPTION;
+
+    private final Mode mode;
+
     static {
+        try { ABBREVIATION_EXCEPTION = unmodifiableCollection(IO.lines(Tokenizer.class, "TokenizerAbbreviation")); }
+        catch (final IOException e) { throw new RuntimeException("Could not load the TokenizerAbbreviation file.", e); }
     }
 
-    public JTokenizer(final TOKENIZER_MODE _m) throws IOException {
-        ABBREVIATION_EXCEPTION = Collections.unmodifiableCollection(IO.lines(JTokenizer.class, "TokenizerAbbreviation"));
-        if (_m == TOKENIZER_MODE.WITH_PUNCTUATE) mode = _MODE_WITH_PUNCTUATE;
-        else if (_m == TOKENIZER_MODE.WITHOUT_PUNCTUATE) mode = _MODE_WITHOUT_PUNCTUATE;
-    }
+    public Tokenizer(final Mode mode) { this.mode = mode; }
 
     public List<List<String>> process(final String text) {
-
         final List<List<String>> paragraph = new ArrayList<>();
 
         final Locale currentLocale = new Locale("en", "US");
@@ -75,10 +70,8 @@ public class JTokenizer {
         while (ePtr != BreakIterator.DONE) {
             final String word = text.substring(sPtr, ePtr);
             if (!"".equals(word.trim())
-                && ((mode == _MODE_WITH_PUNCTUATE)
-                    || (mode == _MODE_WITHOUT_PUNCTUATE
-                        && (isLetter(word.charAt(0))
-                            || isDigit(word.charAt(0)))))) {
+                && ((mode == WITH_PUNCTUATE)
+                    || (mode == WITHOUT_PUNCTUATE && isLetterOrDigit(word.charAt(0))))) {
                 boolean canBreakSentence = true;
                 if (word.contains("'")) {
                     if (word.endsWith("n't")) {

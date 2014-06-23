@@ -29,7 +29,7 @@ import nicta.ner.data.Phrase;
 import nicta.ner.resource.Configuration;
 import nicta.ner.util.Dictionary;
 import nicta.ner.util.IO;
-import nicta.ner.util.JTokenizer;
+import nicta.ner.util.Tokenizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,21 +43,19 @@ import static java.lang.Character.isUpperCase;
 import static nicta.ner.data.Date.getDateType;
 import static nicta.ner.util.Dictionary.isPastTense;
 import static nicta.ner.util.Dictionary.isPlural;
+import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATE;
 import static nicta.ner.util.Strings.equalsIgnoreCase;
 import static nicta.ner.util.Strings.startsWith;
 
 /** Rule-based expert system. */
 public class NameExtractor {
 
-    private static final JTokenizer TOKENIZER;
+    private static final Tokenizer TOKENIZER = new Tokenizer(WITH_PUNCTUATE);
     private static final Set<String> NON_NAME_WORDS;
 
     static {
-        try {
-            TOKENIZER = new JTokenizer(JTokenizer.TOKENIZER_MODE.WITH_PUNCTUATE);
-            NON_NAME_WORDS = IO.lowerCasedWordSet(NameExtractor.class, "NON_NAME_WORDS");
-        }
-        catch (final IOException ioe) { throw new RuntimeException(ioe); }
+        try { NON_NAME_WORDS = IO.lowerCasedWordSet(NameExtractor.class, "NON_NAME_WORDS"); }
+        catch (final IOException ioe) { throw new RuntimeException("Could not load the NON_NAME_WORDS file.", ioe); }
     }
 
     private List<List<Phrase>> phrases;
