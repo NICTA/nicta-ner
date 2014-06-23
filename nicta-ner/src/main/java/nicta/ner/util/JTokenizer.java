@@ -21,69 +21,50 @@
  */
 package nicta.ner.util;
 
-import java.util.*;
-import java.text.*;
-import java.io.*;
+import java.io.IOException;
+import java.text.BreakIterator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
-/**
- * This class utilizes a Java standard class to token the input sentence.
- * @author William Han
- */
+import static java.lang.Character.isDigit;
+import static java.lang.Character.isLetter;
+import static java.lang.Character.isLetterOrDigit;
+import static java.lang.Character.isUpperCase;
+import static nicta.ner.util.Strings.endsWith;
+import static nicta.ner.util.Strings.equalss;
+
+/** This class utilizes a Java standard class to token the input sentence. */
 public class JTokenizer {
 
-    private static InputStream ABBREVIATION_EXCEPTION = null;
+    private static final int _MODE_WITH_PUNCTUATE = 0;
+    private static final int _MODE_WITHOUT_PUNCTUATE = 1;
+    private final Collection<String> ABBREVIATION_EXCEPTION;
 
-    private static int _MODE_WITH_PUNCTUATE = 0;
-    private static int _MODE_WITHOUT_PUNCTUATE = 1;
-
-    private int mode = _MODE_WITH_PUNCTUATE;
-
-    private HashSet<String> _abbreException = null;
+    private int mode;
 
     public enum TOKENIZER_MODE {
         WITH_PUNCTUATE,
         WITHOUT_PUNCTUATE
     }
 
-    public JTokenizer(TOKENIZER_MODE _m) {
-        if (_abbreException == null) {
-            ABBREVIATION_EXCEPTION = this.getClass().getResourceAsStream("TokenizerAbbreviation");
-            try {
-                _abbreException = loadAbbreException(ABBREVIATION_EXCEPTION);
-            }
-            catch (IOException e) {
-                System.out.println("ERROR: Abbrevation Exception file cannot be found.");
-                e.printStackTrace();
-            }
-        }
-        if (_m == TOKENIZER_MODE.WITH_PUNCTUATE)
-            mode = _MODE_WITH_PUNCTUATE;
-        else if (_m == TOKENIZER_MODE.WITHOUT_PUNCTUATE)
-            mode = _MODE_WITHOUT_PUNCTUATE;
+    static {
     }
 
-    private HashSet<String> loadAbbreException(InputStream _filename) throws IOException {
-        HashSet<String> returnValue = new HashSet<String>();
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(_filename));
-
-        String line = null;
-        while ((line = br.readLine()) != null) {
-            if (line.startsWith("#")) continue;
-            returnValue.add(line.trim());
-        }
-
-        br.close();
-
-        return returnValue;
+    public JTokenizer(final TOKENIZER_MODE _m) throws IOException {
+        ABBREVIATION_EXCEPTION = Collections.unmodifiableCollection(IO.lines(JTokenizer.class, "TokenizerAbbreviation"));
+        if (_m == TOKENIZER_MODE.WITH_PUNCTUATE) mode = _MODE_WITH_PUNCTUATE;
+        else if (_m == TOKENIZER_MODE.WITHOUT_PUNCTUATE) mode = _MODE_WITHOUT_PUNCTUATE;
     }
 
-    public List<List<String>> process(String text) {
+    public List<List<String>> process(final String text) {
 
-        List<List<String>> paragraph = new ArrayList<>();
+        final List<List<String>> paragraph = new ArrayList<>();
 
-        Locale currentLocale = new Locale("en", "US");
-        BreakIterator wordIterator = BreakIterator.getWordInstance(currentLocale);
+        final Locale currentLocale = new Locale("en", "US");
+        final BreakIterator wordIterator = BreakIterator.getWordInstance(currentLocale);
         wordIterator.setText(text);
 
         int sPtr = wordIterator.first();
@@ -92,72 +73,52 @@ public class JTokenizer {
         List<String> currentSentence = new ArrayList<>();
 
         while (ePtr != BreakIterator.DONE) {
-            String word = text.substring(sPtr, ePtr);
-            if (
-                    !word.trim().equals("")
-                    && ((mode == _MODE_WITH_PUNCTUATE) || (mode == _MODE_WITHOUT_PUNCTUATE && (
-                            Character.isLetter(word.charAt(0)) || Character.isDigit(word.charAt(0)))))
-                    ) {
-                //System.out.println(word);
+            final String word = text.substring(sPtr, ePtr);
+            if (!"".equals(word.trim())
+                && ((mode == _MODE_WITH_PUNCTUATE)
+                    || (mode == _MODE_WITHOUT_PUNCTUATE
+                        && (isLetter(word.charAt(0))
+                            || isDigit(word.charAt(0)))))) {
                 boolean canBreakSentence = true;
-                if (word.indexOf("'") != -1) {
+                if (word.contains("'")) {
                     if (word.endsWith("n't")) {
-                        String w1 = word.substring(0, word.length() - 3);
-                        if (!w1.equals(""))
-                            currentSentence.add(w1);
+                        final String w1 = word.substring(0, word.length() - 3);
+                        if (!w1.isEmpty()) currentSentence.add(w1);
                         currentSentence.add("n't");
                     }
-                    else if (word.endsWith("'s") || word.endsWith("'ll") ||
-                             word.endsWith("'re") || word.endsWith("'m") ||
-                             word.endsWith("'ve") || word.endsWith("'d")) {
-                        int p = word.indexOf("'");
-                        String w1 = word.substring(0, p);
-                        String w2 = word.substring(p);
-                        if (!w1.equals(""))
-                            currentSentence.add(w1);
-                        if (!w2.equals(""))
-                            currentSentence.add(w2);
+                    else if (endsWith(word, "'s", "'ll", "'re", "'m", "'ve", "'d")) {
+                        final int p = word.indexOf("'");
+                        final String w1 = word.substring(0, p);
+                        final String w2 = word.substring(p);
+                        if (!w1.isEmpty()) currentSentence.add(w1);
+                        if (!w2.isEmpty()) currentSentence.add(w2);
                     }
-                    else {
-                        currentSentence.add(word);
-                    }
-                    /*
-                    else{
-                        int p = word.indexOf("'");
-                        String w1 = word.substring(0, p);
-                        String w2 = word.substring(p);
-                        if (!w1.equals(""))
-                            currentSentence.add(w1);
-                        if (!w2.equals(""))
-                            currentSentence.add(w2);
-                    }
-                    */
+                    else currentSentence.add(word);
                 }
-                else if (word.trim().equals(".")) {
-                    int formerIndex = currentSentence.size() - 1;
-                    if (formerIndex == -1) {
-                        currentSentence.add(word);
-                    }
+                else if (".".equals(word.trim())) {
+                    final int formerIndex = currentSentence.size() - 1;
+                    if (formerIndex == -1) currentSentence.add(word);
                     else {
-                        String formerWord = currentSentence.get(formerIndex);
-                        if (_abbreException.contains(formerWord) || (formerWord.length() == 1 && Character
-                                .isUpperCase(formerWord.charAt(0)))
-                            || formerWord.indexOf(".") >= 0) {
+                        final String formerWord = currentSentence.get(formerIndex);
+                        if (ABBREVIATION_EXCEPTION.contains(formerWord)
+                            || (formerWord.length() == 1
+                                && isUpperCase(formerWord.charAt(0)))
+                            || formerWord.contains(".")) {
                             currentSentence.remove(formerIndex);
                             currentSentence.add(formerWord + ".");
                             // do not break the sentence
                             canBreakSentence = false;
                         }
-                        else {
-                            currentSentence.add(word);
-                        }
+                        else currentSentence.add(word);
                     }
                 }
-                else if (word.trim().equals(":")) {
+                else if (":".equals(word.trim())) {
                     try {
-                        if (text.charAt(ePtr) != ' ' && text.charAt(sPtr - 1) != ' ' && currentSentence.size() > 0) {
-                            int formerIndex = currentSentence.size() - 1;
-                            String formerWord = currentSentence.get(formerIndex);
+                        if (text.charAt(ePtr) != ' '
+                            && text.charAt(sPtr - 1) != ' '
+                            && !currentSentence.isEmpty()) {
+                            final int formerIndex = currentSentence.size() - 1;
+                            final String formerWord = currentSentence.get(formerIndex);
                             sPtr = ePtr;
                             ePtr = wordIterator.next();
                             if (ePtr == BreakIterator.DONE) {
@@ -165,11 +126,12 @@ public class JTokenizer {
                                 continue;
                             }
                             else {
-                                String nextWord = text.substring(sPtr, ePtr);
-                                if (Character.isLetterOrDigit(nextWord.charAt(0)) &&
-                                    Character.isLetterOrDigit(formerWord.charAt(0))) {
+                                final String nextWord = text.substring(sPtr, ePtr);
+                                if (isLetterOrDigit(nextWord.charAt(0))
+                                    && isLetterOrDigit(formerWord.charAt(0))) {
                                     // merge
                                     currentSentence.remove(formerIndex);
+                                    //noinspection StringConcatenationMissingWhitespace
                                     currentSentence.add(formerWord + word + nextWord);
                                 }
                                 else {
@@ -178,23 +140,17 @@ public class JTokenizer {
                                 }
                             }
                         }
-                        else {
-                            currentSentence.add(word);
-                        }
+                        else currentSentence.add(word);
                     }
-                    catch (StringIndexOutOfBoundsException e1) {
+                    catch (final StringIndexOutOfBoundsException ignored) {
                         currentSentence.add(word);
                     }
                 }
-                else {
-                    currentSentence.add(word);
-                }
+                else currentSentence.add(word);
                 // handling the end of a sentence
-                if ((word.trim().equals(".") || word.trim().equals(";")
-                     || word.trim().equals("?") || word.trim().equals("!"))
-                    && canBreakSentence) {
+                if (equalss(word.trim(), ".", ";", "?", "!") && canBreakSentence) {
                     paragraph.add(currentSentence);
-                    currentSentence = new ArrayList<String>();
+                    currentSentence = new ArrayList<>();
                 }
             }
             sPtr = ePtr;

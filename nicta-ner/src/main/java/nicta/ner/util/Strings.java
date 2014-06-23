@@ -27,23 +27,35 @@ public final class Strings {
 
     private Strings() {}
 
+    public static boolean equalss(final String word, final String... words) {
+        if (word == null || words == null) return false;
+        for (final String s : words) {
+            if (word.equals(s)) return true;
+        }
+        return false;
+    }
+
     public static boolean equalsIgnoreCase(final String word, final String... words) {
         if (word == null || words == null) return false;
-
         for (final String s : words) {
             if (word.equalsIgnoreCase(s)) return true;
         }
-
         return false;
     }
 
     public static boolean startsWith(final String word, final String... prefixes) {
         if (word == null || prefixes == null) return false;
-
         for (final String s : prefixes) {
             if (word.startsWith(s)) return true;
         }
+        return false;
+    }
 
+    public static boolean endsWith(final String word, final String... suffixes) {
+        if (word == null || suffixes == null) return false;
+        for (final String s : suffixes) {
+            if (word.endsWith(s)) return true;
+        }
         return false;
     }
 }

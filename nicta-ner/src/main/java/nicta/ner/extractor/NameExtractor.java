@@ -49,11 +49,14 @@ import static nicta.ner.util.Strings.startsWith;
 /** Rule-based expert system. */
 public class NameExtractor {
 
-    private static final JTokenizer TOKENIZER = new JTokenizer(JTokenizer.TOKENIZER_MODE.WITH_PUNCTUATE);
+    private static final JTokenizer TOKENIZER;
     private static final Set<String> NON_NAME_WORDS;
 
     static {
-        try { NON_NAME_WORDS = IO.lowerCasedWordSet(NameExtractor.class, "NON_NAME_WORDS"); }
+        try {
+            TOKENIZER = new JTokenizer(JTokenizer.TOKENIZER_MODE.WITH_PUNCTUATE);
+            NON_NAME_WORDS = IO.lowerCasedWordSet(NameExtractor.class, "NON_NAME_WORDS");
+        }
         catch (final IOException ioe) { throw new RuntimeException(ioe); }
     }
 

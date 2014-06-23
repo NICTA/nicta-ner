@@ -43,8 +43,8 @@ public final class IO {
 
     private IO() {}
 
-    /** Return a Set containing phrases (multi-words). */
-    public static Set<String> createPhraseSet(final Class<?> origin, final String resource) throws IOException {
+    /** Return a Set containing trimmed lines read from a file, skipping comments. */
+    public static Set<String> lines(final Class<?> origin, final String resource) throws IOException {
         return new HashSet<String>() {{
             readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
