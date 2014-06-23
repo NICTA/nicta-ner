@@ -24,10 +24,13 @@ package nicta.ner.data;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static nicta.ner.util.Strings.equalsIgnoreCase;
+
 public class Date extends Phrase {
 
     private static final Pattern COLON = Pattern.compile(":");
 
+    // TODO: turn into enum
     private static final int DATE_DD = 0;
     private static final int DATE_MM = 1;
     private static final int DATE_YY = 2;
@@ -61,50 +64,39 @@ public class Date extends Phrase {
     }
 
     public static int getDateType(final String _word) {
-        // TIME_AM_PM
         final String clean_word = _word.replace(".", "");
-        if ("am".equalsIgnoreCase(clean_word) || "pm".equalsIgnoreCase(clean_word))
-            return TIME_AM_PM;
+        // TIME_AM_PM
+        if (equalsIgnoreCase(clean_word, "am", "pm")) return TIME_AM_PM;
         // YEAR_AD_BC
-        if ("ad".equalsIgnoreCase(clean_word) || "bc".equalsIgnoreCase(clean_word))
-            return TIME_AM_PM;
+        if (equalsIgnoreCase(clean_word, "ad", "bc")) return TIME_AM_PM;
 
         // YY
         try {
             final int year = Integer.parseInt(_word);
-            if (year > MIN_YEAR && year < MAX_YEAR) return DATE_YY;
+            if (MIN_YEAR < year && year < MAX_YEAR) return DATE_YY;
         }
         catch (final NumberFormatException ignored) {}
 
         // MM
-        for (final String month_word : STRING_MONTHS)
-            if (month_word.equals(_word)) return DATE_MM;
+        if (equalsIgnoreCase(_word, STRING_MONTHS)) return DATE_MM;
 
         // DD
         try {
             final int dd = Integer.parseInt(_word.substring(0, _word.length() - 2));
-            if (_word.equalsIgnoreCase("1st")
-                || _word.equalsIgnoreCase("21st")
-                || _word.equalsIgnoreCase("31st")
-                || _word.equalsIgnoreCase("2nd")
-                || _word.equalsIgnoreCase("22nd")
-                || _word.equalsIgnoreCase("3rd")
-                || _word.equalsIgnoreCase("23rd")
-                || (_word.toLowerCase().endsWith("th")
-                    && dd > 0
-                    && dd <= 31))
+            if ((equalsIgnoreCase(_word, "1st", "21st", "31st", "2nd", "22nd", "3rd", "23rd")
+                 || _word.toLowerCase().endsWith("th"))
+                && dd > 0 && dd <= 31)
                 return DATE_DD;
         }
         catch (StringIndexOutOfBoundsException | NumberFormatException ignored) {}
         try {
             final int dd = Integer.parseInt(_word);
-            if (dd > 0 && dd <= MAX_MONTH_DAYS) return DATE_DD;
+            if (0 < dd && dd <= MAX_MONTH_DAYS) return DATE_DD;
         }
-        catch (StringIndexOutOfBoundsException | NumberFormatException ignored) {}
+        catch (final NumberFormatException ignored) {}
 
         // WEEKDAY
-        for (final String day_word : STRING_WEEKDAYS)
-            if (day_word.equals(_word)) return DATE_WEEKDAY;
+        if (equalsIgnoreCase(_word, STRING_WEEKDAYS)) return DATE_WEEKDAY;
 
         // DATE_TIME
         try {
@@ -114,18 +106,13 @@ public class Date extends Phrase {
                 h = Integer.parseInt(time_array[0]);
                 m = Integer.parseInt(time_array[1]);
             }
-            if (time_array.length == 3) {
-                s = Integer.parseInt(time_array[2]);
-            }
-            if (h >= 0
-                && m >= 0
-                && m < 60
-                && (s == null
-                    || (s > 0
-                        && s < 60)))
+            if (time_array.length == 3) s = Integer.parseInt(time_array[2]);
+            if (h != null && h >= 0
+                && m != null && m >= 0 && m < 60
+                && (s == null || (s > 0 && s < 60)))
                 return TIME;
         }
-        catch (NumberFormatException | NullPointerException ignored) {}
+        catch (final NumberFormatException ignored) {}
 
         // Kishor's DateMatcher
         final DateMatcher dm = new DateMatcher();
