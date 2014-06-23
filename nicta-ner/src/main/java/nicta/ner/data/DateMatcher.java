@@ -36,23 +36,16 @@ public final class DateMatcher {
 
     static {
         // TODO: rewrite regex date/time matching using some existing lib, maybe joda-time
-        final String dd = "([1-9]" +
-                          "|0[1-9]" +
-                          "|[1-2][0-9]" +
-                          "|3[01])";
-
-        final String mm = "(([1-9]|0[1-9]|1[0-2])" +
-                          "|(January|February|March|April|May|June|July|August|September|October|November|December)" +
-                          "|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
-
-        final String mms = "((^[1-9]|0[1-9]|1[0-2])" +
-                           "|(January|February|March|April|May|June|July|August|September|October|November|December)" +
-                           "|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
+        final String dd = "([1-9]|0[1-9]|[1-2][0-9]|3[01])";
 
         final String mm1 = "((January|February|March|April|May|June|July|August|September|October|November|December)" +
                            "|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
 
-        final String yyyy = "(\\d\\d\\d\\d)";
+        final String mm = "(([1-9]|0[1-9]|1[0-2])|" + mm1 + ")";
+
+        final String mms = "((^[1-9]|0[1-9]|1[0-2])|" + mm1 + ")";
+
+        final String yyyy = "\\d{4}";
 
         final String sep = "(/|\\s|-|.)";
 
