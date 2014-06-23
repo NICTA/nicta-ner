@@ -21,67 +21,62 @@
  */
 package nicta.ner.data;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
+
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
-import java.util.List;
-import java.util.Vector;
-
 
 /**
  * @author kgawande
  */
-public class DateMatcher {
+@SuppressWarnings({"StringConcatenationMissingWhitespace", "HardcodedFileSeparator"})
+public final class DateMatcher {
 
-    private List<Pattern> patterns = new Vector<Pattern>();
+    private static final ImmutableCollection<Pattern> PATTERNS;
 
-    // Constructor - initalize all date patterns
-    public DateMatcher() {
-        Pattern p;
+    static {
+        // TODO: rewrite regex date/time matching using some existing lib, maybe joda-time
+        final String dd = "([1-9]" +
+                          "|0[1-9]" +
+                          "|[1-2][0-9]" +
+                          "|3[01])";
 
-        String dd = "([1-9]|0[1-9]|[1-2][0-9]|3[01])";
-        String dds = "((^[1-9]|0[1-9]|[1-2][0-9]|3[01]))";
-        String mm =
-                "(([1-9]|0[1-9]|1[0-2])|(January|February|March|April|May|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
-        String mms =
-                "((^[1-9]|0[1-9]|1[0-2])|(January|February|March|April|May|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
-        String mm1 =
-                "((January|February|March|April|May|June|July|August|September|October|November|December)|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
-        String yyyy = "(\\d\\d\\d\\d)";
-        String sep = "(/|\\s|-|.)";
+        final String mm = "(([1-9]|0[1-9]|1[0-2])" +
+                          "|(January|February|March|April|May|June|July|August|September|October|November|December)" +
+                          "|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
 
-        // dd/mm/yyyy  or dd mm yyyy  or dd-mm-yyyy or dd January yyyy or dd Jan 2009
-        p = Pattern.compile(".*" + dd + sep + mm + sep + yyyy + ".*");
-        patterns.add(p);
+        final String mms = "((^[1-9]|0[1-9]|1[0-2])" +
+                           "|(January|February|March|April|May|June|July|August|September|October|November|December)" +
+                           "|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
 
-        // yyyy/mm/dd or 2009 January 1 or 2009 Jan 1
-        p = Pattern.compile(".*" + yyyy + sep + mm + sep + dd + ".*");
-        patterns.add(p);
+        final String mm1 = "((January|February|March|April|May|June|July|August|September|October|November|December)" +
+                           "|(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec))";
 
-        // mm dd yyyy
-        p = Pattern.compile(".*" + mms + sep + dd + sep + yyyy + ".*");
-        patterns.add(p);
+        final String yyyy = "(\\d\\d\\d\\d)";
 
-        //January 2, 2008 or January 2 2008
-        p = Pattern.compile(".*" + mm1 + "(\\s)" + dd + "(,\\s|\\s)" + yyyy + ".*");
-        patterns.add(p);
+        final String sep = "(/|\\s|-|.)";
 
+        PATTERNS = ImmutableList.of(
+                // dd/mm/yyyy  or dd mm yyyy  or dd-mm-yyyy or dd January yyyy or dd Jan 2009
+                Pattern.compile(".*" + dd + sep + mm + sep + yyyy + ".*"),
 
+                // yyyy/mm/dd or 2009 January 1 or 2009 Jan 1
+                Pattern.compile(".*" + yyyy + sep + mm + sep + dd + ".*"),
+
+                // mm dd yyyy
+                Pattern.compile(".*" + mms + sep + dd + sep + yyyy + ".*"),
+
+                //January 2, 2008 or January 2 2008
+                Pattern.compile(".*" + mm1 + "(\\s)" + dd + "(,\\s|\\s)" + yyyy + ".*")
+        );
     }
 
-    public boolean isDate(String text) {
-        for (Pattern pattern : patterns) {
-            Matcher m = pattern.matcher(text);
-            //System.out.println(pattern.pattern());
-            if (m.matches()) {
-                return true;
-            }
+    private DateMatcher() {}
+
+    public static boolean isDate(final String text) {
+        for (final Pattern pattern : PATTERNS) {
+            if (pattern.matcher(text).matches()) return true;
         }
         return false;
-    }
-
-    public static void main(String[] args) {
-        DateMatcher dm = new DateMatcher();
-        System.out.println(dm.isDate("13/12/07"));
     }
 }

@@ -115,8 +115,7 @@ public class Date extends Phrase {
         catch (final NumberFormatException ignored) {}
 
         // Kishor's DateMatcher
-        final DateMatcher dm = new DateMatcher();
-        if (dm.isDate(_word)) return DATE;
+        if (DateMatcher.isDate(_word)) return DATE;
 
         return -1;
     }
