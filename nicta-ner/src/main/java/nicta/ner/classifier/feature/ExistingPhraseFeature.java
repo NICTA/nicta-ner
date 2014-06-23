@@ -25,15 +25,16 @@ import nicta.ner.data.Phrase;
 import nicta.ner.util.IO;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Collections;
 
 public class ExistingPhraseFeature extends Feature {
 
-    private final Set<String> phraseSet;
+    private final Collection<String> PHRASES;
 
     public ExistingPhraseFeature(final String filename) throws IOException {
         super(filename);
-        phraseSet = IO.createPhraseSet(getClass(), filename);
+        PHRASES = Collections.unmodifiableCollection(IO.lines(getClass(), filename));
     }
 
     @Override
@@ -44,6 +45,6 @@ public class ExistingPhraseFeature extends Feature {
         }
         phrase = phrase.trim();
 
-        return phraseSet.contains(phrase) ? 1.0f : 0.0f;
+        return PHRASES.contains(phrase) ? 1.0f : 0.0f;
     }
 }

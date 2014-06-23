@@ -25,15 +25,16 @@ import nicta.ner.data.Phrase;
 import nicta.ner.util.IO;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Collections;
 
 public class RuledWordFeature extends Feature {
 
-    private final Set<String> wordSet;
+    private final Collection<String> WORDS;
 
     public RuledWordFeature(final String filename) throws IOException {
         super(filename);
-        wordSet = IO.createSingleWordSet(getClass(), filename, true);
+        WORDS = Collections.unmodifiableCollection(IO.createSingleWordSet(getClass(), filename, true));
     }
 
     @SuppressWarnings("MagicNumber")
@@ -44,7 +45,7 @@ public class RuledWordFeature extends Feature {
         for (int i = 0; i < _p.phrase.length; i++) {
             final String word = _p.phrase[i];
             if ("of".equalsIgnoreCase(word)) break;
-            final double x = (wordSet.contains(word)) ? 1.0f : 0.0f;
+            final double x = (WORDS.contains(word)) ? 1.0f : 0.0f;
             score += weight * x;
             weight += 0.25;
         }

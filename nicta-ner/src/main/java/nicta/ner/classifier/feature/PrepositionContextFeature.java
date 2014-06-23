@@ -25,19 +25,20 @@ import nicta.ner.data.Phrase;
 import nicta.ner.util.IO;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Collections;
 
 public class PrepositionContextFeature extends Feature {
 
-    private final Set<String> wordSet;
+    private final Collection<String> WORDS;
 
     public PrepositionContextFeature(final String filename) throws IOException {
         super(filename);
-        wordSet = IO.createSingleWordSet(getClass(), filename, false);
+        WORDS = Collections.unmodifiableCollection(IO.createSingleWordSet(getClass(), filename, false));
     }
 
     @Override
     public double score(final Phrase _p) {
-        return wordSet.contains(_p.attachedWordMap.get("prep")) ? 1.0f : 0.0f;
+        return WORDS.contains(_p.attachedWordMap.get("prep")) ? 1.0f : 0.0f;
     }
 }
