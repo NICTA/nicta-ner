@@ -60,29 +60,19 @@ public class NameExtractor {
         catch (final IOException ioe) { throw new RuntimeException("Could not load the NON_NAME_WORDS file.", ioe); }
     }
 
-    private List<List<Phrase>> phrases;
-    private List<List<String>> tokens;
-
     private final int nameTypeScoreDimension;
 
-    /** Constructor to build the Named Entity Extractor instance. */
     public NameExtractor(final Configuration conf) {
         nameTypeScoreDimension = conf.getNameTypes().size();
     }
 
-    /** Call this method to return the result <b>after</b> the process(String _text) method had been called. */
-    public NERResultSet getResult() { return new NERResultSet(phrases, tokens); }
-
-    /**
-     * This method will parse the text input into tokens and name phrases.
-     * Call getResult() method to get the processed result.
-     */
-    public void process(final String _text) {
+    /** This method will parse the text input into tokens and name phrases. */
+    public NERResultSet process(final String _text) {
         // tokenization
-        tokens = TOKENIZER.process(_text);
+        final List<List<String>> tokens = TOKENIZER.process(_text);
 
         // extract name phrase:
-        phrases = new ArrayList<>();
+        final List<List<Phrase>> phrases = new ArrayList<>();
 
         for (final List<String> token : tokens) {
             // for each sentence
@@ -202,6 +192,8 @@ public class NameExtractor {
                 getAttachedPrep(sentenceToken, sentencePhrase, pi);
             }
         }
+
+        return new NERResultSet(phrases, tokens);
     }
 
     /** Detects if a particular word in a sentence is a name. */
@@ -263,8 +255,8 @@ public class NameExtractor {
     }
 
     /** This method will find all the attached preps of a phrase. */
-    protected static void getAttachedPrep(final List<String> sentenceToken, final List<Phrase> sentencePhrase,
-                                          final int index) {
+    private static void getAttachedPrep(final List<String> sentenceToken, final List<Phrase> sentencePhrase,
+                                        final int index) {
         final String prep;
         boolean nameSequenceMeetEnd = true;
         final Collection<Phrase> phraseSequence = new HashSet<>();

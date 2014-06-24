@@ -30,7 +30,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
-
 /**
  * This is the main class of the Named Entity Recognition system.
  * <p/>
@@ -58,8 +57,7 @@ public class NamedEntityAnalyser {
     public NERResultSet process(final String text) {
         // program pipeline: (Text) ------> (Phrases without classified) ------> (Phrases classified)
         //                         extractor                            classifier
-        extractor.process(text);
-        final NERResultSet rs = extractor.getResult();
+        final NERResultSet rs = extractor.process(text);
         return classifier.process(rs);
     }
 
