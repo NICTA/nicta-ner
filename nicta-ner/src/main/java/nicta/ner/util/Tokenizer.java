@@ -32,6 +32,7 @@ import java.util.Locale;
 
 import static java.lang.Character.isLetterOrDigit;
 import static java.lang.Character.isUpperCase;
+import static java.text.BreakIterator.DONE;
 import static nicta.ner.util.Strings.endsWith;
 import static nicta.ner.util.Strings.equalss;
 import static nicta.ner.util.Tokenizer.Mode.WITHOUT_PUNCTUATE;
@@ -47,32 +48,28 @@ public class Tokenizer {
 
     private static final ImmutableCollection<String> ABBREVIATION_EXCEPTION;
 
-    private final Mode mode;
-
     static {
         try { ABBREVIATION_EXCEPTION = ImmutableList.copyOf(IO.lines(Tokenizer.class, "TokenizerAbbreviation")); }
         catch (final IOException e) { throw new RuntimeException("Could not load the TokenizerAbbreviation file.", e); }
     }
 
-    public Tokenizer(final Mode mode) { this.mode = mode; }
-
-    public List<List<String>> process(final String text) {
+    public static List<List<String>> process(final String text, final Mode mode) {
         final List<List<String>> paragraph = new ArrayList<>();
-
-        final Locale currentLocale = new Locale("en", "US");
-        final BreakIterator wordIterator = BreakIterator.getWordInstance(currentLocale);
-        wordIterator.setText(text);
-
-        int sPtr = wordIterator.first();
-        int ePtr = wordIterator.next();
-
         List<String> currentSentence = new ArrayList<>();
 
-        while (ePtr != BreakIterator.DONE) {
-            final String word = text.substring(sPtr, ePtr);
-            if (!"".equals(word.trim())
-                && ((mode == WITH_PUNCTUATE)
-                    || (mode == WITHOUT_PUNCTUATE && isLetterOrDigit(word.charAt(0))))) {
+        // use a BreakIterator to iterate out way through the words of the text
+        final BreakIterator wordIterator = BreakIterator.getWordInstance(new Locale("en", "US"));
+        wordIterator.setText(text);
+
+        int startIdx = wordIterator.first();
+        for (int endIdx = wordIterator.next(); endIdx != DONE; startIdx = endIdx, endIdx = wordIterator.next()) {
+
+            // get the word out, and skip it if it is empty
+            final String word = text.substring(startIdx, endIdx);
+            if (word.trim().isEmpty()) continue;
+
+            if (((mode == WITH_PUNCTUATE)
+                 || (mode == WITHOUT_PUNCTUATE && isLetterOrDigit(word.charAt(0))))) {
                 boolean canBreakSentence = true;
                 if (word.contains("'")) {
                     if (word.endsWith("n't")) {
@@ -108,19 +105,19 @@ public class Tokenizer {
                 }
                 else if (":".equals(word.trim())) {
                     try {
-                        if (text.charAt(ePtr) != ' '
-                            && text.charAt(sPtr - 1) != ' '
+                        if (text.charAt(endIdx) != ' '
+                            && text.charAt(startIdx - 1) != ' '
                             && !currentSentence.isEmpty()) {
                             final int formerIndex = currentSentence.size() - 1;
                             final String formerWord = currentSentence.get(formerIndex);
-                            sPtr = ePtr;
-                            ePtr = wordIterator.next();
-                            if (ePtr == BreakIterator.DONE) {
+                            startIdx = endIdx;
+                            endIdx = wordIterator.next();
+                            if (endIdx == DONE) {
                                 currentSentence.add(word);
                                 continue;
                             }
                             else {
-                                final String nextWord = text.substring(sPtr, ePtr);
+                                final String nextWord = text.substring(startIdx, endIdx);
                                 if (isLetterOrDigit(nextWord.charAt(0))
                                     && isLetterOrDigit(formerWord.charAt(0))) {
                                     // merge
@@ -141,14 +138,13 @@ public class Tokenizer {
                     }
                 }
                 else currentSentence.add(word);
+
                 // handling the end of a sentence
                 if (equalss(word.trim(), ".", ";", "?", "!") && canBreakSentence) {
                     paragraph.add(currentSentence);
                     currentSentence = new ArrayList<>();
                 }
             }
-            sPtr = ePtr;
-            ePtr = wordIterator.next();
         }
 
         if (!currentSentence.isEmpty()) paragraph.add(currentSentence);
