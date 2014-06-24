@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static java.lang.Character.isLetterOrDigit;
+import static java.lang.Character.isSpaceChar;
 import static java.text.BreakIterator.DONE;
 import static nicta.ner.util.Strings.endsWith;
 import static nicta.ner.util.Strings.equalss;
@@ -40,7 +41,7 @@ import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATE;
 
 /**
  * This class utilizes a Java standard class to token the input sentence.
- *
+ * <p/>
  * This class is not thread safe.
  */
 public class Tokenizer {
@@ -74,7 +75,7 @@ public class Tokenizer {
         final BreakIterator wordIterator = BreakIterator.getWordInstance(new Locale("en", "US"));
         wordIterator.setText(text);
 
-        // simply iterate through the text with keeping track of a start and end index of the current word
+        // simply iterate through the text, keeping track of a start and end index of the current word
         int startIdx = wordIterator.first();
         for (int endIdx = wordIterator.next(); endIdx != DONE; startIdx = endIdx, endIdx = wordIterator.next()) {
 
@@ -86,49 +87,38 @@ public class Tokenizer {
             if (((mode == WITH_PUNCTUATE) || (mode == WITHOUT_PUNCTUATE && isLetterOrDigit(word.charAt(0))))) {
                 boolean canBreakSentence = true;
                 if (word.contains("'")) {
-                    wordContainsHyphen(word);
+                    wordContainsApostrophe(word);
                 }
                 else if (".".equals(trimmedWord)) {
                     canBreakSentence = wordIsFullStop(word);
                 }
                 else if (":".equals(trimmedWord)) {
-                    try {
-                        if (!currentSentence.isEmpty()
-                            && text.charAt(endIdx) != ' ' && text.charAt(startIdx - 1) != ' ') {
+                    // if the current sentence is not empty, and the colon is not surrounded on both sides by spaces
+                    if (!currentSentence.isEmpty()
+                        && !isSpaceChar(text.charAt(startIdx - 1)) && !isSpaceChar(text.charAt(endIdx))) {
 
-                            final int formerIndex = currentSentence.size() - 1;
-                            final String formerWord = currentSentence.get(formerIndex);
-                            startIdx = endIdx;
-                            endIdx = wordIterator.next();
-                            if (endIdx == DONE) {
-                                currentSentence.add(word);
-                                continue;
-                            }
-                            else {
-                                final String nextWord = text.substring(startIdx, endIdx);
-                                if (isLetterOrDigit(nextWord.charAt(0))
-                                    && isLetterOrDigit(formerWord.charAt(0))) {
-                                    // merge
-                                    currentSentence.remove(formerIndex);
-                                    //noinspection StringConcatenationMissingWhitespace
-                                    currentSentence.add(formerWord + word + nextWord);
-                                }
-                                else {
-                                    currentSentence.add(word);
-                                    currentSentence.add(nextWord);
-                                }
-                            }
+                        // get the previous and next words
+                        final int previousWordIndex = currentSentence.size() - 1;
+                        final String previousWord = currentSentence.get(previousWordIndex);
+                        startIdx = endIdx;
+                        endIdx = wordIterator.next();
+                        // check if we reached the end of the text
+                        if (endIdx == DONE) {
+                            currentSentence.add(word);
+                            break;
                         }
-                        else currentSentence.add(word);
+                        else {
+                            // otherwise try to merge the 3 words back together again
+                            final String nextWord = text.substring(startIdx, endIdx);
+                            mergeWordsIntoSentence(previousWord, word, nextWord, previousWordIndex);
+                        }
                     }
-                    catch (final StringIndexOutOfBoundsException ignored) {
-                        currentSentence.add(word);
-                    }
+                    else currentSentence.add(word);
                 }
                 else currentSentence.add(word);
 
                 // handling the end of a sentence
-                if (canBreakSentence && equalss(trimmedWord, ";", "?", "!")) {
+                if (canBreakSentence && equalss(trimmedWord, ".", ";", "?", "!")) {
                     paragraph.add(currentSentence);
                     currentSentence = new ArrayList<>();
                 }
@@ -140,17 +130,33 @@ public class Tokenizer {
         return paragraph;
     }
 
+    @SuppressWarnings("StringConcatenationMissingWhitespace")
+    private void mergeWordsIntoSentence(final String previousWord, final String word, final String nextWord,
+                                        final int previousWordIndex) {
+        // make sure the previous and next words both start with a letter or digit
+        if (isLetterOrDigit(previousWord.charAt(0)) && isLetterOrDigit(nextWord.charAt(0))) {
+            // merge the 3 words again and add the result, remove previous word from sentence
+            currentSentence.remove(previousWordIndex);
+            currentSentence.add(previousWord + word + nextWord);
+        }
+        // otherwise just add the word and next word
+        else {
+            currentSentence.add(word);
+            currentSentence.add(nextWord);
+        }
+    }
+
     private boolean wordIsFullStop(final String word) {
         boolean canBreakSentence = true;
-        final int formerIndex = currentSentence.size() - 1;
-        if (formerIndex == -1) currentSentence.add(word);
+        final int previousWordIndex = currentSentence.size() - 1;
+        if (previousWordIndex == -1) currentSentence.add(word);
         else {
-            final String formerWord = currentSentence.get(formerIndex);
-            if (ABBREVIATION_EXCEPTIONS.contains(formerWord)
-                || isSingleUppercaseChar(formerWord)
-                || formerWord.contains(".")) {
-                currentSentence.remove(formerIndex);
-                currentSentence.add(formerWord + ".");
+            final String previousWord = currentSentence.get(previousWordIndex);
+            if (ABBREVIATION_EXCEPTIONS.contains(previousWord)
+                || isSingleUppercaseChar(previousWord)
+                || previousWord.contains(".")) {
+                currentSentence.remove(previousWordIndex);
+                currentSentence.add(previousWord + ".");
                 // do not break the sentence
                 canBreakSentence = false;
             }
@@ -159,7 +165,7 @@ public class Tokenizer {
         return canBreakSentence;
     }
 
-    private void wordContainsHyphen(final String word) {
+    private void wordContainsApostrophe(final String word) {
         if (word.endsWith("n't")) {
             final String w1 = word.substring(0, word.length() - 3);
             if (!w1.isEmpty()) currentSentence.add(w1);
