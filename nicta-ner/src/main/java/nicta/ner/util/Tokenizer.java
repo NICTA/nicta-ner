@@ -31,14 +31,18 @@ import java.util.List;
 import java.util.Locale;
 
 import static java.lang.Character.isLetterOrDigit;
-import static java.lang.Character.isUpperCase;
 import static java.text.BreakIterator.DONE;
 import static nicta.ner.util.Strings.endsWith;
 import static nicta.ner.util.Strings.equalss;
+import static nicta.ner.util.Strings.isSingleUppercaseChar;
 import static nicta.ner.util.Tokenizer.Mode.WITHOUT_PUNCTUATE;
 import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATE;
 
-/** This class utilizes a Java standard class to token the input sentence. */
+/**
+ * This class utilizes a Java standard class to token the input sentence.
+ *
+ * This class is not thread safe.
+ */
 public class Tokenizer {
 
     public enum Mode {
@@ -46,68 +50,52 @@ public class Tokenizer {
         WITHOUT_PUNCTUATE
     }
 
-    private static final ImmutableCollection<String> ABBREVIATION_EXCEPTION;
+    private static final ImmutableCollection<String> ABBREVIATION_EXCEPTIONS;
 
     static {
-        try { ABBREVIATION_EXCEPTION = ImmutableList.copyOf(IO.lines(Tokenizer.class, "TokenizerAbbreviation")); }
+        try { ABBREVIATION_EXCEPTIONS = ImmutableList.copyOf(IO.lines(Tokenizer.class, "TokenizerAbbreviation")); }
         catch (final IOException e) { throw new RuntimeException("Could not load the TokenizerAbbreviation file.", e); }
     }
 
-    public static List<List<String>> process(final String text, final Mode mode) {
+    private final Mode mode;
+    private List<String> currentSentence = new ArrayList<>();
+
+    public Tokenizer(final Mode mode) { this.mode = mode; }
+
+    /**
+     * Tokenize some text - not thread safe.
+     * @param text tokenize this
+     * @return tokenized text
+     */
+    public List<List<String>> process(final String text) {
         final List<List<String>> paragraph = new ArrayList<>();
-        List<String> currentSentence = new ArrayList<>();
 
         // use a BreakIterator to iterate out way through the words of the text
         final BreakIterator wordIterator = BreakIterator.getWordInstance(new Locale("en", "US"));
         wordIterator.setText(text);
 
+        // simply iterate through the text with keeping track of a start and end index of the current word
         int startIdx = wordIterator.first();
         for (int endIdx = wordIterator.next(); endIdx != DONE; startIdx = endIdx, endIdx = wordIterator.next()) {
 
-            // get the word out, and skip it if it is empty
+            // get the word out, and skip if it is empty
             final String word = text.substring(startIdx, endIdx);
-            if (word.trim().isEmpty()) continue;
+            final String trimmedWord = word.trim();
+            if (trimmedWord.isEmpty()) continue;
 
-            if (((mode == WITH_PUNCTUATE)
-                 || (mode == WITHOUT_PUNCTUATE && isLetterOrDigit(word.charAt(0))))) {
+            if (((mode == WITH_PUNCTUATE) || (mode == WITHOUT_PUNCTUATE && isLetterOrDigit(word.charAt(0))))) {
                 boolean canBreakSentence = true;
                 if (word.contains("'")) {
-                    if (word.endsWith("n't")) {
-                        final String w1 = word.substring(0, word.length() - 3);
-                        if (!w1.isEmpty()) currentSentence.add(w1);
-                        currentSentence.add("n't");
-                    }
-                    else if (endsWith(word, "'s", "'ll", "'re", "'m", "'ve", "'d")) {
-                        final int p = word.indexOf("'");
-                        final String w1 = word.substring(0, p);
-                        final String w2 = word.substring(p);
-                        if (!w1.isEmpty()) currentSentence.add(w1);
-                        if (!w2.isEmpty()) currentSentence.add(w2);
-                    }
-                    else currentSentence.add(word);
+                    wordContainsHyphen(word);
                 }
-                else if (".".equals(word.trim())) {
-                    final int formerIndex = currentSentence.size() - 1;
-                    if (formerIndex == -1) currentSentence.add(word);
-                    else {
-                        final String formerWord = currentSentence.get(formerIndex);
-                        if (ABBREVIATION_EXCEPTION.contains(formerWord)
-                            || (formerWord.length() == 1
-                                && isUpperCase(formerWord.charAt(0)))
-                            || formerWord.contains(".")) {
-                            currentSentence.remove(formerIndex);
-                            currentSentence.add(formerWord + ".");
-                            // do not break the sentence
-                            canBreakSentence = false;
-                        }
-                        else currentSentence.add(word);
-                    }
+                else if (".".equals(trimmedWord)) {
+                    canBreakSentence = wordIsFullStop(word);
                 }
-                else if (":".equals(word.trim())) {
+                else if (":".equals(trimmedWord)) {
                     try {
-                        if (text.charAt(endIdx) != ' '
-                            && text.charAt(startIdx - 1) != ' '
-                            && !currentSentence.isEmpty()) {
+                        if (!currentSentence.isEmpty()
+                            && text.charAt(endIdx) != ' ' && text.charAt(startIdx - 1) != ' ') {
+
                             final int formerIndex = currentSentence.size() - 1;
                             final String formerWord = currentSentence.get(formerIndex);
                             startIdx = endIdx;
@@ -140,7 +128,7 @@ public class Tokenizer {
                 else currentSentence.add(word);
 
                 // handling the end of a sentence
-                if (equalss(word.trim(), ".", ";", "?", "!") && canBreakSentence) {
+                if (canBreakSentence && equalss(trimmedWord, ";", "?", "!")) {
                     paragraph.add(currentSentence);
                     currentSentence = new ArrayList<>();
                 }
@@ -148,6 +136,42 @@ public class Tokenizer {
         }
 
         if (!currentSentence.isEmpty()) paragraph.add(currentSentence);
+        currentSentence = new ArrayList<>();
         return paragraph;
+    }
+
+    private boolean wordIsFullStop(final String word) {
+        boolean canBreakSentence = true;
+        final int formerIndex = currentSentence.size() - 1;
+        if (formerIndex == -1) currentSentence.add(word);
+        else {
+            final String formerWord = currentSentence.get(formerIndex);
+            if (ABBREVIATION_EXCEPTIONS.contains(formerWord)
+                || isSingleUppercaseChar(formerWord)
+                || formerWord.contains(".")) {
+                currentSentence.remove(formerIndex);
+                currentSentence.add(formerWord + ".");
+                // do not break the sentence
+                canBreakSentence = false;
+            }
+            else currentSentence.add(word);
+        }
+        return canBreakSentence;
+    }
+
+    private void wordContainsHyphen(final String word) {
+        if (word.endsWith("n't")) {
+            final String w1 = word.substring(0, word.length() - 3);
+            if (!w1.isEmpty()) currentSentence.add(w1);
+            currentSentence.add("n't");
+        }
+        else if (endsWith(word, "'s", "'ll", "'re", "'m", "'ve", "'d")) {
+            final int p = word.indexOf("'");
+            final String w1 = word.substring(0, p);
+            final String w2 = word.substring(p);
+            if (!w1.isEmpty()) currentSentence.add(w1);
+            if (!w2.isEmpty()) currentSentence.add(w2);
+        }
+        else currentSentence.add(word);
     }
 }

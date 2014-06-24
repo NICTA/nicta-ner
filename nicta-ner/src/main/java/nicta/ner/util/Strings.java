@@ -21,6 +21,8 @@
  */
 package nicta.ner.util;
 
+import static java.lang.Character.isUpperCase;
+
 public final class Strings {
 
     public static final String NL = System.lineSeparator();
@@ -57,5 +59,9 @@ public final class Strings {
             if (word.endsWith(s)) return true;
         }
         return false;
+    }
+
+    public static boolean isSingleUppercaseChar(final String word) {
+        return word.length() == 1 && isUpperCase(word.charAt(0));
     }
 }

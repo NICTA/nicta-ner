@@ -52,6 +52,7 @@ import static nicta.ner.util.Strings.startsWith;
 /** Rule-based expert system. */
 public class NameExtractor {
 
+    private static final Tokenizer TOKENIZER = new Tokenizer(WITH_PUNCTUATE);
     private static final Set<String> NON_NAME_WORDS;
 
     static {
@@ -68,7 +69,7 @@ public class NameExtractor {
     /** This method will parse the text input into tokens and name phrases. */
     public NERResultSet process(final String _text) {
         // tokenization
-        final List<List<String>> tokens = Tokenizer.process(_text, WITH_PUNCTUATE);
+        final List<List<String>> tokens = TOKENIZER.process(_text);
 
         // extract name phrase:
         final List<List<Phrase>> phrases = new ArrayList<>();
