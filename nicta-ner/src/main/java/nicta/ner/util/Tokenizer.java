@@ -21,16 +21,17 @@
  */
 package nicta.ner.util;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
+
 import java.io.IOException;
 import java.text.BreakIterator;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
 import static java.lang.Character.isLetterOrDigit;
 import static java.lang.Character.isUpperCase;
-import static java.util.Collections.unmodifiableCollection;
 import static nicta.ner.util.Strings.endsWith;
 import static nicta.ner.util.Strings.equalss;
 import static nicta.ner.util.Tokenizer.Mode.WITHOUT_PUNCTUATE;
@@ -44,12 +45,12 @@ public class Tokenizer {
         WITHOUT_PUNCTUATE
     }
 
-    private static final Collection<String> ABBREVIATION_EXCEPTION;
+    private static final ImmutableCollection<String> ABBREVIATION_EXCEPTION;
 
     private final Mode mode;
 
     static {
-        try { ABBREVIATION_EXCEPTION = unmodifiableCollection(IO.lines(Tokenizer.class, "TokenizerAbbreviation")); }
+        try { ABBREVIATION_EXCEPTION = ImmutableList.copyOf(IO.lines(Tokenizer.class, "TokenizerAbbreviation")); }
         catch (final IOException e) { throw new RuntimeException("Could not load the TokenizerAbbreviation file.", e); }
     }
 

@@ -21,20 +21,22 @@
  */
 package nicta.ner.classifier.feature;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableSet;
 import nicta.ner.data.Phrase;
 import nicta.ner.util.IO;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 
+@Immutable
 public class ExistingPhraseFeature extends Feature {
 
-    private final Collection<String> PHRASES;
+    private final ImmutableCollection<String> PHRASES;
 
     public ExistingPhraseFeature(final String filename) throws IOException {
         super(filename);
-        PHRASES = Collections.unmodifiableCollection(IO.lines(getClass(), filename));
+        PHRASES = ImmutableSet.copyOf(IO.lines(getClass(), filename));
     }
 
     @Override

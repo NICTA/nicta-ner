@@ -24,9 +24,11 @@ package nicta.ner.classifier.feature;
 import com.google.common.base.Objects;
 import nicta.ner.data.Phrase;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 
 /** This abstract class is a parent of features. */
+@Immutable
 public abstract class Feature {
 
     private final String resource;

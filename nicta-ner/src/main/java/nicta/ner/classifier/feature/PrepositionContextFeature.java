@@ -21,20 +21,22 @@
  */
 package nicta.ner.classifier.feature;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableSet;
 import nicta.ner.data.Phrase;
 import nicta.ner.util.IO;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 
+@Immutable
 public class PrepositionContextFeature extends Feature {
 
-    private final Collection<String> WORDS;
+    private final ImmutableCollection<String> WORDS;
 
     public PrepositionContextFeature(final String filename) throws IOException {
         super(filename);
-        WORDS = Collections.unmodifiableCollection(IO.createSingleWordSet(getClass(), filename, false));
+        WORDS = ImmutableSet.copyOf(IO.createSingleWordSet(getClass(), filename, false));
     }
 
     @Override

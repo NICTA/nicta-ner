@@ -21,20 +21,22 @@
  */
 package nicta.ner.classifier.feature;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableSet;
 import nicta.ner.data.Phrase;
 import nicta.ner.util.IO;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 
+@Immutable
 public class RuledWordFeature extends Feature {
 
-    private final Collection<String> WORDS;
+    private final ImmutableCollection<String> WORDS;
 
     public RuledWordFeature(final String filename) throws IOException {
         super(filename);
-        WORDS = Collections.unmodifiableCollection(IO.createSingleWordSet(getClass(), filename, true));
+        WORDS = ImmutableSet.copyOf(IO.createSingleWordSet(getClass(), filename, true));
     }
 
     @SuppressWarnings("MagicNumber")

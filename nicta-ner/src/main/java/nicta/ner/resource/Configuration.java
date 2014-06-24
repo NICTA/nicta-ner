@@ -21,6 +21,7 @@
  */
 package nicta.ner.resource;
 
+import com.google.common.collect.ImmutableList;
 import nicta.ner.classifier.feature.Feature;
 import nicta.ner.classifier.feature.FeatureMap;
 import nicta.ner.data.NameType;
@@ -29,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -41,7 +41,7 @@ public class Configuration {
     public static final String DEFAULT_CONFIG_RESOURCE = "config";
 
     /** NameType array specifies the possible types of names. */
-    private final List<NameType> name_types;
+    private final ImmutableList<NameType> name_types;
 
     private final FeatureMap feature_map;
 
@@ -110,7 +110,7 @@ public class Configuration {
         final double[][] w = new double[nameTypes.size()][features.size()];
 
         // name_types information
-        name_types = Collections.unmodifiableList(nameTypes);
+        name_types = ImmutableList.copyOf(nameTypes);
 
         // weight array
         int wi = 0;
@@ -125,11 +125,7 @@ public class Configuration {
         feature_map = new FeatureMap(features, w);
     }
 
-    public FeatureMap getFeatureMap() {
-        return feature_map;
-    }
+    public FeatureMap getFeatureMap() { return feature_map; }
 
-    public List<NameType> getNameTypes() {
-        return name_types;
-    }
+    public ImmutableList<NameType> getNameTypes() { return name_types; }
 }
