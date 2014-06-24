@@ -26,6 +26,7 @@ import nicta.ner.classifier.feature.Feature;
 import nicta.ner.classifier.feature.FeatureMap;
 import nicta.ner.data.NameType;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,9 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**
- * This class specifies the configurations.
- */
+/** This class specifies the configurations. */
+@Immutable
 public class Configuration {
 
     public static final String DEFAULT_CONFIG_RESOURCE = "config";
@@ -47,9 +47,7 @@ public class Configuration {
 
     public Configuration() throws IOException { this(DEFAULT_CONFIG_RESOURCE); }
 
-    /**
-     * Constructor. Read in the config file.
-     */
+    /** Constructor. Read in the config file. */
     public Configuration(final String configResource) throws IOException {
         final Pattern COLONS = Pattern.compile(":");
         final Pattern SPACES = Pattern.compile(" ");

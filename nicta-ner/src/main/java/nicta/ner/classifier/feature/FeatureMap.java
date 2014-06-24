@@ -23,9 +23,11 @@ package nicta.ner.classifier.feature;
 
 import nicta.ner.data.Phrase;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.Arrays;
 import java.util.List;
 
+@Immutable
 public class FeatureMap {
 
     private final Feature[] feature_array;
@@ -33,7 +35,11 @@ public class FeatureMap {
 
     public FeatureMap(final List<Feature> features, final double[][] _w) {
         feature_array = features.toArray(new Feature[features.size()]);
-        w = _w.clone();
+        // array deep copy
+        w = new double[_w.length][];
+        for (int i = 0; i < _w.length; i++) {
+            w[i] = Arrays.copyOf(_w[i], _w[i].length);
+        }
     }
 
     public double score(final Phrase _p, final int wi) {
