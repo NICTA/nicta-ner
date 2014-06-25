@@ -65,6 +65,10 @@ public class TokenizerTest {
                 {"", of()},
 
                 {":", of(of(":"))},
+
+                {"foo:", of(of("foo", ":"))},
+
+                {"a: b", of(of("a", ":", "b"))},
         };
     }
 
