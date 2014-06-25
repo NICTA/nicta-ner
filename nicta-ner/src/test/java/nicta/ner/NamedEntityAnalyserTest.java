@@ -189,7 +189,7 @@ public class NamedEntityAnalyserTest {
         assertTrue(mappedResult.isEmpty());
 
         // now match the scores
-        for (final Phrase p : result.phrases.get(0)) { // when might this be non-0?
+        for (final Phrase p : result.phrases.get(0)) {
             final Result r = resultMap.get(p.phraseString());
             assertEquals(p.score, r.scores,
                          "Phrase '" + p.phraseString() + "', expected '" + Arrays.toString(p.score) + "' but found '"
