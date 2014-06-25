@@ -64,4 +64,12 @@ public final class Strings {
     public static boolean isSingleUppercaseChar(final String word) {
         return word.length() == 1 && isUpperCase(word.charAt(0));
     }
+
+    public static char initChar(final String s) {
+        return s.charAt(0);
+    }
+
+    public static char lastChar(final String s) {
+        return s.charAt(s.length() -1);
+    }
 }

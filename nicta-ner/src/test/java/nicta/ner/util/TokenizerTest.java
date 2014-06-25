@@ -52,8 +52,8 @@ public class TokenizerTest {
                     of("More", "!"),
                     of("And", "^", "some", "more", "$", "a", "@", "b.c", ":", "5", "ab:cde", "foo", ":", "wibble"))},
 
-                {"A can't won't don't",
-                 of(of("A", "ca", "n't", "wo", "n't", "do", "n't"))},
+                {"A can't won't don't : foo",
+                 of(of("A", "ca", "n't", "wo", "n't", "do", "n't", ":", "foo"))},
 
                 {"Dr Foo, Dr. Foo. Mr Bar, Miss Bar, Ms Bar.",
                  of(of("Dr", "Foo", ",", "Dr.", "Foo", "."),
@@ -61,6 +61,13 @@ public class TokenizerTest {
 
                 {"A day in Jan. Jan 2, 2008.",
                  of(of("A", "day", "in", "Jan.", "Jan", "2", ",", "2008", "."))},
+
+                {"", of()},
+
+                {":", of(of(":"))},
+                {"foo:", of(of("foo", ":"))},
+
+                {"a: b", of(of("a", ":", "b"))},
         };
     }
 
