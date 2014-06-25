@@ -61,6 +61,10 @@ public class TokenizerTest {
 
                 {"A day in Jan. Jan 2, 2008.",
                  of(of("A", "day", "in", "Jan.", "Jan", "2", ",", "2008", "."))},
+
+                {"", of()},
+
+                {":", of(of(":"))},
         };
     }
 
