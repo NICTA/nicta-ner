@@ -45,14 +45,14 @@ import static nicta.ner.data.Date.DateType.NONE;
 import static nicta.ner.data.Date.getDateType;
 import static nicta.ner.util.Dictionary.isPastTense;
 import static nicta.ner.util.Dictionary.isPlural;
-import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATE;
+import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATION;
 import static nicta.ner.util.Strings.equalsIgnoreCase;
 import static nicta.ner.util.Strings.startsWith;
 
 /** Rule-based expert system. */
 public class NameExtractor {
 
-    private static final Tokenizer TOKENIZER = new Tokenizer(WITH_PUNCTUATE);
+    private static final Tokenizer TOKENIZER = new Tokenizer(WITH_PUNCTUATION);
     private static final Set<String> NON_NAME_WORDS;
 
     static {

@@ -36,8 +36,8 @@ import static java.text.BreakIterator.DONE;
 import static nicta.ner.util.Strings.endsWith;
 import static nicta.ner.util.Strings.equalss;
 import static nicta.ner.util.Strings.isSingleUppercaseChar;
-import static nicta.ner.util.Tokenizer.Mode.WITHOUT_PUNCTUATE;
-import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATE;
+import static nicta.ner.util.Tokenizer.Mode.WITHOUT_PUNCTUATION;
+import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATION;
 
 /**
  * This class utilizes a Java standard class to token the input sentence.
@@ -47,8 +47,8 @@ import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATE;
 public class Tokenizer {
 
     public enum Mode {
-        WITH_PUNCTUATE,
-        WITHOUT_PUNCTUATE
+        WITH_PUNCTUATION,
+        WITHOUT_PUNCTUATION
     }
 
     private static final ImmutableCollection<String> ABBREVIATION_EXCEPTIONS;
@@ -59,7 +59,7 @@ public class Tokenizer {
     }
 
     private final Mode mode;
-    private List<String> currentSentence = new ArrayList<>();
+    private List<String> currentSentence;
 
     public Tokenizer(final Mode mode) { this.mode = mode; }
 
@@ -70,6 +70,7 @@ public class Tokenizer {
      */
     public List<List<String>> process(final String text) {
         final List<List<String>> paragraph = new ArrayList<>();
+        currentSentence = new ArrayList<>();
 
         // use a BreakIterator to iterate out way through the words of the text
         final BreakIterator wordIterator = BreakIterator.getWordInstance(new Locale("en", "US"));
@@ -84,7 +85,7 @@ public class Tokenizer {
             final String trimmedWord = word.trim();
             if (trimmedWord.isEmpty()) continue;
 
-            if (((mode == WITH_PUNCTUATE) || (mode == WITHOUT_PUNCTUATE && isLetterOrDigit(word.charAt(0))))) {
+            if (((mode == WITH_PUNCTUATION) || (mode == WITHOUT_PUNCTUATION && isLetterOrDigit(word.charAt(0))))) {
                 boolean canBreakSentence = true;
                 if (word.contains("'")) {
                     wordContainsApostrophe(word);
@@ -126,7 +127,6 @@ public class Tokenizer {
         }
 
         if (!currentSentence.isEmpty()) paragraph.add(currentSentence);
-        currentSentence = new ArrayList<>();
         return paragraph;
     }
 
