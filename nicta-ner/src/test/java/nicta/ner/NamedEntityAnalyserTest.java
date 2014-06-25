@@ -26,6 +26,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,8 +41,10 @@ public class NamedEntityAnalyserTest {
 
     private NamedEntityAnalyser namedEntityAnalyser;
 
+    @SuppressWarnings("MagicNumber")
     @DataProvider(name = "testProcess")
-    public static Object[][] primeNumbers() throws Exception {
+    public static Object[][] primeNumbers() throws IOException {
+        //noinspection HardcodedFileSeparator
         return new Object[][]{
                 {"John",
                  new LinkedHashMap<String, Result>() {{
@@ -80,7 +86,7 @@ public class NamedEntityAnalyserTest {
                      put("Glumsø", new Result("UNKNOWN", 0, 0, 0));
                  }}},
 
-                {NamedEntityAnalyser.ReadFileAsString("src/test/resources/test1.txt"),
+                {new String(Files.readAllBytes(Paths.get("src/test/resources/test1.txt"))),
                  new LinkedHashMap<String, Result>() {{
                      // 4: UK	LOCATION	21.25, 0.0, 10.0	in	4:5:1:2
                      put("UK", new Result("LOCATION", 21.25, 0, 10));
@@ -116,6 +122,30 @@ public class NamedEntityAnalyserTest {
                      put("AAPL", new Result("UNKNOWN", 0, 0, 0));
                  }}},
 
+                {new String(Files.readAllBytes(Paths.get("src/test/resources/date1.txt"))),
+                 new LinkedHashMap<String, Result>() {{
+                     //2: 1st of December , 2014	DATE	0.0, 0.0, 0.0	null	2:2:5:5
+                     put("1st of December , 2014", new Result("DATE", 0.0, 0.0, 0.0));
+                     //3: December 7th	DATE	0.0, 0.0, 0.0	null	3:3:2:2
+                     put("December 7th", new Result("DATE", 0.0, 0.0, 0.0));
+                     //2: February	DATE	0.0, 0.0, 0.0	in	2:2:1:1
+                     put("February", new Result("DATE", 0.0, 0.0, 0.0));
+                     //3: 2014	DATE	0.0, 0.0, 0.0	null	3:3:1:1
+                     put("2014", new Result("DATE", 0.0, 0.0, 0.0));
+                     //2: 2014	DATE	0.0, 0.0, 0.0	null	2:2:1:1
+                     put("2014", new Result("DATE", 0.0, 0.0, 0.0));
+                     //4: BC	UNKNOWN	0.0, 0.0, 0.0	null	4:4:1:1
+                     put("BC", new Result("UNKNOWN", 0.0, 0.0, 0.0));
+                     //9: 17:00	DATE	0.0, 0.0, 0.0	null	9:9:1:1
+                     put("17:00", new Result("DATE", 0.0, 0.0, 0.0));
+                 }}}
+
+                // TODO: add these tests
+                // BC = British Columbia - this conflicts with 'years BC'...
+                // TX = Texas
+                // should AM/PM conflict?
+                // other locations
+
                 /*
                 {"",
                 new LinkedHashMap<String, Result>() {{
@@ -128,13 +158,24 @@ public class NamedEntityAnalyserTest {
 
     @BeforeClass
     public void init() throws Exception {
-        // TODO: because of how the NEA reads the config file in nicta.ner.resource.Configuration you can only do this
-        // once per JVM!!!
         this.namedEntityAnalyser = new NamedEntityAnalyser();
     }
 
+    /* works in trunk: we can only create a single NEA in the life of the JVM
+    @Test
+    public void doubleCreateNea() throws Exception {
+        // check that we don't have any leaky static references
+        final NERResultSet result1 = new NamedEntityAnalyser().process("John");
+        assertEquals(result1.getMappedResult().size(), 1);
+        assertEquals(result1.getMappedResult().get("John"), "PERSON");
+        final NERResultSet result2 = new NamedEntityAnalyser().process("Gwen");
+        assertEquals(result2.getMappedResult().size(), 1);
+        assertEquals(result2.getMappedResult().get("Gwen"), "PERSON");
+    }
+    */
+
     @Test(dataProvider = "testProcess")
-    public void testProcess(final String phrase, final Map<String, Result> resultMap) throws Exception {
+    public void testProcess(final String phrase, final Map<String, Result> resultMap) {
         final NERResultSet result = namedEntityAnalyser.process(phrase);
 
         // check that we have the correctly matched phrases and types
@@ -142,15 +183,17 @@ public class NamedEntityAnalyserTest {
         for (final Map.Entry<String, Result> e : resultMap.entrySet()) {
             // remove each result from the mappedResult
             final String type = mappedResult.remove(e.getKey());
-            assertEquals(type, e.getValue().type);
+            assertEquals(type, e.getValue().type, "Entity '" + e.getKey() + "',");
         }
         // all results should now have been removed from the results map
         assertTrue(mappedResult.isEmpty());
 
         // now match the scores
         for (final Phrase p : result.phrases.get(0)) { // when might this be non-0?
-            final Result r = resultMap.get(p.toString());// not good to depend on toString()...
-            assertEquals(p.score, r.scores);
+            final Result r = resultMap.get(p.toString());
+            assertEquals(p.score, r.scores,
+                         "Phrase '" + p.toString() + "', expected '" + Arrays.toString(p.score) + "' but found '"
+                         + Arrays.toString(r.scores) + "'");
         }
     }
 
