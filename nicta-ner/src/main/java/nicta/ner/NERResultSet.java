@@ -21,11 +21,14 @@
  */
 package nicta.ner;
 
+import nicta.ner.data.NameType;
 import nicta.ner.data.Phrase;
 
-import java.util.HashMap;
+import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static nicta.ner.util.Strings.NL;
 
@@ -47,15 +50,19 @@ public class NERResultSet {
     }
 
     /** This method returns a map format set of the result. */
-    public Map<String, String> getMappedResult() {
-        final Map<String, String> r = new HashMap<>();
+    public Map<NameType, Set<String>> getMappedResult() {
+        final Map<NameType, Set<String>> m = new EnumMap<>(NameType.class);
         for (final List<Phrase> pa : phrases) {
             for (final Phrase p : pa) {
-                final String ps = p.phraseString();
-                r.put(ps, p.phraseType.toString());
+                Set<String> c = m.get(p.phraseType);
+                if (c == null) {
+                    c = new HashSet<>();
+                    m.put(p.phraseType, c);
+                }
+                c.add(p.phraseString());
             }
         }
-        return r;
+        return m;
     }
 
     public String toString() {
@@ -63,26 +70,36 @@ public class NERResultSet {
 
         for (int si = 0; si < tokens.size(); si++) {
             final List<String> sentence = tokens.get(si);
-            final List<Phrase> ps = this.phrases.get(si);
+            final List<Phrase> phraseList = this.phrases.get(si);
             for (final String aSentence : sentence) sb.append(aSentence).append(" ");
             sb.append(NL).append("===============================================").append(NL);
-            for (final Phrase np : ps) {
+            for (final Phrase aPhrase : phraseList) {
                 String ptext = "";
-                for (int wi = 0; wi < np.phrase.length; wi++) {
-                    ptext += (np.phrase[wi] + " ");
+                for (int wi = 0; wi < aPhrase.phrase.length; wi++) {
+                    ptext += (aPhrase.phrase[wi] + " ");
                 }
                 ptext = ptext.trim();
 
-                ///*
-                String stext = "";
-                for (int sci = 0; sci < np.score.length; sci++) {
-                    if (sci != 0) stext += ", ";
-                    stext += np.score[sci];
+                final StringBuilder stext = new StringBuilder();
+                for (int sci = 0; sci < aPhrase.score.length; sci++) {
+                    if (sci != 0) stext.append(", ");
+                    stext.append(aPhrase.score[sci]);
                 }
-                sb.append(np.phrasePosition).append(": ").append(ptext).append("\t").append(np.phraseType.toString())
-                  .append("\t").append(stext).append("\t").append(np.attachedWordMap.get("prep")).append("\t")
-                  .append(np.phrasePosition).append(":").append(np.phraseStubPosition).append(":")
-                  .append(np.phraseStubLength).append(":").append(np.phraseLength).append(NL);
+
+                // what we are trying to generate:
+                // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
+
+                // "0: John\t"
+                sb.append(aPhrase.phrasePosition).append(": ").append(ptext).append("\t")
+                  // PERSON\t
+                  .append(aPhrase.phraseType.toString()).append("\t")
+                  // 11.25, 40.0, -10.0\t
+                  .append(stext).append("\t")
+                  // null\t
+                  .append(aPhrase.attachedWordMap.get("prep")).append("\t")
+                  // 0:0:1:1\n
+                  .append(aPhrase.phrasePosition).append(":").append(aPhrase.phraseStubPosition).append(":")
+                  .append(aPhrase.phraseStubLength).append(":").append(aPhrase.phraseLength).append(NL);
             }
             sb.append(NL).append(NL);
         }
