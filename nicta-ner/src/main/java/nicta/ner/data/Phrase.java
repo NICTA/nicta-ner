@@ -21,7 +21,7 @@
  */
 package nicta.ner.data;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ import java.util.Map;
  * A phrase can have one or more than one word.
  */
 public class Phrase {
-    // TODO: getters and setters for these, or investigate making the entire class immutable?
+    // TODO: getters and setters for these
     /** phrase string array */
     public final String[] phrase;
     /** corresponding name type */
@@ -51,24 +51,13 @@ public class Phrase {
     /** true if the phrase is a date; false if not */
     public boolean isDate;
 
-    /** Constructor */
-    public Phrase() {
-        phrasePosition = 0;
-        phraseLength = 0;
-        phrase = new String[0];
-        phraseType = NameType.NULL_TYPE;
-        phraseStubPosition = 0;
-        phraseStubLength = 0;
-        attachedWordMap = Collections.emptyMap();
-    }
-
     /** Constructor with param input */
     public Phrase(final List<String> _phrase, final int _phrasePos, final int _phraseLen, final int _stubPos,
                   final int _typeDimension) {
         phrasePosition = _phrasePos;
         phraseLength = _phraseLen;
         phrase = _phrase.toArray(new String[_phrase.size()]);
-        phraseType = NameType.NULL_TYPE;
+        phraseType = NameType.UNKNOWN;
         score = new double[_typeDimension];
         attachedWordMap = new HashMap<>();
         phraseStubPosition = _stubPos;
@@ -82,15 +71,16 @@ public class Phrase {
     }
 
     /** Test if the phrase is a sub phrase of the input phrase. */
-    public boolean isSubPhraseOf(final Phrase _p) {
-        final int len_this = phrase.length;
-        if (len_this == 0) return false;
-        final int len_targ = _p.phrase.length;
+    @SuppressWarnings({"resource", "HardcodedLineSeparator"})
+    public boolean isSubPhraseOf(final Phrase other) {
+        if (phrase.length == 0) return false;
+
+        // TODO: this should be refactored - the intent is not clear, implementation is sketchy
         boolean is = false;
-        for (int i = 0; i < len_targ - len_this + 1; i++) {
+        for (int i = 0; i < other.phrase.length - phrase.length + 1; i++) {
             boolean flag = true;
-            for (int j = 0; j < len_this; j++) {
-                if (!phrase[j].equalsIgnoreCase(_p.phrase[i + j])) {
+            for (int j = 0; j < phrase.length; j++) {
+                if (!phrase[j].equalsIgnoreCase(other.phrase[i + j])) {
                     flag = false;
                     break;
                 }
@@ -103,12 +93,12 @@ public class Phrase {
         return is;
     }
 
-    /** This method will do the classification. */
-    public void classify(final List<NameType> _nta) {
+    /** This method will do the classification of a Phrase with a NameType. */
+    public void classify(final List<NameType> nameTypes) {
         int argmaxIndex = 0;
         double argmaxValue = this.score[argmaxIndex];
         boolean ambious = false;
-        for (int scoreIndex = 1; scoreIndex < _nta.size(); scoreIndex++) {
+        for (int scoreIndex = 1; scoreIndex < nameTypes.size(); scoreIndex++) {
             if (this.score[scoreIndex] > argmaxValue) {
                 argmaxValue = this.score[scoreIndex];
                 argmaxIndex = scoreIndex;
@@ -118,7 +108,22 @@ public class Phrase {
                 ambious = true;
             }
         }
-        this.phraseType = ambious ? NameType.NULL_TYPE : _nta.get(argmaxIndex);
+        this.phraseType = ambious ? NameType.UNKNOWN : nameTypes.get(argmaxIndex);
+    }
+
+    @Override
+    public String toString() {
+        return "Phrase{" +
+               "phrase=" + Arrays.toString(phrase) +
+               ", phraseType=" + phraseType +
+               ", phrasePosition=" + phrasePosition +
+               ", phraseLength=" + phraseLength +
+               ", phraseStubPosition=" + phraseStubPosition +
+               ", phraseStubLength=" + phraseStubLength +
+               ", score=" + Arrays.toString(score) +
+               ", attachedWordMap=" + attachedWordMap +
+               ", isDate=" + isDate +
+               '}';
     }
 }
 
