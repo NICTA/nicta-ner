@@ -31,94 +31,70 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The Classifier get the phrase input and classifies the phrase
  * according to the features and the weight array.
- * @author William Han
  */
 public class NameClassifier {
 
-    /** contains feature and name_type information */
-    Configuration _config = null;
+    private final Configuration conf;
 
-    /** feature map */
-    FeatureMap _fm = null;
+    public NameClassifier(final Configuration _conf) { conf = _conf; }
 
     /**
-     * Constructor builds the classifier instance.
-     * @param _conf
+     * This method process the whole input result set and gives all _phrases in the set a name type - modifies the data
+     * of the passed in NERResultSet!
+     * @param resultSet set to process - modifies the data of the result set!
      */
-    public NameClassifier(Configuration _conf) {
-        _config = _conf;
-        _fm = _config.getFeatureMap();
-    }
+    public void process(final NERResultSet resultSet) {
+        final FeatureMap featureMap = conf.getFeatureMap();
+        final List<NameType> nameTypes = conf.getNameTypes();
 
-    /**
-     * This method process the whole input result set
-     * and gives all _phrases in the set a name type.
-     * @param resultSet
-     * @return
-     */
-    public NERResultSet process(NERResultSet resultSet) {
         // store the relationship of _phrases in memory for further use
-        Map<Phrase, HashSet<Phrase>> phraseInMemory =
-                new HashMap<Phrase, HashSet<Phrase>>();
+        final Map<Phrase, Set<Phrase>> phraseInMemory = new HashMap<>();
 
         // scoring
-        List<List<Phrase>> _phrases = resultSet.phrases;
-        for (int si = 0; si < _phrases.size(); si++) {
+        for (final List<Phrase> phrasesInSentence : resultSet.phrases) {
             // for each sentence
-            List<Phrase> phrasesInSentence = _phrases.get(si);
-            for (int pi = 0; pi < phrasesInSentence.size(); pi++) {
+            for (final Phrase phrase : phrasesInSentence) {
                 // for each phrase in the sentence
-                Phrase p = phrasesInSentence.get(pi);
-                if (p.isDate) continue;
-                for (int scoreIndex = 0; scoreIndex < _config.getNameTypes().size(); scoreIndex++) {
+                if (phrase.isDate) continue;
+
+                for (int scoreIndex = 0; scoreIndex < nameTypes.size(); scoreIndex++) {
                     // score all the dimensions
-                    p.score[scoreIndex] = _fm.score(p, scoreIndex);
+                    phrase.score[scoreIndex] = featureMap.score(phrase, scoreIndex);
                 }
 
-                boolean flag = false;
-                for (Phrase keyPhrase : phraseInMemory.keySet()) {
-                    if (p.isSubPhraseOf(keyPhrase)) {
-                        phraseInMemory.get(keyPhrase).add(p);
-                        flag = true;
+                boolean isSubPhrase = false;
+                for (final Map.Entry<Phrase, Set<Phrase>> inMemoryEntry : phraseInMemory.entrySet()) {
+                    if (phrase.isSubPhraseOf(inMemoryEntry.getKey())) {
+                        inMemoryEntry.getValue().add(phrase);
+                        isSubPhrase = true;
                         break;
                     }
                 }
-                if (!flag || p.phrase.length > 1) {
-                    HashSet<Phrase> newSet = new HashSet<Phrase>();
-                    newSet.add(p);
-                    phraseInMemory.put(p, newSet);
+                if (!isSubPhrase || phrase.phrase.length > 1) {
+                    final Set<Phrase> newSet = new HashSet<>();
+                    newSet.add(phrase);
+                    phraseInMemory.put(phrase, newSet);
                 }
             }
         }
 
-        // copy the score of _phrases that have relationships:
-        for (Phrase key : phraseInMemory.keySet()) {
-            HashSet<Phrase> aSet = phraseInMemory.get(key);
-            /*
-            double[] score = new double[config.name_type.length];
-            for (Phrase phrase : aSet) {
-                for (int i = 0; i < config.name_type.length; i++)
-                    score[i] += phrase.score[i];
-                phrase.score = score;
-            }
-            */
-            double[] score = key.score;
-            for (Phrase phrase : aSet) {
-                phrase.classify(_config.getNameTypes());
-                if (phrase.phraseType == NameType.NULL_TYPE) {
+        // copy the score of _phrases that have relationships
+        for (final Map.Entry<Phrase, Set<Phrase>> inMemoryPhrase : phraseInMemory.entrySet()) {
+            final Set<Phrase> aSet = inMemoryPhrase.getValue();
+            final double[] score = inMemoryPhrase.getKey().score;
+            for (final Phrase phrase : aSet) {
+                phrase.classify(nameTypes);
+                if (phrase.phraseType == NameType.UNKNOWN) {
                     phrase.score = score;
-                    phrase.classify(_config.getNameTypes());
+                    phrase.classify(nameTypes);
                 }
             }
-            for (Phrase phrase : aSet) {
-
-            }
         }
-        return resultSet;
     }
 
 }

@@ -58,7 +58,8 @@ public class NamedEntityAnalyser {
         // program pipeline: (Text) ------> (Phrases without classified) ------> (Phrases classified)
         //                         extractor                            classifier
         final NERResultSet rs = extractor.process(text);
-        return classifier.process(rs);
+        classifier.process(rs);
+        return rs;
     }
 
     /**
