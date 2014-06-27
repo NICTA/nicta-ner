@@ -138,7 +138,15 @@ public class NamedEntityAnalyserTest {
                      put("BC", new Result("UNKNOWN", 0.0, 0.0, 0.0));
                      //9: 17:00	DATE	0.0, 0.0, 0.0	null	9:9:1:1
                      put("17:00", new Result("DATE", 0.0, 0.0, 0.0));
-                 }}}
+                 }}},
+
+                {"John Smith, John.",
+                 new LinkedHashMap<String, Result>() {{
+                     //0: John Smith	PERSON	26.25, 60.0, -10.0	null	0:0:2:2
+                     put("John Smith", new Result("PERSON", 26.25, 60.0, -10.0));
+                     //3: John	PERSON	11.25, 40.0, -10.0	null	3:3:1:1
+                     put("John", new Result("PERSON", 11.25, 40.0, -10.0));
+                 }}},
 
                 // TODO: add these tests
                 // BC = British Columbia - this conflicts with 'years BC'...
