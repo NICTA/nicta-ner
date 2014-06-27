@@ -74,7 +74,7 @@ public class Configuration {
                     case "Name Types":
                         final String[] types = SPACES.split(parts[1].trim());
                         for (final String s : types) {
-                            nameTypes.add(new NameType(s));
+                            nameTypes.add(NameType.valueOf(s));
                         }
                         break;
 

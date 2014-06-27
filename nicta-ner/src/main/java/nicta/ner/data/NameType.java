@@ -21,35 +21,10 @@
  */
 package nicta.ner.data;
 
-/**
- * This class is a name type class.
- * <p/>
- * Each instance of this class represents a name type
- * such as:
- * ORGANIZATION, LOCATION, PERSON, DATE...
- */
-// TODO: turn into enum
-public class NameType {
-
-    public final String typeName;
-
-    public static final NameType NULL_TYPE = new NameType("UNKNOWN");
-    public static final NameType DATE_TYPE = new NameType("DATE");
-
-    public NameType(final String name) { typeName = name; }
-
-    public String toString() {
-        return typeName;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final NameType nameType = (NameType) o;
-        return typeName.equals(nameType.typeName);
-    }
-
-    @Override
-    public int hashCode() { return typeName.hashCode(); }
+public enum NameType {
+    UNKNOWN,
+    PERSON,
+    ORGANIZATION,
+    LOCATION,
+    DATE,
 }

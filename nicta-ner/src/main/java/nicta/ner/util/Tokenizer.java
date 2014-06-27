@@ -79,7 +79,7 @@ public class Tokenizer {
         while (words.hasNext()) {
             final String word = words.next();
             final String trimmedWord = word.trim();
-            
+
             // skip spaces
             if (trimmedWord.isEmpty()) continue;
 

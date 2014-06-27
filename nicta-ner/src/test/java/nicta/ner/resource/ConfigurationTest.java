@@ -70,9 +70,9 @@ public class ConfigurationTest {
                                   25.0, -10.0, -10.0, 0.0, 0.0,
                                   0.0, 10.0, 10.0, -10.0, -10.0}}),
                             new ArrayList<NameType>() {{
-                                add(new NameType("LOCATION"));
-                                add(new NameType("PERSON"));
-                                add(new NameType("ORGANIZATION"));
+                                add(NameType.LOCATION);
+                                add(NameType.PERSON);
+                                add(NameType.ORGANIZATION);
                             }}
                  )},
         };
