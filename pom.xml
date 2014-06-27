@@ -146,7 +146,7 @@
                     <properties>
                         <property>
                             <name>listener</name>
-                            <value>org.testng.reporters.DotTestListener</value>
+                            <value>org.t3as.testng.SystemOutTestLogger</value>
                         </property>
                     </properties>
                 </configuration>
