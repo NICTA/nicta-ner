@@ -34,6 +34,7 @@ import static nicta.ner.data.Date.DateType.TIME;
 import static nicta.ner.data.Date.DateType.TIME_AM_PM;
 import static nicta.ner.util.Strings.equalsIgnoreCase;
 
+// TODO: very suspicious date parsing going on, can we improve this?
 public class Date extends Phrase {
 
     private static final Pattern COLON = Pattern.compile(":");

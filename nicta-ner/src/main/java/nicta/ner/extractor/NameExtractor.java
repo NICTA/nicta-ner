@@ -49,6 +49,7 @@ import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATION;
 import static nicta.ner.util.Strings.equalsIgnoreCase;
 import static nicta.ner.util.Strings.startsWith;
 
+// TODO: full of very long methods, please to fix
 /** Rule-based expert system. */
 public class NameExtractor {
 
