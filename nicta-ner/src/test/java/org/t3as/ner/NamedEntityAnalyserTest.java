@@ -196,17 +196,17 @@ public class NamedEntityAnalyserTest {
     public void doubleCreateNea() throws IOException {
         // check that we don't have any leaky static references
         final Configuration config = new Configuration();
-        final NERResultSet result1 = new NamedEntityAnalyser(config).process("John");
+        final NerResultSet result1 = new NamedEntityAnalyser(config).process("John");
         assertEquals(result1.getMappedResult().size(), 1);
         assertEquals(result1.getMappedResult().get(PERSON), ImmutableSet.of("John"));
-        final NERResultSet result2 = new NamedEntityAnalyser(config).process("Gwen");
+        final NerResultSet result2 = new NamedEntityAnalyser(config).process("Gwen");
         assertEquals(result2.getMappedResult().size(), 1);
         assertEquals(result2.getMappedResult().get(PERSON), ImmutableSet.of("Gwen"));
     }
 
     @Test(dataProvider = "testProcess")
     public void testProcess(final String phrase, final List<Result> resultList) {
-        final NERResultSet result = namedEntityAnalyser.process(phrase);
+        final NerResultSet result = namedEntityAnalyser.process(phrase);
 
         // check that we have the correctly matched phrases and types
         final Map<NameType, Set<String>> mappedResult = result.getMappedResult();

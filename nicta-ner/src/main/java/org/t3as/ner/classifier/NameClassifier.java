@@ -21,7 +21,7 @@
  */
 package org.t3as.ner.classifier;
 
-import org.t3as.ner.NERResultSet;
+import org.t3as.ner.NerResultSet;
 import org.t3as.ner.classifier.feature.FeatureMap;
 import org.t3as.ner.data.NameType;
 import org.t3as.ner.data.Phrase;
@@ -45,10 +45,10 @@ public class NameClassifier {
 
     /**
      * This method process the whole input result set and gives all _phrases in the set a name type - modifies the data
-     * of the passed in NERResultSet!
+     * of the passed in NerResultSet!
      * @param resultSet set to process - modifies the data of the result set!
      */
-    public void process(final NERResultSet resultSet) {
+    public void process(final NerResultSet resultSet) {
         final FeatureMap featureMap = conf.getFeatureMap();
         final List<NameType> nameTypes = conf.getNameTypes();
 

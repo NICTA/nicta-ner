@@ -38,13 +38,13 @@ import static java.lang.String.format;
  * <p/>
  * The map result can be got from this class as well.
  */
-public class NERResultSet {
+public class NerResultSet {
 
     private final List<List<String>> tokens;
     public final List<List<Phrase>> phrases;
 
     @SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
-    public NERResultSet(final List<List<Phrase>> phrases, final List<List<String>> tokens) {
+    public NerResultSet(final List<List<Phrase>> phrases, final List<List<String>> tokens) {
         this.phrases = phrases;
         this.tokens = tokens;
     }

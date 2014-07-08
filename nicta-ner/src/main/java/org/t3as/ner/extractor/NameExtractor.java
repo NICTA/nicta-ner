@@ -21,7 +21,7 @@
  */
 package org.t3as.ner.extractor;
 
-import org.t3as.ner.NERResultSet;
+import org.t3as.ner.NerResultSet;
 import org.t3as.ner.data.Date;
 import org.t3as.ner.data.DatePhraseModel;
 import org.t3as.ner.data.Name;
@@ -68,7 +68,7 @@ public class NameExtractor {
     }
 
     /** This method will parse the text input into tokens and name phrases. */
-    public NERResultSet process(final String _text) {
+    public NerResultSet process(final String _text) {
         // tokenization
         final List<List<String>> tokens = TOKENIZER.process(_text);
 
@@ -194,7 +194,7 @@ public class NameExtractor {
             }
         }
 
-        return new NERResultSet(phrases, tokens);
+        return new NerResultSet(phrases, tokens);
     }
 
     /** Detects if a particular word in a sentence is a name. */

@@ -50,14 +50,14 @@ public class NamedEntityAnalyser {
     }
 
     /**
-     * Process the text, and return a NERResultSet.
+     * Process the text, and return a NerResultSet.
      * <p/>
-     * See NERResultSet class.
+     * See NerResultSet class.
      */
-    public NERResultSet process(final String text) {
+    public NerResultSet process(final String text) {
         // program pipeline: (Text) ------> (Phrases without classified) ------> (Phrases classified)
         //                         extractor                            classifier
-        final NERResultSet rs = extractor.process(text);
+        final NerResultSet rs = extractor.process(text);
         classifier.process(rs);
         return rs;
     }
