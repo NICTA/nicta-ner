@@ -37,8 +37,6 @@ import static nicta.ner.util.Strings.equalsIgnoreCase;
 // TODO: very suspicious date parsing going on, can we improve this?
 public class Date extends Phrase {
 
-    private static final Pattern COLON = Pattern.compile(":");
-
     public enum DateType {
         NONE,
         DATE_DD,
@@ -50,7 +48,9 @@ public class Date extends Phrase {
         DATE_WEEKDAY,
     }
 
-    private static final int MAX_MONTH_DAYS = 31;
+    private static final Pattern COLON = Pattern.compile(":");
+    private static final int SIXTY_SECONDS = 60;
+    private static final int THIRTYONE_DAYS = 31;
     private static final int MIN_YEAR = 1900;
     private static final int MAX_YEAR = 2200;
 
@@ -92,15 +92,17 @@ public class Date extends Phrase {
         // DD
         try {
             final int dd = Integer.parseInt(_word.substring(0, _word.length() - 2));
-            if ((equalsIgnoreCase(_word, "1st", "21st", "31st", "2nd", "22nd", "3rd", "23rd")
-                 || _word.toLowerCase().endsWith("th"))
-                && dd > 0 && dd <= 31)
-                return DATE_DD;
+            if (equalsIgnoreCase(_word, "1st", "21st", "31st", "2nd", "22nd", "3rd", "23rd")
+                 || _word.toLowerCase().endsWith("th")) {
+                if (dd > 0 && dd <= THIRTYONE_DAYS) {
+                    return DATE_DD;
+                }
+            }
         }
         catch (StringIndexOutOfBoundsException | NumberFormatException ignored) {}
         try {
             final int dd = Integer.parseInt(_word);
-            if (0 < dd && dd <= MAX_MONTH_DAYS) return DATE_DD;
+            if (0 < dd && dd <= THIRTYONE_DAYS) return DATE_DD;
         }
         catch (final NumberFormatException ignored) {}
 
@@ -110,16 +112,24 @@ public class Date extends Phrase {
         // DATE_TIME
         try {
             final String[] time_array = COLON.split(_word);
-            Integer h = null, m = null, s = null;
+            Integer h = null;
+            Integer m = null;
+            Integer s = null;
             if (time_array.length >= 2) {
                 h = Integer.parseInt(time_array[0]);
                 m = Integer.parseInt(time_array[1]);
             }
-            if (time_array.length == 3) s = Integer.parseInt(time_array[2]);
-            if (h != null && h >= 0
-                && m != null && m >= 0 && m < 60
-                && (s == null || (s > 0 && s < 60)))
-                return TIME;
+            if (time_array.length == 3) {
+                s = Integer.parseInt(time_array[2]);
+            }
+            if (h != null && h >= 0) {
+                //noinspection ConstantConditions
+                if (m != null && 0 <= m && m < SIXTY_SECONDS) {
+                    if (s == null || 0 <= s && s < SIXTY_SECONDS) {
+                        return TIME;
+                    }
+                }
+            }
         }
         catch (final NumberFormatException ignored) {}
 
