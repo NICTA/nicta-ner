@@ -65,7 +65,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.rootdir>${basedir}/..</project.rootdir>
-        <main.class>nicta.ner.NamedEntityAnalyser</main.class>
+        <main.class>org.t3as.ner.NamedEntityAnalyser</main.class>
     </properties>
 
     <build>
