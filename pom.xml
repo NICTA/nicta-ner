@@ -67,6 +67,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.rootdir>${basedir}</project.rootdir>
+        <org.glassfish.jersey.version>2.10.1</org.glassfish.jersey.version>
         <maven-notice-plugin.version>1.0.6.1</maven-notice-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.2</nexus-staging-maven-plugin.version>
     </properties>
@@ -165,6 +166,7 @@
             <!-- when adding/removing modules don't forget to do the same in the other profiles -->
             <modules>
                 <module>nicta-ner</module>
+                <module>nicta-ner-web</module>
             </modules>
 
             <build>
