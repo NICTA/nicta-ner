@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 /**
  * @author kgawande
  */
-@SuppressWarnings({"StringConcatenationMissingWhitespace", "HardcodedFileSeparator"})
+@SuppressWarnings("HardcodedFileSeparator")
 public final class DateMatcher {
 
     private static final ImmutableCollection<Pattern> PATTERNS;

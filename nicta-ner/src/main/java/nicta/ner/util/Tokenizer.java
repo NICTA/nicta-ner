@@ -140,7 +140,6 @@ public class Tokenizer {
         return new Words(l);
     }
 
-    @SuppressWarnings("StringConcatenationMissingWhitespace")
     private void mergeWordsIntoSentence(final String previousWord, final String word, final String nextWord,
                                         final int previousWordIndex) {
         // make sure the previous and next words both start with a letter or digit

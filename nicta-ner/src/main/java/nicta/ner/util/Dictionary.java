@@ -61,7 +61,6 @@ public final class Dictionary {
 
         // word(-y) + ied
         if (word.endsWith("ied")) {
-            //noinspection StringConcatenationMissingWhitespace
             final String wordStub = word.substring(0, word.length() - 3) + "y";
             if (checkup(wordStub) != null) return true;
         }
@@ -87,7 +86,6 @@ public final class Dictionary {
 
         // word(-y) + ies
         if (word.endsWith("ies")) {
-            //noinspection StringConcatenationMissingWhitespace
             final String wordStub = word.substring(0, word.length() - 3) + "y";
             if (checkup(wordStub) != null) return true;
         }

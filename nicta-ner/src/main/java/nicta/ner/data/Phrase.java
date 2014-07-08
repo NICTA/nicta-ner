@@ -71,7 +71,6 @@ public class Phrase {
     }
 
     /** Test if the phrase is a sub phrase of the input phrase. */
-    @SuppressWarnings({"resource", "HardcodedLineSeparator"})
     public boolean isSubPhraseOf(final Phrase other) {
         if (phrase.length == 0) return false;
 
