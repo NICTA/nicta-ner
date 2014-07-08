@@ -26,8 +26,6 @@ import org.testng.IInvokedMethodListener;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 
-import static nicta.ner.util.Strings.NL;
-
 public class SystemOutTestLogger implements IInvokedMethodListener {
 
     @Override
@@ -41,9 +39,8 @@ public class SystemOutTestLogger implements IInvokedMethodListener {
         final String testName = method.getTestClass().getRealClass().getSimpleName();
         final ITestResult testResult = m.getTestResult();
         final long elapsed = testResult.getEndMillis() - testResult.getStartMillis();
-        //noinspection resource
-        System.out.printf("%s.%s(): %s, %d millis%s",
-                          testName, method.getMethodName(), Status.forCode(testResult.getStatus()), elapsed, NL);
+        System.out.printf("%s.%s(): %s, %d millis\n",
+                          testName, method.getMethodName(), Status.forCode(testResult.getStatus()), elapsed);
     }
 
     /** {@link org.testng.ITestResult} */

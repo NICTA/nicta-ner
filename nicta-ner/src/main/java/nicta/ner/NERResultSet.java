@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static nicta.ner.util.Strings.NL;
+import static java.lang.String.format;
 
 /**
  * This class encapsulated the two result set used in the NameExtractor class
@@ -43,8 +43,8 @@ public class NERResultSet {
     private final List<List<String>> tokens;
     public final List<List<Phrase>> phrases;
 
+    @SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
     public NERResultSet(final List<List<Phrase>> phrases, final List<List<String>> tokens) {
-        // TODO: need these to be deep immutable lists
         this.phrases = phrases;
         this.tokens = tokens;
     }
@@ -72,36 +72,36 @@ public class NERResultSet {
             final List<String> sentence = tokens.get(si);
             final List<Phrase> phraseList = this.phrases.get(si);
             for (final String aSentence : sentence) sb.append(aSentence).append(" ");
-            sb.append(NL).append("===============================================").append(NL);
-            for (final Phrase aPhrase : phraseList) {
+            sb.append("\n===============================================\n");
+            for (final Phrase p : phraseList) {
                 String ptext = "";
-                for (int wi = 0; wi < aPhrase.phrase.length; wi++) {
-                    ptext += (aPhrase.phrase[wi] + " ");
+                for (int wi = 0; wi < p.phrase.length; wi++) {
+                    ptext += (p.phrase[wi] + " ");
                 }
                 ptext = ptext.trim();
 
                 final StringBuilder stext = new StringBuilder();
-                for (int sci = 0; sci < aPhrase.score.length; sci++) {
+                for (int sci = 0; sci < p.score.length; sci++) {
                     if (sci != 0) stext.append(", ");
-                    stext.append(aPhrase.score[sci]);
+                    stext.append(p.score[sci]);
                 }
 
                 // what we are trying to generate:
                 // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
 
-                // "0: John\t"
-                sb.append(aPhrase.phrasePosition).append(": ").append(ptext).append("\t")
-                  // PERSON\t
-                  .append(aPhrase.phraseType.toString()).append("\t")
-                  // 11.25, 40.0, -10.0\t
-                  .append(stext).append("\t")
-                  // null\t
-                  .append(aPhrase.attachedWordMap.get("prep")).append("\t")
-                  // 0:0:1:1\n
-                  .append(aPhrase.phrasePosition).append(":").append(aPhrase.phraseStubPosition).append(":")
-                  .append(aPhrase.phraseStubLength).append(":").append(aPhrase.phraseLength).append(NL);
+                // 0: John\t
+                sb.append(format("%s: %s\t", p.phrasePosition, ptext));
+                // PERSON\t
+                sb.append(format("%s\t", p.phraseType));
+                // 11.25, 40.0, -10.0\t
+                sb.append(format("%s\t", stext));
+                // null\t
+                sb.append(format("%s\t", p.attachedWordMap.get("prep")));
+                // 0:0:1:1\n
+                sb.append(format("%d:%d:%d:%d\n",
+                                 p.phrasePosition, p.phraseStubPosition, p.phraseStubLength, p.phraseLength));
             }
-            sb.append(NL).append(NL);
+            sb.append("\n\n");
         }
         return sb.toString();
     }

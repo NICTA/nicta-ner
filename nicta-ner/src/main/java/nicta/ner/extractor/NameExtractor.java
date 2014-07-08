@@ -45,9 +45,9 @@ import static nicta.ner.data.Date.DateType.NONE;
 import static nicta.ner.data.Date.getDateType;
 import static nicta.ner.util.Dictionary.isPastTense;
 import static nicta.ner.util.Dictionary.isPlural;
-import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATION;
 import static nicta.ner.util.Strings.equalsIgnoreCase;
 import static nicta.ner.util.Strings.startsWith;
+import static nicta.ner.util.Tokenizer.Mode.WITH_PUNCTUATION;
 
 // TODO: full of very long methods, please to fix
 /** Rule-based expert system. */

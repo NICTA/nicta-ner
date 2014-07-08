@@ -25,8 +25,6 @@ import static java.lang.Character.isUpperCase;
 
 public final class Strings {
 
-    public static final String NL = System.lineSeparator();
-
     private Strings() {}
 
     public static boolean equalss(final String word, final String... words) {
