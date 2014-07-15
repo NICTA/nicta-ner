@@ -28,4 +28,5 @@ http://creativecommons.org/licenses/by-sa/3.0/
 
 The NICTA NER project contains a number of subprojects implementing various functionality:
 
-1. [NICTA NER library](nicta-ner) This is the core NER library that does the actual NER work.
+1. [NICTA NER library](nicta-ner) This is the core NER library that does the actual processing work.
+2. [NER webservice](nicta-ner-web) A simple webservice that wraps the NER library.
