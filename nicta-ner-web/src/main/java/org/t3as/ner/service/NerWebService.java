@@ -38,19 +38,21 @@ import java.net.URLDecoder;
 @Path("v1.0/ner")
 public class NerWebService {
 
-    static final Configuration conf;
+    private static final Configuration conf;
 
     static {
         try { conf = new Configuration(); }
         catch (final IOException e) { throw new RuntimeException("Could not load configuraton.", e); }
     }
 
+    /** Show some documentation when somebody does a GET request. */
     @GET
     public InputStream getDoc() throws IOException {
         //noinspection ConstantConditions
         return getClass().getClassLoader().getResource("NerWebService_help.txt").openStream();
     }
 
+    @SuppressWarnings("MethodMayBeStatic")
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)

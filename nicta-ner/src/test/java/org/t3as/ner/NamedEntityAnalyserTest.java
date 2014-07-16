@@ -120,6 +120,12 @@ public class NamedEntityAnalyserTest {
                      add(new Result("Foreign", UNKNOWN, 0, 0, 0));
                      // 22: Commonwealth Office	UNKNOWN	0.0, 0.0, 0.0	for	22:22:2:2
                      add(new Result("Commonwealth Office", UNKNOWN, 0, 0, 0));
+                     //4: China	LOCATION	36.25, 30.0, -20.0	from	4:4:1:1
+                     add(new Result("China", LOCATION, 36.25, 30.0, -20.0));
+                     //6: America	LOCATION	36.25, 30.0, -20.0	from	6:6:1:1
+                     add(new Result("America", LOCATION, 36.25, 30.0, -20.0));
+                     //8: Australia	LOCATION	43.75, -20.0, 15.0	from	8:8:1:1
+                     add(new Result("Australia", LOCATION, 43.75, -20.0, 15.0));
                  }}},
 
                 {"Apple (Apple Inc.) is a company with the stock symbol AAPL.",
