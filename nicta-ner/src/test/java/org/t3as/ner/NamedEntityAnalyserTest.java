@@ -119,7 +119,8 @@ public class NamedEntityAnalyserTest {
                      // 10: H123ABC	UNKNOWN	0.0, 0.0, 0.0	null	10:10:1:1
                      add(new Result("H123ABC", UNKNOWN, of(0., 0., 0.), none()));
                      // 5: Department of Health	ORGANIZATION	0.0, 0.0, 18.75	for	5:6:3:4
-                     add(new Result("Department of Health", ORGANIZATION, of(0., 0., 18.75), ImmutableMap.of("prep", "for")));
+                     add(new Result("Department of Health", ORGANIZATION, of(0., 0., 18.75),
+                                    ImmutableMap.of("prep", "for")));
                      // 19: Foreign	UNKNOWN	0.0, 0.0, 0.0	for	19:20:1:2
                      add(new Result("Foreign", UNKNOWN, of(0., 0., 0.), ImmutableMap.of("prep", "for")));
                      // 22: Commonwealth Office	UNKNOWN	0.0, 0.0, 0.0	for	22:22:2:2
@@ -246,7 +247,8 @@ public class NamedEntityAnalyserTest {
         final double[] scores;
         final Map<String, String> attachedWordMap;
 
-        private Result(final String phrase, final NameType type, final Collection<Double> scores, final Map<String, String> attachedWordMap) {
+        private Result(final String phrase, final NameType type, final Collection<Double> scores,
+                       final Map<String, String> attachedWordMap) {
             this.phrase = phrase;
             this.type = type;
             this.scores = Doubles.toArray(scores);
