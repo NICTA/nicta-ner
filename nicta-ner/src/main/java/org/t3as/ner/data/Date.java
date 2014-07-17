@@ -66,8 +66,8 @@ public class Date extends Phrase {
             "Thursday", "Friday", "Saturday"
     };
 
-    public Date(final List<String> phrase, final int pos, final int len, final int stubPos, final int typeDimension) {
-        super(phrase, pos, len, stubPos, typeDimension);
+    public Date(final List<Token> tokens, final int pos, final int len, final int stubPos, final int typeDimension) {
+        super(tokens, pos, len, stubPos, typeDimension);
         this.phraseType = NameType.DATE;
         this.isDate = true;
     }

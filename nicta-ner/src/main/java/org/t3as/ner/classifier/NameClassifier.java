@@ -75,7 +75,7 @@ public class NameClassifier {
                         break;
                     }
                 }
-                if (!isSubPhrase || phrase.phrase.length > 1) {
+                if (!isSubPhrase || phrase.phrase.size() > 1) {
                     final Set<Phrase> newSet = new HashSet<>();
                     newSet.add(phrase);
                     phraseInMemory.put(phrase, newSet);

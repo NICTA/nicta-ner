@@ -42,8 +42,8 @@ public class ExistingPhraseFeature extends Feature {
     @Override
     public double score(final Phrase _p) {
         String phrase = "";
-        for (int i = 0; i < _p.phrase.length; i++) {
-            phrase += _p.phrase[i] + " ";
+        for (int i = 0; i < _p.phrase.size(); i++) {
+            phrase += _p.phrase.get(i).str + " ";
         }
         phrase = phrase.trim();
 

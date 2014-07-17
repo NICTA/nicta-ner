@@ -23,6 +23,7 @@ package org.t3as.ner;
 
 import org.t3as.ner.data.NameType;
 import org.t3as.ner.data.Phrase;
+import org.t3as.ner.data.Token;
 
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -40,11 +41,11 @@ import static java.lang.String.format;
  */
 public class NerResultSet {
 
-    private final List<List<String>> tokens;
+    private final List<List<Token>> tokens;
     public final List<List<Phrase>> phrases;
 
     @SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
-    public NerResultSet(final List<List<Phrase>> phrases, final List<List<String>> tokens) {
+    public NerResultSet(final List<List<Phrase>> phrases, final List<List<Token>> tokens) {
         this.phrases = phrases;
         this.tokens = tokens;
     }
@@ -69,14 +70,14 @@ public class NerResultSet {
         final StringBuilder sb = new StringBuilder();
 
         for (int si = 0; si < tokens.size(); si++) {
-            final List<String> sentence = tokens.get(si);
+            final List<Token> sentence = tokens.get(si);
             final List<Phrase> phraseList = this.phrases.get(si);
-            for (final String aSentence : sentence) sb.append(aSentence).append(" ");
+            for (final Token aSentence : sentence) sb.append(aSentence).append(" ");
             sb.append("\n===============================================\n");
             for (final Phrase p : phraseList) {
                 String ptext = "";
-                for (int wi = 0; wi < p.phrase.length; wi++) {
-                    ptext += (p.phrase[wi] + " ");
+                for (int wi = 0; wi < p.phrase.size(); wi++) {
+                    ptext += (p.phrase.get(wi).str + " ");
                 }
                 ptext = ptext.trim();
 

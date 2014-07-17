@@ -21,10 +21,33 @@
  */
 package org.t3as.ner.data;
 
-import java.util.List;
+import javax.annotation.concurrent.Immutable;
 
-public class Name extends Phrase {
-    public Name(final List<Token> tokens, final int pos, final int len, final int stubPos, final int typeDimension) {
-        super(tokens, pos, len, stubPos, typeDimension);
+@Immutable
+public class Token {
+
+    public final int startIndex;
+    public final String str;
+
+    public Token(final int startIndex, final String str) {
+        this.startIndex = startIndex;
+        this.str = str;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Token token = (Token) o;
+        return startIndex == token.startIndex && str.equals(token.str);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = startIndex;
+        result = 31 * result + str.hashCode();
+        return result;
+    }
+
+    public String toString() { return startIndex + ":" + str; }
 }

@@ -21,6 +21,8 @@
  */
 package org.t3as.ner.data;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +35,7 @@ import java.util.Map;
 public class Phrase {
     // TODO: getters and setters for these
     /** phrase string array */
-    public final String[] phrase;
+    public final List<Token> phrase;
     /** corresponding name type */
     public NameType phraseType;
     /** the start position of the phase in a sentence */
@@ -52,34 +54,34 @@ public class Phrase {
     public boolean isDate;
 
     /** Constructor with param input */
-    public Phrase(final List<String> _phrase, final int _phrasePos, final int _phraseLen, final int _stubPos,
+    public Phrase(final List<Token> tokens, final int _phrasePos, final int _phraseLen, final int _stubPos,
                   final int _typeDimension) {
         phrasePosition = _phrasePos;
         phraseLength = _phraseLen;
-        phrase = _phrase.toArray(new String[_phrase.size()]);
+        phrase = ImmutableList.copyOf(tokens);
         phraseType = NameType.UNKNOWN;
         score = new double[_typeDimension];
         attachedWordMap = new HashMap<>();
         phraseStubPosition = _stubPos;
-        phraseStubLength = phrase.length;
+        phraseStubLength = phrase.size();
     }
 
     public String phraseString() {
         final StringBuilder sb = new StringBuilder();
-        for (final String aPhrase : phrase) sb.append(aPhrase).append(" ");
+        for (final Token aPhrase : phrase) sb.append(aPhrase.str).append(" ");
         return sb.toString().trim();
     }
 
     /** Test if the phrase is a sub phrase of the input phrase. */
     public boolean isSubPhraseOf(final Phrase other) {
-        if (phrase.length == 0) return false;
+        if (phrase.isEmpty()) return false;
 
         // TODO: this should be refactored - the intent is not clear, implementation is sketchy
         boolean is = false;
-        for (int i = 0; i < other.phrase.length - phrase.length + 1; i++) {
+        for (int i = 0; i < other.phrase.size() - phrase.size() + 1; i++) {
             boolean flag = true;
-            for (int j = 0; j < phrase.length; j++) {
-                if (!phrase[j].equalsIgnoreCase(other.phrase[i + j])) {
+            for (int j = 0; j < phrase.size(); j++) {
+                if (!phrase.get(j).str.equalsIgnoreCase(other.phrase.get(i + j).str)) {
                     flag = false;
                     break;
                 }
@@ -113,7 +115,7 @@ public class Phrase {
     @Override
     public String toString() {
         return "Phrase{" +
-               "phrase=" + Arrays.toString(phrase) +
+               "phrase=" + phrase +
                ", phraseType=" + phraseType +
                ", phrasePosition=" + phrasePosition +
                ", phraseLength=" + phraseLength +

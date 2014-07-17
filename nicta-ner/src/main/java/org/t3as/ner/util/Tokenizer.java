@@ -23,6 +23,7 @@ package org.t3as.ner.util;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
+import org.t3as.ner.data.Token;
 
 import java.io.IOException;
 import java.text.BreakIterator;
@@ -62,7 +63,7 @@ public class Tokenizer {
     }
 
     private final Mode mode;
-    private List<String> currentSentence;
+    private List<Token> currentSentence;
 
     public Tokenizer(final Mode mode) { this.mode = mode; }
 
@@ -71,30 +72,30 @@ public class Tokenizer {
      * @param text tokenize this
      * @return tokenized text
      */
-    public List<List<String>> process(final String text) {
-        final List<List<String>> paragraph = new ArrayList<>();
+    public List<List<Token>> process(final String text) {
+        final List<List<Token>> paragraph = new ArrayList<>();
         currentSentence = new ArrayList<>();
-        final Words words = splitText(text);
+        final Tokens tokens = splitText(text);
 
-        while (words.hasNext()) {
-            final String word = words.next();
-            final String trimmedWord = word.trim();
+        while (tokens.hasNext()) {
+            final Token t = tokens.next();
+            final String trimmedWord = t.str.trim();
 
             // skip spaces
             if (trimmedWord.isEmpty()) continue;
 
-            if (((mode == WITH_PUNCTUATION) || (mode == WITHOUT_PUNCTUATION && isLetterOrDigit(initChar(word))))) {
+            if (((mode == WITH_PUNCTUATION) || (mode == WITHOUT_PUNCTUATION && isLetterOrDigit(initChar(t.str))))) {
                 boolean canBreakSentence = true;
-                if (word.contains("'")) {
-                    wordContainsApostrophe(word);
+                if (t.str.contains("'")) {
+                    wordContainsApostrophe(t);
                 }
                 else if (".".equals(trimmedWord)) {
-                    canBreakSentence = wordIsFullStop(word);
+                    canBreakSentence = wordIsFullStop(t);
                 }
                 else if (":".equals(trimmedWord)) {
-                    wordIsColon(words, word);
+                    wordIsColon(tokens, t);
                 }
-                else currentSentence.add(word);
+                else currentSentence.add(t);
 
                 // handling the end of a sentence
                 if (canBreakSentence && equalss(trimmedWord, ".", ";", "?", "!")) {
@@ -108,23 +109,23 @@ public class Tokenizer {
         return paragraph;
     }
 
-    private void wordIsColon(final Words words, final String word) {
+    private void wordIsColon(final Tokens tokens, final Token t) {
         // check we can get a previous and next word to merge together
-        if (!currentSentence.isEmpty() && words.hasNext()) {
+        if (!currentSentence.isEmpty() && tokens.hasNext()) {
             // if the colon does not have a space on either side
-            if (!isSpaceChar(lastChar(words.peekPrev())) && !isSpaceChar(initChar(words.peekNext()))) {
-                // try to merge the 3 words back together again
+            if (!isSpaceChar(lastChar(tokens.peekPrev().str)) && !isSpaceChar(initChar(tokens.peekNext().str))) {
+                // try to merge the 3 tokens back together again
                 final int prevWordIndex = currentSentence.size() - 1;
-                final String prevSentenceWord = currentSentence.get(prevWordIndex);
-                mergeWordsIntoSentence(prevSentenceWord, word, words.next(), prevWordIndex);
+                final Token prevSentenceWord = currentSentence.get(prevWordIndex);
+                mergeWordsIntoSentence(prevSentenceWord, t, tokens.next(), prevWordIndex);
             }
-            else currentSentence.add(word);
+            else currentSentence.add(t);
         }
-        else currentSentence.add(word);
+        else currentSentence.add(t);
     }
 
-    private static Words splitText(final String text) {
-        final List<String> l = new LinkedList<>();
+    private static Tokens splitText(final String text) {
+        final List<Token> l = new LinkedList<>();
 
         // use a BreakIterator to iterate our way through the words of the text
         final BreakIterator wordIterator = BreakIterator.getWordInstance(new Locale("en", "US"));
@@ -134,19 +135,19 @@ public class Tokenizer {
         int startIdx = wordIterator.first();
         for (int endIdx = wordIterator.next(); endIdx != DONE; startIdx = endIdx, endIdx = wordIterator.next()) {
             final String word = text.substring(startIdx, endIdx);
-            l.add(word);
+            l.add(new Token(startIdx, word));
         }
 
-        return new Words(l);
+        return new Tokens(l);
     }
 
-    private void mergeWordsIntoSentence(final String previousWord, final String word, final String nextWord,
+    private void mergeWordsIntoSentence(final Token previousWord, final Token word, final Token nextWord,
                                         final int previousWordIndex) {
         // make sure the previous and next words both start with a letter or digit
-        if (isLetterOrDigit(initChar(previousWord)) && isLetterOrDigit(initChar(nextWord))) {
-            // merge the 3 words again and add the result, remove previous word from sentence
-            currentSentence.remove(previousWordIndex);
-            currentSentence.add(previousWord + word + nextWord);
+        if (isLetterOrDigit(initChar(previousWord.str)) && isLetterOrDigit(initChar(nextWord.str))) {
+            // merge the 3 words again and add the result, replace previous word from sentence
+            currentSentence.set(previousWordIndex,
+                                new Token(previousWord.startIndex, previousWord.str + word.str + nextWord.str));
         }
         // otherwise just add the word and next word
         else {
@@ -155,62 +156,53 @@ public class Tokenizer {
         }
     }
 
-    private boolean wordIsFullStop(final String word) {
+    private boolean wordIsFullStop(final Token t) {
         boolean canBreakSentence = true;
-        final int previousWordIndex = currentSentence.size() - 1;
-        if (previousWordIndex == -1) currentSentence.add(word);
+        if (currentSentence.isEmpty()) currentSentence.add(t);
         else {
-            final String previousWord = currentSentence.get(previousWordIndex);
-            if (ABBREVIATION_EXCEPTIONS.contains(previousWord)
-                || isSingleUppercaseChar(previousWord)
-                || previousWord.contains(".")) {
-                currentSentence.remove(previousWordIndex);
-                currentSentence.add(previousWord + ".");
+            final int previousWordIndex = currentSentence.size() - 1;
+            final Token previousWord = currentSentence.get(previousWordIndex);
+            if (ABBREVIATION_EXCEPTIONS.contains(previousWord.str)
+                || isSingleUppercaseChar(previousWord.str)
+                || previousWord.str.contains(".")) {
+                currentSentence.set(previousWordIndex, new Token(previousWord.startIndex, previousWord.str + "."));
                 // do not break the sentence
                 canBreakSentence = false;
             }
-            else currentSentence.add(word);
+            else currentSentence.add(t);
         }
         return canBreakSentence;
     }
 
-    private void wordContainsApostrophe(final String word) {
-        if (word.endsWith("n't")) {
-            final String w1 = word.substring(0, word.length() - 3);
-            if (!w1.isEmpty()) currentSentence.add(w1);
-            currentSentence.add("n't");
+    private void wordContainsApostrophe(final Token t) {
+        if (t.str.endsWith("n't")) {
+            final String w1 = t.str.substring(0, t.str.length() - 3);
+            if (!w1.isEmpty()) currentSentence.add(new Token(t.startIndex, w1));
+            currentSentence.add(new Token(t.startIndex + w1.length(), "n't"));
         }
-        else if (endsWith(word, "'s", "'ll", "'re", "'m", "'ve", "'d")) {
-            final int p = word.indexOf("'");
-            final String w1 = word.substring(0, p);
-            final String w2 = word.substring(p);
-            if (!w1.isEmpty()) currentSentence.add(w1);
-            if (!w2.isEmpty()) currentSentence.add(w2);
+        else if (endsWith(t.str, "'s", "'ll", "'re", "'m", "'ve", "'d")) {
+            final int p = t.str.indexOf("'");
+            final String w1 = t.str.substring(0, p);
+            final String w2 = t.str.substring(p);
+            if (!w1.isEmpty()) currentSentence.add(new Token(t.startIndex, w1));
+            if (!w2.isEmpty()) currentSentence.add(new Token(t.startIndex + w1.length(), w2));
         }
-        else currentSentence.add(word);
+        else currentSentence.add(t);
     }
 
-    private static class Words {
+    private static class Tokens {
 
-        private final List<String> l;
+        private final List<Token> l;
         private int index = -1;
 
-        private Words(final List<String> l) { this.l = l; }
+        private Tokens(final List<Token> l) { this.l = l; }
 
-        public boolean hasNext() {
-            return index + 1 < l.size();
-        }
+        public boolean hasNext() { return index + 1 < l.size(); }
 
-        public String next() {
-            return l.get(++index);
-        }
+        public Token next() { return l.get(++index); }
 
-        public String peekPrev() {
-            return l.get(index - 1);
-        }
+        public Token peekPrev() { return l.get(index - 1); }
 
-        public String peekNext() {
-            return l.get(index + 1);
-        }
+        public Token peekNext() { return l.get(index + 1); }
     }
 }
