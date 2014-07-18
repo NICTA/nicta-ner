@@ -153,6 +153,7 @@
             <modules>
                 <module>nicta-ner</module>
                 <module>nicta-ner-web</module>
+                <module>nicta-ner-client</module>
             </modules>
 
             <build>
@@ -176,6 +177,7 @@
             <!-- when adding/removing modules don't forget to do the same in the other profiles -->
             <modules>
                 <module>nicta-ner</module>
+                <module>nicta-ner-client</module>
                 <!-- excluding the WAR modules -->
             </modules>
 
