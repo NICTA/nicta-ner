@@ -72,9 +72,7 @@ public class NerResultSet {
         for (int si = 0; si < tokens.size(); si++) {
             final List<Token> sentence = tokens.get(si);
             final List<Phrase> phraseList = this.phrases.get(si);
-            for (final Token aSentence : sentence)
-                sb.append(aSentence.string
-                ).append(" ");
+            for (final Token aSentence : sentence) sb.append(aSentence.string).append(" ");
             sb.append("\n===============================================\n");
             for (final Phrase p : phraseList) {
                 String ptext = "";
