@@ -43,7 +43,7 @@ public class ExistingPhraseFeature extends Feature {
     public double score(final Phrase _p) {
         String phrase = "";
         for (int i = 0; i < _p.phrase.size(); i++) {
-            phrase += _p.phrase.get(i).str + " ";
+            phrase += _p.phrase.get(i).string + " ";
         }
         phrase = phrase.trim();
 

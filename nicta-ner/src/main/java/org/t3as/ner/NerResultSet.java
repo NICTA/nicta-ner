@@ -77,7 +77,7 @@ public class NerResultSet {
             for (final Phrase p : phraseList) {
                 String ptext = "";
                 for (int wi = 0; wi < p.phrase.size(); wi++) {
-                    ptext += (p.phrase.get(wi).str + " ");
+                    ptext += (p.phrase.get(wi).string + " ");
                 }
                 ptext = ptext.trim();
 

@@ -79,14 +79,14 @@ public class Tokenizer {
 
         while (tokens.hasNext()) {
             final Token t = tokens.next();
-            final String trimmedWord = t.str.trim();
+            final String trimmedWord = t.string.trim();
 
             // skip spaces
             if (trimmedWord.isEmpty()) continue;
 
-            if (((mode == WITH_PUNCTUATION) || (mode == WITHOUT_PUNCTUATION && isLetterOrDigit(initChar(t.str))))) {
+            if (((mode == WITH_PUNCTUATION) || (mode == WITHOUT_PUNCTUATION && isLetterOrDigit(initChar(t.string))))) {
                 boolean canBreakSentence = true;
-                if (t.str.contains("'")) {
+                if (t.string.contains("'")) {
                     wordContainsApostrophe(t);
                 }
                 else if (".".equals(trimmedWord)) {
@@ -113,7 +113,7 @@ public class Tokenizer {
         // check we can get a previous and next word to merge together
         if (!currentSentence.isEmpty() && tokens.hasNext()) {
             // if the colon does not have a space on either side
-            if (!isSpaceChar(lastChar(tokens.peekPrev().str)) && !isSpaceChar(initChar(tokens.peekNext().str))) {
+            if (!isSpaceChar(lastChar(tokens.peekPrev().string)) && !isSpaceChar(initChar(tokens.peekNext().string))) {
                 // try to merge the 3 tokens back together again
                 final int prevWordIndex = currentSentence.size() - 1;
                 final Token prevSentenceWord = currentSentence.get(prevWordIndex);
@@ -144,10 +144,10 @@ public class Tokenizer {
     private void mergeWordsIntoSentence(final Token previousWord, final Token word, final Token nextWord,
                                         final int previousWordIndex) {
         // make sure the previous and next words both start with a letter or digit
-        if (isLetterOrDigit(initChar(previousWord.str)) && isLetterOrDigit(initChar(nextWord.str))) {
+        if (isLetterOrDigit(initChar(previousWord.string)) && isLetterOrDigit(initChar(nextWord.string))) {
             // merge the 3 words again and add the result, replace previous word from sentence
             currentSentence.set(previousWordIndex,
-                                new Token(previousWord.startIndex, previousWord.str + word.str + nextWord.str));
+                                new Token(previousWord.startIndex, previousWord.string + word.string + nextWord.string));
         }
         // otherwise just add the word and next word
         else {
@@ -162,10 +162,10 @@ public class Tokenizer {
         else {
             final int previousWordIndex = currentSentence.size() - 1;
             final Token previousWord = currentSentence.get(previousWordIndex);
-            if (ABBREVIATION_EXCEPTIONS.contains(previousWord.str)
-                || isSingleUppercaseChar(previousWord.str)
-                || previousWord.str.contains(".")) {
-                currentSentence.set(previousWordIndex, new Token(previousWord.startIndex, previousWord.str + "."));
+            if (ABBREVIATION_EXCEPTIONS.contains(previousWord.string)
+                || isSingleUppercaseChar(previousWord.string)
+                || previousWord.string.contains(".")) {
+                currentSentence.set(previousWordIndex, new Token(previousWord.startIndex, previousWord.string + "."));
                 // do not break the sentence
                 canBreakSentence = false;
             }
@@ -175,15 +175,15 @@ public class Tokenizer {
     }
 
     private void wordContainsApostrophe(final Token t) {
-        if (t.str.endsWith("n't")) {
-            final String w1 = t.str.substring(0, t.str.length() - 3);
+        if (t.string.endsWith("n't")) {
+            final String w1 = t.string.substring(0, t.string.length() - 3);
             if (!w1.isEmpty()) currentSentence.add(new Token(t.startIndex, w1));
             currentSentence.add(new Token(t.startIndex + w1.length(), "n't"));
         }
-        else if (endsWith(t.str, "'s", "'ll", "'re", "'m", "'ve", "'d")) {
-            final int p = t.str.indexOf("'");
-            final String w1 = t.str.substring(0, p);
-            final String w2 = t.str.substring(p);
+        else if (endsWith(t.string, "'s", "'ll", "'re", "'m", "'ve", "'d")) {
+            final int p = t.string.indexOf("'");
+            final String w1 = t.string.substring(0, p);
+            final String w2 = t.string.substring(p);
             if (!w1.isEmpty()) currentSentence.add(new Token(t.startIndex, w1));
             if (!w2.isEmpty()) currentSentence.add(new Token(t.startIndex + w1.length(), w2));
         }

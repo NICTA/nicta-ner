@@ -26,12 +26,14 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class Token {
 
+    /** 0-indexed position of the first character of this token from the original text being analysed. */
     public final int startIndex;
-    public final String str;
+    /** The string that this token is representing. */
+    public final String string;
 
-    public Token(final int startIndex, final String str) {
+    public Token(final int startIndex, final String string) {
         this.startIndex = startIndex;
-        this.str = str;
+        this.string = string;
     }
 
     @Override
@@ -39,15 +41,15 @@ public class Token {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Token token = (Token) o;
-        return startIndex == token.startIndex && str.equals(token.str);
+        return startIndex == token.startIndex && string.equals(token.string);
     }
 
     @Override
     public int hashCode() {
         int result = startIndex;
-        result = 31 * result + str.hashCode();
+        result = 31 * result + string.hashCode();
         return result;
     }
 
-    public String toString() { return startIndex + ":" + str; }
+    public String toString() { return startIndex + ":" + string; }
 }

@@ -68,7 +68,7 @@ public class Phrase {
 
     public String phraseString() {
         final StringBuilder sb = new StringBuilder();
-        for (final Token aPhrase : phrase) sb.append(aPhrase.str).append(" ");
+        for (final Token aPhrase : phrase) sb.append(aPhrase.string).append(" ");
         return sb.toString().trim();
     }
 
@@ -81,7 +81,7 @@ public class Phrase {
         for (int i = 0; i < other.phrase.size() - phrase.size() + 1; i++) {
             boolean flag = true;
             for (int j = 0; j < phrase.size(); j++) {
-                if (!phrase.get(j).str.equalsIgnoreCase(other.phrase.get(i + j).str)) {
+                if (!phrase.get(j).string.equalsIgnoreCase(other.phrase.get(i + j).string)) {
                     flag = false;
                     break;
                 }
