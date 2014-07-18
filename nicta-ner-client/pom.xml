@@ -12,7 +12,7 @@
     <artifactId>nicta-ner-client</artifactId>
     <packaging>jar</packaging>
 
-    <name>NICTA Named Entity Recogniser client</name>
+    <name>NICTA t3as Named-Entity Recognition client</name>
     <description>
         This is a client library for the NICTA NER Web Service.
     </description>

@@ -12,10 +12,11 @@
     <artifactId>nicta-ner</artifactId>
     <packaging>jar</packaging>
 
-    <name>NICTA Named Entity Recogniser library</name>
+    <name>NICTA t3as Named-Entity Recognition library</name>
     <description>
-        The NICTA Named Entity Recogniser is a Java based Named Entity Recogniser which extracts named entities from
-        text such as Organisation, Location and Person names. This is the main library that does the actual NER work.
+        The NICTA t3as Named-Entity Recognition is a Java based Named-Entity Recognition library which extracts named
+        entities from text such as Organisation, Location, Date and Person names. This is the main library that does the
+        actual NER work.
     </description>
     <url>http://t3as.org/</url>
     <inceptionYear>2010</inceptionYear>
@@ -101,11 +102,14 @@
                         <configuration>
                             <finalName>${project.artifactId}-${project.version}-shade</finalName>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>${main.class}</mainClass>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer"/>
                             </transformers>
                         </configuration>
                     </execution>

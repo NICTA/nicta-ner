@@ -1,6 +1,6 @@
 /*
  * #%L
- * NICTA Named Entity Recogniser client
+ * NICTA t3as Named-Entity Recognition client
  * %%
  * Copyright (C) 2014 NICTA
  * %%

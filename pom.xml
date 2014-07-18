@@ -14,10 +14,10 @@
     <version>0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>NICTA Named Entity Recogniser</name>
+    <name>NICTA t3as Named-Entity Recognition</name>
     <description>
-        The NICTA Named Entity Recogniser is a Java based Named Entity Recogniser which extracts named entities from
-        text such as Organisation, Location and Person names.
+        The NICTA t3as Named-Entity Recognition is a Java based Named-Entity Recognition library which extracts named
+        entities from text such as Organisation, Location and Person names.
     </description>
     <url>http://t3as.org/</url>
     <inceptionYear>2010</inceptionYear>
@@ -164,7 +164,11 @@
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
                         <version>${nexus-staging-maven-plugin.version}</version>
-                        <executions> <execution> <phase>none</phase> </execution> </executions>
+                        <executions>
+                            <execution>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
                     </plugin>
 
                 </plugins>
@@ -262,7 +266,11 @@
                         <groupId>org.jasig.maven</groupId>
                         <artifactId>maven-notice-plugin</artifactId>
                         <version>${maven-notice-plugin.version}</version>
-                        <executions> <execution> <phase>none</phase> </execution> </executions>
+                        <executions>
+                            <execution>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
                     </plugin>
 
                 </plugins>

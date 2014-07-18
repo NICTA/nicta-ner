@@ -1,4 +1,4 @@
-MetaMap SNOMED CT Service
+NICTA t3as Named-Entity Recognition web service
 
 Copyright (C) 2010 NICTA
 
@@ -21,6 +21,6 @@ This program links to or is a derivative of:
 
   BeanShell under GNU LESSER GENERAL PUBLIC LICENSE
   JCommander under The Apache Software License, Version 2.0
-  NICTA Named Entity Recogniser client under GNU GENERAL PUBLIC LICENSE Version 3
+  NICTA t3as Named-Entity Recognition client under GNU GENERAL PUBLIC LICENSE Version 3
   TestNG under Apache License, Version 2.0
 

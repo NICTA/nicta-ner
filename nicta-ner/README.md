@@ -1,6 +1,6 @@
-# NICTA Named Entity Recogniser (NER)
+# NICTA t3as Named-Entity Recognition (NER)
 
-NICTA Named Entity Recogniser is a rule based Named Entity Recogniser which extracts named entities from text, such as Organisation, Location and Person names. It is written in Java.
+NICTA t3as Named-Entity Recognition is a rule based Named-Entity Recognition library which extracts named entities from text, such as Organisation, Location and Person names. It is written in Java.
 
 ## Contributed by:
 
