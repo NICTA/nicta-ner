@@ -81,9 +81,9 @@ public class TokenizerTest {
     }
 
     @Test(dataProvider = "text")
-    public void testProcess(final String text, final List<List<Token>> results) {
+    public void testProcess(final String text, final List<List<Token>> expected) {
         final Tokenizer t = new Tokenizer(Tokenizer.Mode.WITH_PUNCTUATION);
-        Assert.assertEquals(t.process(text), results, "Wrong result for the text '" + text + "'");
+        Assert.assertEquals(t.process(text), expected, "Wrong expected results for the text '" + text + "'");
     }
 
     private static Token t(final int i, final String s) { return new Token(i, s); }
