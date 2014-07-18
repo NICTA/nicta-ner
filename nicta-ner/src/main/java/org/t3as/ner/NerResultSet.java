@@ -72,7 +72,9 @@ public class NerResultSet {
         for (int si = 0; si < tokens.size(); si++) {
             final List<Token> sentence = tokens.get(si);
             final List<Phrase> phraseList = this.phrases.get(si);
-            for (final Token aSentence : sentence) sb.append(aSentence).append(" ");
+            for (final Token aSentence : sentence)
+                sb.append(aSentence.string
+                ).append(" ");
             sb.append("\n===============================================\n");
             for (final Phrase p : phraseList) {
                 String ptext = "";
@@ -99,8 +101,8 @@ public class NerResultSet {
                 // null\t
                 sb.append(format("%s\t", p.attachedWordMap.get("prep")));
                 // 0:0:1:1\n
-                sb.append(format("%d:%d:%d:%d\n",
-                                 p.phrasePosition, p.phraseStubPosition, p.phraseStubLength, p.phraseLength));
+                sb.append(format("%d:%d:%d:%d:%d\n", p.phrase.iterator().next().startIndex, p.phrasePosition,
+                                 p.phraseStubPosition, p.phraseStubLength, p.phraseLength));
             }
             sb.append("\n\n");
         }
