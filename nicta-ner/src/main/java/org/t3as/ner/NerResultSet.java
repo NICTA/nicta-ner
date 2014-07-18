@@ -88,7 +88,7 @@ public class NerResultSet {
                 }
 
                 // what we are trying to generate:
-                // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
+                // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:0:1:1
 
                 // 0: John\t
                 sb.append(format("%s: %s\t", p.phrasePosition, ptext));
