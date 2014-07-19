@@ -20,6 +20,7 @@ http://www.gnu.org/licenses/gpl-3.0.html.
 This program links to or is a derivative of:
 
   BeanShell under GNU LESSER GENERAL PUBLIC LICENSE
+  Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
   JCommander under The Apache Software License, Version 2.0
   NICTA t3as Named-Entity Recognition client under GNU GENERAL PUBLIC LICENSE Version 3
   TestNG under Apache License, Version 2.0

@@ -23,5 +23,14 @@ package org.t3as.ner.client;
 
 public class NerClient {
 
+    public static final String DEFAULT_BASE_URL = "http://ner.t3as.org/nicta-ner/";
 
+    private final String url;
+
+    public NerClient(final String url) { this.url = url; }
+
+    public String call(final String input) {
+        // TODO: finish this
+        return null;
+    }
 }
