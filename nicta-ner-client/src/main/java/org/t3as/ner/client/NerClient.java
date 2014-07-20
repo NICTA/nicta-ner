@@ -21,16 +21,33 @@
  */
 package org.t3as.ner.client;
 
+import org.t3as.ner.NerResultSet;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 public class NerClient {
 
-    public static final String DEFAULT_BASE_URL = "http://ner.t3as.org/nicta-ner/";
+    public static final String DEFAULT_BASE_URL = "http://ner.t3as.org/nicta-ner-web/";
 
-    private final String url;
+    private final WebTarget target;
 
-    public NerClient(final String url) { this.url = url; }
+    public NerClient(final String url) {
+        //final ClientConfig config = new DefaultClientConfig();
+        //config.getClasses().add(JacksonJsonProvider.class);
+        //config.getClasses().add(ObjectMapperProvider.class);
+        final Client client = ClientBuilder.newClient();
+        target = client.target(url);
+    }
 
-    public String call(final String input) {
+    public NerResultSet call(final String input) {
         // TODO: finish this
-        return null;
+        final Response response = target.request(MediaType.APPLICATION_JSON)
+                                        .post(Entity.entity(input, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+        return response.readEntity(NerResultSet.class);
     }
 }

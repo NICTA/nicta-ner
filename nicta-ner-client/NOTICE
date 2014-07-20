@@ -19,9 +19,23 @@ http://www.gnu.org/licenses/gpl-3.0.html.
 
 This program links to or is a derivative of:
 
+  aopalliance version 1.0 repackaged as a module under CDDL + GPLv2 with classpath exception
   BeanShell under GNU LESSER GENERAL PUBLIC LICENSE
+  FindBugs-jsr305 under The Apache Software License, Version 2.0
   Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
+  HK2 API module under CDDL + GPLv2 with classpath exception
+  HK2 Implementation Utilities under CDDL + GPLv2 with classpath exception
+  Javassist under MPL 1.1 or LGPL 2.1 or Apache License 2.0
+  javax.annotation API under CDDL + GPLv2 with classpath exception
+  javax.inject:1 as OSGi bundle under CDDL + GPLv2 with classpath exception
+  javax.ws.rs-api under CDDL 1.1 or GPL2 w/ CPE
   JCommander under The Apache Software License, Version 2.0
+  jersey-core-client under CDDL+GPL License
+  jersey-core-common under CDDL+GPL License
+  jersey-repackaged-guava under CDDL+GPL License
   NICTA t3as Named-Entity Recognition client under GNU GENERAL PUBLIC LICENSE Version 3
+  NICTA t3as Named-Entity Recognition library under GNU GENERAL PUBLIC LICENSE Version 3
+  OSGi resource locator bundle - used by various API providers that rely on META-INF/services mechanism to locate providers. under CDDL + GPLv2 with classpath exception
+  ServiceLocator Default Implementation under CDDL + GPLv2 with classpath exception
   TestNG under Apache License, Version 2.0
 
