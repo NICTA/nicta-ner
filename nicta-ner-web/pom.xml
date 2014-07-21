@@ -99,15 +99,6 @@
             <version>${org.glassfish.jersey.version}</version>
         </dependency>
 
-        <!-- Required only when you are using JAX-RS Client -->
-        <!--
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>2.10.1</version>
-        </dependency>
-         -->
-
         <dependency>
             <groupId>com.thetransactioncompany</groupId>
             <artifactId>cors-filter</artifactId>

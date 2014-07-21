@@ -117,8 +117,15 @@
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>2.10.1</version>
+            <version>${org.glassfish.jersey.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${org.glassfish.jersey.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -21,18 +21,21 @@
  */
 package org.t3as.ner.client;
 
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.t3as.ner.NerResultSet;
 
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static javax.ws.rs.core.Response.Status.Family;
+
 public class NerClient {
 
     public static final String DEFAULT_BASE_URL = "http://ner.t3as.org/nicta-ner-web/";
+    private static final String NER_SERVICE_PATH = "rest/v1.0/ner";
 
     private final WebTarget target;
 
@@ -40,14 +43,17 @@ public class NerClient {
         //final ClientConfig config = new DefaultClientConfig();
         //config.getClasses().add(JacksonJsonProvider.class);
         //config.getClasses().add(ObjectMapperProvider.class);
-        final Client client = ClientBuilder.newClient();
-        target = client.target(url);
+        target = ClientBuilder.newClient().register(new JacksonFeature()).target(url + NER_SERVICE_PATH);
     }
 
     public NerResultSet call(final String input) {
-        // TODO: finish this
-        final Response response = target.request(MediaType.APPLICATION_JSON)
+        final Response response = target.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON_TYPE)
                                         .post(Entity.entity(input, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+        if (Family.SUCCESSFUL != response.getStatusInfo().getFamily()) {
+            final Response.StatusType statusInfo = response.getStatusInfo();
+            throw new RuntimeException("NER request failed with status " + statusInfo.getStatusCode()
+                                       + ": " + statusInfo.getReasonPhrase());
+        }
         return response.readEntity(NerResultSet.class);
     }
 }

@@ -25,6 +25,12 @@ This program links to or is a derivative of:
   Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
   HK2 API module under CDDL + GPLv2 with classpath exception
   HK2 Implementation Utilities under CDDL + GPLv2 with classpath exception
+  Jackson-annotations under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  Jackson-core under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  jackson-databind under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  Jackson-JAXRS-base under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  Jackson-JAXRS-JSON under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  Jackson-module-JAXB-annotations under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
   Javassist under MPL 1.1 or LGPL 2.1 or Apache License 2.0
   javax.annotation API under CDDL + GPLv2 with classpath exception
   javax.inject:1 as OSGi bundle under CDDL + GPLv2 with classpath exception
@@ -32,6 +38,7 @@ This program links to or is a derivative of:
   JCommander under The Apache Software License, Version 2.0
   jersey-core-client under CDDL+GPL License
   jersey-core-common under CDDL+GPL License
+  jersey-media-json-jackson under CDDL+GPL License
   jersey-repackaged-guava under CDDL+GPL License
   NICTA t3as Named-Entity Recognition client under GNU GENERAL PUBLIC LICENSE Version 3
   NICTA t3as Named-Entity Recognition library under GNU GENERAL PUBLIC LICENSE Version 3
