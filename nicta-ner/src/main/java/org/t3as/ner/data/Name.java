@@ -21,6 +21,9 @@
  */
 package org.t3as.ner.data;
 
+import org.t3as.ner.Phrase;
+import org.t3as.ner.Token;
+
 import java.util.List;
 
 public class Name extends Phrase {

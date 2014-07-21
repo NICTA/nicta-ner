@@ -23,7 +23,7 @@ package org.t3as.ner.util;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
-import org.t3as.ner.data.Token;
+import org.t3as.ner.Token;
 
 import java.io.IOException;
 import java.text.BreakIterator;

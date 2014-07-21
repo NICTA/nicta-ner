@@ -24,7 +24,7 @@ package org.t3as.ner.resource;
 import com.google.common.collect.ImmutableList;
 import org.t3as.ner.classifier.feature.Feature;
 import org.t3as.ner.classifier.feature.FeatureMap;
-import org.t3as.ner.data.NameType;
+import org.t3as.ner.NameType;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.BufferedReader;

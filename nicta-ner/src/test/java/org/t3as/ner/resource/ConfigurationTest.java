@@ -23,7 +23,7 @@ package org.t3as.ner.resource;
 
 import org.t3as.ner.classifier.feature.Feature;
 import org.t3as.ner.classifier.feature.FeatureMap;
-import org.t3as.ner.data.NameType;
+import org.t3as.ner.NameType;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 

@@ -22,7 +22,7 @@
 package org.t3as.ner.classifier.feature;
 
 import com.google.common.base.Objects;
-import org.t3as.ner.data.Phrase;
+import org.t3as.ner.Phrase;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;

@@ -23,8 +23,8 @@ package org.t3as.ner.classifier;
 
 import org.t3as.ner.NerResultSet;
 import org.t3as.ner.classifier.feature.FeatureMap;
-import org.t3as.ner.data.NameType;
-import org.t3as.ner.data.Phrase;
+import org.t3as.ner.NameType;
+import org.t3as.ner.Phrase;
 import org.t3as.ner.resource.Configuration;
 
 import java.util.HashMap;

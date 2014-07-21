@@ -21,7 +21,7 @@
  */
 package org.t3as.ner.classifier.feature;
 
-import org.t3as.ner.data.Phrase;
+import org.t3as.ner.Phrase;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Arrays;

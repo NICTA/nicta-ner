@@ -23,7 +23,7 @@ package org.t3as.ner.classifier.feature;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
-import org.t3as.ner.data.Phrase;
+import org.t3as.ner.Phrase;
 import org.t3as.ner.util.IO;
 
 import javax.annotation.concurrent.Immutable;

@@ -98,7 +98,7 @@
     <dependencies>
         <dependency>
             <groupId>org.t3as</groupId>
-            <artifactId>nicta-ner</artifactId>
+            <artifactId>nicta-ner-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 

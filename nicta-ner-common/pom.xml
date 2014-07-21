@@ -9,14 +9,13 @@
         <version>0.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>nicta-ner</artifactId>
+    <artifactId>nicta-ner-common</artifactId>
     <packaging>jar</packaging>
 
-    <name>NICTA t3as Named-Entity Recognition library</name>
+    <name>NICTA t3as Named-Entity Recognition common files</name>
     <description>
         The NICTA t3as Named-Entity Recognition is a Java based Named-Entity Recognition library which extracts named
-        entities from text such as Organisation, Location, Date and Person names. This is the main library that does the
-        actual NER work.
+        entities from text such as Organisation, Location, Date and Person names. This library contains files common between the other modules in the project.
     </description>
     <url>http://t3as.org/</url>
     <inceptionYear>2010</inceptionYear>
@@ -66,7 +65,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.rootdir>${basedir}/..</project.rootdir>
-        <main.class>org.t3as.ner.NamedEntityAnalyser</main.class>
     </properties>
 
     <build>
@@ -82,49 +80,15 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>${main.class}</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>${project.artifactId}-${project.version}-shade</finalName>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${main.class}</mainClass>
-                                </transformer>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer"/>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>org.t3as</groupId>
-            <artifactId>nicta-ner-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -137,6 +101,11 @@
             <version>2.0.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.4.0</version>
+        </dependency>
     </dependencies>
 
 </project>

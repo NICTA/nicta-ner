@@ -24,9 +24,6 @@ package org.t3as.ner;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.t3as.ner.data.NameType;
-import org.t3as.ner.data.Phrase;
-import org.t3as.ner.data.Token;
 
 import java.util.EnumMap;
 import java.util.HashSet;

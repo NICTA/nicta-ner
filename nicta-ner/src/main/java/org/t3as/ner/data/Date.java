@@ -21,6 +21,10 @@
  */
 package org.t3as.ner.data;
 
+import org.t3as.ner.NameType;
+import org.t3as.ner.Phrase;
+import org.t3as.ner.Token;
+
 import java.util.List;
 import java.util.regex.Pattern;
 

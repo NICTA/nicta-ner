@@ -21,7 +21,7 @@
  */
 package org.t3as.ner.util;
 
-import org.t3as.ner.data.Token;
+import org.t3as.ner.Token;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

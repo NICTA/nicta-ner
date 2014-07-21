@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.t3as.ner.data;
+package org.t3as.ner;
 
 public enum NameType {
     UNKNOWN,
