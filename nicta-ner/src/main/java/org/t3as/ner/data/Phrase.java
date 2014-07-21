@@ -21,6 +21,8 @@
  */
 package org.t3as.ner.data;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableList;
 
 import java.util.Arrays;
@@ -47,20 +49,22 @@ public class Phrase {
     /** the length of the phrase stub */
     public final int phraseStubLength;
     /** score array, dimension equals to name type array */
-    public double[] score;
+    public double[] score = new double[0];
     /** attached word map */
     public Map<String, String> attachedWordMap;
     /** true if the phrase is a date; false if not */
     public boolean isDate;
 
-    /** Constructor with param input */
-    public Phrase(final List<Token> tokens, final int _phrasePos, final int _phraseLen, final int _stubPos,
-                  final int _typeDimension) {
+    @JsonCreator
+    public Phrase(@JsonProperty("phrase") final List<Token> tokens,
+                  @JsonProperty("phrasePosition") final int _phrasePos,
+                  @JsonProperty("phraseLength") final int _phraseLen,
+                  @JsonProperty("phraseStubPosition") final int _stubPos) {
         phrasePosition = _phrasePos;
         phraseLength = _phraseLen;
         phrase = ImmutableList.copyOf(tokens);
         phraseType = NameType.UNKNOWN;
-        score = new double[_typeDimension];
+        //score = new double[_typeDimension];
         attachedWordMap = new HashMap<>();
         phraseStubPosition = _stubPos;
         phraseStubLength = phrase.size();

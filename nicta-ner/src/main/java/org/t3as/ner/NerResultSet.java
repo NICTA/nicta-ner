@@ -21,12 +21,13 @@
  */
 package org.t3as.ner;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.t3as.ner.data.NameType;
 import org.t3as.ner.data.Phrase;
 import org.t3as.ner.data.Token;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,21 +42,21 @@ import static java.lang.String.format;
  * <p/>
  * The map result can be got from this class as well.
  */
-@XmlRootElement
 public class NerResultSet {
 
-    @XmlElement
-    private final List<List<Token>> tokens;
-    @XmlElement
+    public final List<List<Token>> tokens;
     public final List<List<Phrase>> phrases;
 
+    @JsonCreator
     @SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
-    public NerResultSet(final List<List<Phrase>> phrases, final List<List<Token>> tokens) {
+    public NerResultSet(@JsonProperty("phrases") final List<List<Phrase>> phrases,
+                        @JsonProperty("tokens") final List<List<Token>> tokens) {
         this.phrases = phrases;
         this.tokens = tokens;
     }
 
     /** This method returns a map format set of the result. */
+    @JsonIgnore
     public Map<NameType, Set<String>> getMappedResult() {
         final Map<NameType, Set<String>> m = new EnumMap<>(NameType.class);
         for (final List<Phrase> pa : phrases) {

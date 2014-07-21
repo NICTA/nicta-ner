@@ -21,6 +21,9 @@
  */
 package org.t3as.ner.data;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
@@ -31,7 +34,8 @@ public class Token {
     /** The string that this token is representing. */
     public final String string;
 
-    public Token(final int startIndex, final String string) {
+    @JsonCreator
+    public Token(@JsonProperty("startIndex") final int startIndex, @JsonProperty("string") final String string) {
         this.startIndex = startIndex;
         this.string = string;
     }

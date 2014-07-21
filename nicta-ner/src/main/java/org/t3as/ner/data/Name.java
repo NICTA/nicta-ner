@@ -25,6 +25,7 @@ import java.util.List;
 
 public class Name extends Phrase {
     public Name(final List<Token> tokens, final int pos, final int len, final int stubPos, final int typeDimension) {
-        super(tokens, pos, len, stubPos, typeDimension);
+        super(tokens, pos, len, stubPos);
+        this.score = new double[typeDimension];
     }
 }

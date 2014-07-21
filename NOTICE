@@ -27,7 +27,7 @@ This program links to or is a derivative of:
   Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
   HK2 API module under CDDL + GPLv2 with classpath exception
   HK2 Implementation Utilities under CDDL + GPLv2 with classpath exception
-  Jackson-annotations under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
+  Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
   jackson-databind under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
   Jackson-JAXRS-base under The Apache Software License, Version 2.0 or GNU Lesser General Public License, Version 2.1
