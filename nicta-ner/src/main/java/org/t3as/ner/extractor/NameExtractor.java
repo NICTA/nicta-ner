@@ -92,7 +92,7 @@ public class NameExtractor {
                     // if the second phrase is much shorter than the first phrase
                     // example: Canberra Institution of Science and Technology
                     boolean mergeAndFlag = false;
-                    if ("and".equalsIgnoreCase(tokenList.get(wordPtr).string)
+                    if ("and".equalsIgnoreCase(tokenList.get(wordPtr).text)
                         && !currentPhrase.isEmpty()
                         && wordPtr + 1 < tokenList.size()
                         && detectNameWordInSentenceByPosition(tokenList, wordPtr + 1)) {
@@ -110,7 +110,7 @@ public class NameExtractor {
                     }
 
                     if (detectNameWordInSentenceByPosition(tokenList, wordPtr)
-                        || (equalsIgnoreCase(tokenList.get(wordPtr).string, "of", "the", "'s")
+                        || (equalsIgnoreCase(tokenList.get(wordPtr).text, "of", "the", "'s")
                             && !currentPhrase.isEmpty()
                             && wordPtr + 1 < tokenList.size()
                             && detectNameWordInSentenceByPosition(tokenList, wordPtr + 1))
@@ -130,7 +130,7 @@ public class NameExtractor {
                 // if phrasePos is zero, then it is the first word, there won't be any 'the' or 'a' attached to this word.
                 if (phrasePos > 0) {
                     final Token attachedArticle = tokenList.get(phrasePos - 1);
-                    if ("the".equalsIgnoreCase(attachedArticle.string) || "a".equalsIgnoreCase(attachedArticle.string)) {
+                    if ("the".equalsIgnoreCase(attachedArticle.text) || "a".equalsIgnoreCase(attachedArticle.text)) {
                         phrasePos--;
                         phraseLen++;
                     }
@@ -138,7 +138,7 @@ public class NameExtractor {
 
                 //handling non-name single words such as: Monday, January, etc.
                 if (currentPhrase.size() == 1 && phraseStubStartPtr == phrasePos) {
-                    if (NON_NAME_WORDS.contains(currentPhrase.get(0).string.toLowerCase())) {
+                    if (NON_NAME_WORDS.contains(currentPhrase.get(0).text.toLowerCase())) {
                         currentPhrase.clear();
                         wordPtr--;
                     }
@@ -152,13 +152,13 @@ public class NameExtractor {
                     int tempPtr = wordPtr;
                     while (true) {
                         final Token word = tokenList.get(tempPtr);
-                        final DateType type = getDateType(word.string);
+                        final DateType type = getDateType(word.text);
                         if (type != NONE
-                            || equalsIgnoreCase(word.string, "of", ",", "the")
+                            || equalsIgnoreCase(word.text, "of", ",", "the")
                                && !currentDatePhrase.isEmpty()
                                && tempPtr + 1 != tokenList.size()
-                               && getDateType(tokenList.get(tempPtr + 1).string) != NONE
-                               && getDateType(tokenList.get(tempPtr - 1).string) != NONE) {
+                               && getDateType(tokenList.get(tempPtr + 1).text) != NONE
+                               && getDateType(tokenList.get(tempPtr - 1).text) != NONE) {
                             // is date word:
                             currentDatePhrase.add(word);
                             dpm.addType(type);
@@ -175,7 +175,7 @@ public class NameExtractor {
                     }
                 }
                 else if (!(currentPhrase.size() == 1
-                           && (isPastTense(currentPhrase.get(0).string) || isPlural(currentPhrase.get(0).string)))) {
+                           && (isPastTense(currentPhrase.get(0).text) || isPlural(currentPhrase.get(0).text)))) {
                     sentencePhrase.add(new Name(currentPhrase, phrasePos, phraseLen, phraseStubStartPtr,
                                                 nameTypeScoreDimension));
                 }
@@ -202,19 +202,19 @@ public class NameExtractor {
     private static boolean detectNameWordInSentenceByPosition(final List<Token> _text, final int _pos) {
         boolean isFirstWord = false;
         boolean nextWordIsName = false;
-        if (_pos == 0 || !isLetterOrDigit((_text.get(_pos - 1).string.charAt(0)))) {
+        if (_pos == 0 || !isLetterOrDigit((_text.get(_pos - 1).text.charAt(0)))) {
             isFirstWord = true;
             //noinspection SimplifiableIfStatement
             if (_text.size() > _pos + 1) {
-                final String plus1 = _text.get(_pos + 1).string;
+                final String plus1 = _text.get(_pos + 1).text;
                 nextWordIsName = ("of".equalsIgnoreCase(plus1) || "'s".equalsIgnoreCase(plus1))
-                                 ? ((_text.size() > (_pos + 2)) && isName(_text.get(_pos + 2).string, false, false))
+                                 ? ((_text.size() > (_pos + 2)) && isName(_text.get(_pos + 2).text, false, false))
                                  : isName(plus1, false, false);
             }
             else nextWordIsName = false;
         }
         //noinspection UnnecessaryLocalVariable
-        final boolean isName = isName(_text.get(_pos).string, isFirstWord, nextWordIsName);
+        final boolean isName = isName(_text.get(_pos).text, isFirstWord, nextWordIsName);
 
         /*
         String wordType = dict.checkup(_text.get(_pos).toLowerCase());
@@ -279,7 +279,7 @@ public class NameExtractor {
 
             if (phrasePtrInSentence == 0) return;
 
-            final String attachedWord = sentenceToken.get(phrasePtrInSentence - 1).string;
+            final String attachedWord = sentenceToken.get(phrasePtrInSentence - 1).text;
 
             // if the attached word is a comma or 'and'/'or', we consider it as a conj.
             if (",".equalsIgnoreCase(attachedWord)) {
@@ -324,7 +324,7 @@ public class NameExtractor {
                 != currentNamePhrase.phrasePosition) return;
             // method terminates if the phrase after is not next to this phrase.
 
-            final String attachedWord = sentenceToken.get(phrasePtrInSentence - 1).string;
+            final String attachedWord = sentenceToken.get(phrasePtrInSentence - 1).text;
             // if the attached word is a comma or 'and'/'or', we consider it as a conj.
             if (",".equalsIgnoreCase(attachedWord)) {
                 phraseSequence.add(currentNamePhrase);

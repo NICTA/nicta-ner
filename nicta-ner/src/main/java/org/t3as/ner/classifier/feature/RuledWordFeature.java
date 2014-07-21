@@ -45,7 +45,7 @@ public class RuledWordFeature extends Feature {
         double score = 0.0f;
         double weight = 0.75f;    // weight increases 0.2 every word backward till the word "of" appears.
         for (int i = 0; i < _p.phrase.size(); i++) {
-            final String word = _p.phrase.get(i).string;
+            final String word = _p.phrase.get(i).text;
             if ("of".equalsIgnoreCase(word)) break;
             final double x = (WORDS.contains(word)) ? 1.0f : 0.0f;
             score += weight * x;

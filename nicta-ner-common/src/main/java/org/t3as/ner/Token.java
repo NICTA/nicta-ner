@@ -31,13 +31,13 @@ public class Token {
 
     /** 0-indexed position of the first character of this token from the original text being analysed. */
     public final int startIndex;
-    /** The string that this token is representing. */
-    public final String string;
+    /** The text that this token is representing. */
+    public final String text;
 
     @JsonCreator
-    public Token(@JsonProperty("startIndex") final int startIndex, @JsonProperty("string") final String string) {
+    public Token(@JsonProperty("startIndex") final int startIndex, @JsonProperty("text") final String text) {
         this.startIndex = startIndex;
-        this.string = string;
+        this.text = text;
     }
 
     @Override
@@ -45,15 +45,15 @@ public class Token {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Token token = (Token) o;
-        return startIndex == token.startIndex && string.equals(token.string);
+        return startIndex == token.startIndex && text.equals(token.text);
     }
 
     @Override
     public int hashCode() {
         int result = startIndex;
-        result = 31 * result + string.hashCode();
+        result = 31 * result + text.hashCode();
         return result;
     }
 
-    public String toString() { return startIndex + ":" + string; }
+    public String toString() { return startIndex + ":" + text; }
 }
