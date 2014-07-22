@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.t3as</groupId>
         <artifactId>t3as-nicta-ner</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2</version>
     </parent>
 
     <artifactId>nicta-ner-client</artifactId>
