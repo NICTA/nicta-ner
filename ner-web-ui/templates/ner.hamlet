@@ -1,0 +1,6 @@
+<h1> Enter your text
+<form method=post action=@{NerR}>
+    <input type=text name=ner>
+    <input type=submit>
+
+<p>#{text}
