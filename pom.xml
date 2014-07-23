@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--
-        To perform a full release with a deploy to Maven Central:
+        To perform a full release with a deploy to Maven Central, ensure gpg-agent is running and then:
 
-        mvn clean deploy -P release-sign-artifacts -Dgpg.keyname='<keyname>' -Dgpg.passphrase='<gpg pass goes here>'
+        mvn clean deploy -P release-sign-artifacts -Dgpg.keyname='<keyname>'
     -->
 
     <groupId>org.t3as</groupId>
