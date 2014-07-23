@@ -23,6 +23,13 @@ More information about "Creative Commons" license can be found at
 http://creativecommons.org/licenses/by-sa/3.0/
 
 
+## Maven Central
+
+This project is also available on Maven Central under the `org.t3as` group id, as artifact id `snomedct-lookup`:
+
+<http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22snomedct-lookup%22>
+
+
 ## Quick start
 
 Command line shell interface to process the input text

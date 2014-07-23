@@ -30,6 +30,13 @@ More information about "Creative Commons" license can be found at
 http://creativecommons.org/licenses/by-sa/3.0/
 
 
+## Maven Central
+
+Parts of this project are also available on Maven Central under the `org.t3as` group id:
+
+<http://search.maven.org/#search%7Cga%7C1%7Corg.t3as>
+
+
 ## Modules
 
 The NICTA NER project contains a number of subprojects implementing various functionality:
