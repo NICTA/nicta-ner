@@ -21,7 +21,7 @@ $newline never
 
         <script>
           document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
-    <body style="margin-left: 5%; margin-right: 5%;">
+    <body>
         <div class="container">
             <header>
             <div id="main" role="main">
