@@ -22,9 +22,16 @@ import Import
 getNerR :: Handler Html
 getNerR = do
     let text = "" :: Text
-    defaultLayout $(widgetFile "ner")
+    defaultLayout $ do
+        title
+        $(widgetFile "ner")
 
 postNerR :: Handler Html
 postNerR = do
         text <- runInputPost $ ireq textField "ner"
-        defaultLayout $(widgetFile "ner")
+        defaultLayout $ do
+            title
+            $(widgetFile "ner")
+
+title :: MonadWidget m => m ()
+title = setTitle "NICTA t3as NER"
