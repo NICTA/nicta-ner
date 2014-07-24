@@ -2,3 +2,11 @@ body
     margin-left: 5%
     margin-right: 5%
     font-size: small
+
+h1, h2, h3, h4, h5, h6
+    margin-top: 2em
+
+.logoImage
+    float: right
+    vertical-align: middle
+    margin: 0 10px 50px

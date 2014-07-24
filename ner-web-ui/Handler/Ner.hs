@@ -21,10 +21,10 @@ import Import
 
 getNerR :: Handler Html
 getNerR = do
-    let text = "" :: Text
+    let nerText = "" :: Text
     defaultLayout $(widgetFile "ner")
 
 postNerR :: Handler Html
 postNerR = do
-    text <- runInputPost $ ireq textField "ner"
+    nerText <- runInputPost $ ireq textField "nerText"
     defaultLayout $(widgetFile "ner")

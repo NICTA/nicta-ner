@@ -1,9 +1,9 @@
 <h1>
     NICTA t3as Named-Entity Recognition
     <a href="http://nicta.com.au/">
-        <img style="float:right; vertical-align:middle; margin: 0 10px 50px;" src=@{StaticR img_nicta_logo_jpg} alt="NICTA logo" width="87"height="104">
+        <img src=@{StaticR img_nicta_logo_jpg} alt="NICTA logo" width=87 height=104 class=logoImage>
     <a href="http://t3as.org/">
-        <img style="float:right; vertical-align:middle; margin: 0 10px 50px;" src=@{StaticR img_The_Lab_Logo_jpg} alt="The Lab logo" width="110"height="110"/>
+        <img src=@{StaticR img_The_Lab_Logo_jpg} alt="The Lab logo" width=110 height=110 class=logoImage>
 
 <p>
     This is a simple front-end for a public demo web service that performs Named-Entity Recognition of English text.
@@ -22,4 +22,13 @@
     all text entered on this page is sent unencrypted in clear text to the service.
     This demonstration service runs on a publicly accessible server that is not geographically constrained.
 
+<p>
+    <h3>Please enter the text to perform Named-Entity Recognition on:
+    <form method=post action=@{NerR}>
+        <textarea name=nerText cols=90 rows=15>#{nerText}
+        <br>
+        <input type=submit>
+
 <h3>Named-Entities found
+<p>
+    #{nerText}
