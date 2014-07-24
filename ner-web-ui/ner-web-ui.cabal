@@ -5,6 +5,7 @@ description:       This is a simple demo web interface for testing the
                    NICTA t3as Named-Entity Recognition library.
 homepage:          http://t3as.org/
 package-url:       https://github.com/NICTA/nicta-ner/tree/master/ner-web-ui
+bug-reports:       https://github.com/NICTA/nicta-ner/issues
 author:            Mats Henrikson
 maintainer:        mats.henrikson@nicta.com.au
 copyright:         (c) 2014 NICTA
