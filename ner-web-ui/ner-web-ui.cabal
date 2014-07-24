@@ -1,5 +1,16 @@
 name:              ner-web-ui
 version:           0.3-SNAPSHOT
+synopsis:          Simple demo web interface for NICTA t3as NER.
+description:       This is a simple demo web interface for testing the
+                   NICTA t3as Named-Entity Recognition library.
+homepage:          http://t3as.org/
+package-url:       https://github.com/NICTA/nicta-ner/tree/master/ner-web-ui
+author:            Mats Henrikson
+maintainer:        mats.henrikson@nicta.com.au
+copyright:         (c) 2014 NICTA
+license:           GPL-3
+license-file:      LICENSE.txt
+category:          Web
 cabal-version:     >= 1.8
 build-type:        Simple
 
