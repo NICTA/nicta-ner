@@ -2,7 +2,8 @@
     NICTA t3as Named-Entity Recognition
     <a href="http://nicta.com.au/">
         <img style="float:right; vertical-align:middle; margin: 0 10px 50px;" src=@{StaticR img_nicta_logo_jpg} alt="NICTA logo" width="87"height="104">
-    <img style="float:right; vertical-align:middle; margin: 0 10px 50px;" src=@{StaticR img_The_Lab_Logo_jpg} alt="The Lab logo" width="110"height="110"/>
+    <a href="http://t3as.org/">
+        <img style="float:right; vertical-align:middle; margin: 0 10px 50px;" src=@{StaticR img_The_Lab_Logo_jpg} alt="The Lab logo" width="110"height="110"/>
 
 <p>
     This is a simple front-end for a public demo web service that performs Named-Entity Recognition of English text.

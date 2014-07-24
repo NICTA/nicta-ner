@@ -26,5 +26,5 @@ getNerR = do
 
 postNerR :: Handler Html
 postNerR = do
-        text <- runInputPost $ ireq textField "ner"
-        defaultLayout $(widgetFile "ner")
+    text <- runInputPost $ ireq textField "ner"
+    defaultLayout $(widgetFile "ner")
