@@ -1,6 +1,24 @@
-<h1> Enter your text
-<form method=post action=@{NerR}>
-    <input type=text name=ner>
-    <input type=submit>
+<h1>
+    NICTA t3as Named-Entity Recognition
+    <a href="http://nicta.com.au/">
+        <img style="float:right; vertical-align:middle; margin: 0 10px 50px;" src=@{StaticR img_nicta_logo_jpg} alt="NICTA logo" width="87"height="104">
+    <img style="float:right; vertical-align:middle; margin: 0 10px 50px;" src=@{StaticR img_The_Lab_Logo_jpg} alt="The Lab logo" width="110"height="110"/>
 
-<p>#{text}
+<p>
+    This is a simple front-end for a public demo web service that performs Named-Entity Recognition of English text.
+    For more information please see the <a href="http://t3as.org/">t3as project website</a>
+    and the <a href="http://t3as.wordpress.com/">t3as blog</a>.
+
+<p>
+    Full instructions on how to use the web service will be published in due course, but simple instructions can be
+    had from the web service itself:
+    <a href="/nicta-ner-web/rest/v1.0/ner">/nicta-ner-web/rest/v1.0/ner
+
+<p>
+    <em><b>WARNING:</b>
+    <b>DO NOT UPLOAD TEXT CONTAINING PERSONALLY IDENTIFIABLE INFORMATION ABOUT ANY PERSON.
+    This information cannot be kept private in this website, and will potentially be available to third parties as
+    all text entered on this page is sent unencrypted in clear text to the service.
+    This demonstration service runs on a publicly accessible server that is not geographically constrained.
+
+<h3>Named-Entities found
