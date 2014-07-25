@@ -29,7 +29,11 @@
         <br>
         <input type=submit>
 
-<h2>Named-Entities recognised:
+<h2>Named-Entities recognised: #
+    $if null ents
+        \
+    $else
+        #{L.length ents}
 <p>
     $if null ents
         No entities found.
