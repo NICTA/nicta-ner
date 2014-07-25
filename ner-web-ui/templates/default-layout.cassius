@@ -14,12 +14,14 @@ h1, h2, h3, h4, h5, h6
 footer
     text-align: right
 
-table
-    border: 1px solid lightgray
-    text-align: center
+.header
+    border-bottom: 2px solid lightgray
 
-tr
-    border-top: 1px solid lightgray
+table
+    font-size: medium
+
+th
+    text-align: left
 
 td, th
-    padding: 0.2em 0.7em
+    padding: 0.2em 1em

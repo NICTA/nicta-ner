@@ -23,19 +23,19 @@
     This demonstration service runs on a publicly accessible server that is not geographically constrained.
 
 <p>
-    <h3>Please enter the text to perform Named-Entity Recognition on:
+    <h2>Please enter the text to perform Named-Entity Recognition on:
     <form method=post action=@{NerR}>
         <textarea name=nerText cols=90 rows=15>#{nerText}
         <br>
         <input type=submit>
 
-<h3>Named-Entities found
+<h2>Named-Entities recognised:
 <p>
     $if null ents
         No entities found.
     $else
         <table>
-            <tr>
+            <tr class=header>
                 <th>Entity
                 <th>Type
                 <th>Word start index
