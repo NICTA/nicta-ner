@@ -31,4 +31,16 @@
 
 <h3>Named-Entities found
 <p>
-    #{nerText}
+    $if null ents
+        No entities found.
+    $else
+        <table>
+            <tr>
+                <th>Entity
+                <th>Type
+                <th>Word start index
+            $forall NerEntity word typ index <- ents
+                <tr>
+                    <td>#{word}
+                    <td>#{show typ}
+                    <td>#{index}
