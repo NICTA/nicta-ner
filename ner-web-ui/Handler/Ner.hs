@@ -18,6 +18,7 @@ this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 module Handler.Ner where
 
 import Import
+import qualified Data.List as L (length)
 
 data NerType = Person | Organization | Location | Date | Unknown
                 deriving (Show)
@@ -32,8 +33,9 @@ getNerR = do
 
 postNerR :: Handler Html
 postNerR = do
-    nerText <- runInputPost $ ireq textareaField "nerText"
-    let ents = analyse $ unTextarea nerText
+    raw <- runInputPost $ ireq textareaField "nerText"
+    let nerText = unTextarea raw
+        ents = analyse nerText
     defaultLayout $(widgetFile "ner")
 
 analyse :: Text -> [NerEntity]
