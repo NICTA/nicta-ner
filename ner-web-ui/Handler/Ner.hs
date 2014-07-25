@@ -19,12 +19,35 @@ module Handler.Ner where
 
 import Import
 
+data NerType = Person | Organization | Location | Date | Unknown
+                deriving (Show)
+type StartIndex = Int
+data NerEntity = NerEntity Text NerType StartIndex
+
 getNerR :: Handler Html
 getNerR = do
     let nerText = "" :: Text
+        ents = []
     defaultLayout $(widgetFile "ner")
 
 postNerR :: Handler Html
 postNerR = do
     nerText <- runInputPost $ ireq textareaField "nerText"
+    let ents = analyse $ unTextarea nerText
     defaultLayout $(widgetFile "ner")
+
+analyse :: Text -> [NerEntity]
+analyse t = map makeEntity $ ws t
+
+ws :: Text -> [Text]
+ws t = filter (isUpper . head) $ words t
+
+makeEntity :: Text -> NerEntity
+makeEntity w = NerEntity w typ $ length w
+    where
+        typ = case length w `mod` 5 of
+                0 -> Person
+                1 -> Organization
+                2 -> Location
+                3 -> Date
+                _ -> Unknown

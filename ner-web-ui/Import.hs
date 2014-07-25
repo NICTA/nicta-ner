@@ -20,11 +20,13 @@ module Import
     ) where
 
 import           Prelude              as Import hiding (head, init, last,
-                                                 readFile, tail, writeFile)
+                                                 readFile, tail, writeFile,
+                                                 words, length)
 import           Yesod                as Import hiding (Route (..))
 
 import           Control.Applicative  as Import (pure, (<$>), (<*>))
-import           Data.Text            as Import (Text)
+import           Data.Text            as Import (Text, words, head, length)
+import           Data.Char            as Import (isUpper)
 
 import           Foundation           as Import
 import           Settings             as Import
