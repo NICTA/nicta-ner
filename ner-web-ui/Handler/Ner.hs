@@ -39,10 +39,10 @@ postNerR = do
     defaultLayout $(widgetFile "ner")
 
 analyse :: Text -> [NerEntity]
-analyse t = map makeEntity $ ws t
+analyse t = map makeEntity $ upperWords t
 
-ws :: Text -> [Text]
-ws t = filter (isUpper . head) $ words t
+upperWords :: Text -> [Text]
+upperWords t = filter (isUpper . head) $ words t
 
 makeEntity :: Text -> NerEntity
 makeEntity w = NerEntity w typ $ length w
