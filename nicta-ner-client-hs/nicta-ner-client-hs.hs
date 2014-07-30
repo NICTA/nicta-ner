@@ -107,7 +107,7 @@ main = do
     args <- getArgs
     progName <- getProgName
     (opts, files) <- parseArgs progName args
-    if usage opts
+    if (usage opts || (txt opts == L.empty && null files))
         then do
             putStrLn $ usageInfo (header progName) cmdLineArgs
             exitSuccess
@@ -126,9 +126,10 @@ parseArgs progName args =
 
 header :: String -> String
 header progName =
-    "Version " ++ showVersion version ++ "\n\n"
+    "\nVersion " ++ showVersion version ++ "\n\n"
     ++ "Usage: " ++ progName ++ " [OPTIONS...] [FILES...]\n\n"
-    ++ "Please pass either the --txt option or some files with text to analyse."
+    ++ "Please pass either the --txt option, or some files with text to "
+    ++ "analyse - do not pass both.\n"
 
 
 runWith :: Opts -> [String] -> [IO (Maybe NerResponse)]
