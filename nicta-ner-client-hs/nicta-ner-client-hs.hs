@@ -18,14 +18,15 @@ this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -}
 
 import Control.Applicative       ((<*>), (<$>))
-import Control.Monad             (mzero)
+import Control.Monad             (mzero,liftM)
 import Control.Monad.IO.Class    (liftIO)
 import Data.Aeson                (Value (Object), FromJSON, parseJSON, (.:)
                                  , decode)
 import Data.ByteString.Lazy as L (ByteString, empty)
-import Data.Maybe                (fromMaybe)
+import Data.Maybe                (catMaybes)
 import Data.Version              (showVersion)
-import Data.Text.Lazy as T       (Text, empty, pack)
+import Data.Text.Lazy as T       (Text, pack)
+import Data.Text.Lazy.IO as TIO  (readFile)
 import Data.Text.Lazy.Encoding   (encodeUtf8)
 import Network.HTTP.Conduit      (RequestBody (RequestBodyLBS), Response (..)
                                  , httpLbs, method, parseUrl, requestBody
@@ -34,34 +35,37 @@ import Paths_nicta_ner_client_hs (version)
 import System.Console.GetOpt     (ArgOrder (Permute), ArgDescr (NoArg, ReqArg)
                                  , OptDescr (Option), getOpt, usageInfo)
 import System.Environment        (getProgName, getArgs)
-import System.Exit (exitSuccess)
+import System.Exit               (exitSuccess)
 
 
-cmdLineArgs :: [OptDescr (Opts -> IO Opts)]
+cmdLineArgs :: [OptDescr (Opts -> Opts)]
 cmdLineArgs =
-    [ Option "h" ["help"] (NoArg showUsage) "Show this help message."
+    [ Option "h" ["help"]
+        (NoArg (\opts -> opts {usage = True})) "Show this help message."
 
     , Option [] ["url"]
-        (ReqArg (\arg opts -> return opts {url = arg}) "<webservice url>")
-        ("The full URL to the NER web service. Default: " ++ url defaultOptions)
+        (ReqArg (\arg opts -> opts {url = arg}) "<webservice url>")
+        ("The full URL to the NER web service. Default: " ++ url defaultOpts)
 
     , Option [] ["txt"]
-        (ReqArg (\arg opts -> return opts {txt = (encodeUtf8 . T.pack) arg}) "<text to analyse>")
+        (ReqArg (\arg opts -> opts {txt = (encodeUtf8 . T.pack) arg})
+            "<text to analyse>")
         "The text to perform NER analysis on."
     ]
 
-data Opts = Opts    { url   :: String
-                    , txt   :: L.ByteString
-                    }
+data Opts = Opts { usage :: Bool
+                 , url   :: String
+                 , txt   :: L.ByteString
+                 }
 
-defaultOptions :: Opts
-defaultOptions = Opts { url = "http://ner.t3as.org/nicta-ner-web/rest/v1.0/ner"
-                      , txt = L.empty
-                      }
+defaultOpts :: Opts
+defaultOpts = Opts { usage = False
+                   , url   = "http://ner.t3as.org/nicta-ner-web/rest/v1.0/ner"
+                   , txt   = L.empty
+                   }
 
 
-data NerType = Person | Organization | Location | Date | Unknown
-               deriving (Show)
+data NerType = Person | Organization | Location | Date | Unknown deriving (Show)
 
 type StartIndex = Int
 data NerEntity = NerEntity T.Text NerType StartIndex
@@ -103,69 +107,52 @@ main :: IO ()
 main = do
     args <- getArgs
     progName <- getProgName
-    results <- sequence $
-        case getOpt Permute cmdLineArgs args of
-            (opts, files, []) -> runWith opts files
-            (_, _, errMsgs)   -> showError errMsgs progName
-    mapM_ (print . fromMaybe "No Named Entities found.") results
+    (opts, files) <- parseArgs progName args
+    if usage opts
+        then do
+            putStrLn $ usageInfo (header progName) cmdLineArgs
+            exitSuccess
+        else do
+            results <- sequence $ runWith opts files
+            mapM_ print $ catMaybes results
 
 
-showError :: [String] -> String -> [IO (Maybe NerResponse)]
-showError errMsgs progName =
-    error $ concat errMsgs ++ usageInfo (header progName) cmdLineArgs
+parseArgs :: String -> [String] -> IO (Opts, [String])
+parseArgs progName args =
+    case getOpt Permute cmdLineArgs args of
+        (opts, files, []) -> return (foldl (flip id) defaultOpts opts, files)
+        (_, _, errMsgs)   -> error $ concat errMsgs
+                                     ++ usageInfo (header progName) cmdLineArgs
 
 
 header :: String -> String
 header progName =
-    progName ++ " version " ++ showVersion version ++ "\n\n"
+    "Version " ++ showVersion version ++ "\n\n"
     ++ "Usage: " ++ progName ++ " [OPTIONS...] [FILES...]\n\n"
-    ++ "Please pass either the -txt option or some files with text to analyse."
+    ++ "Please pass either the --txt option or some files with text to analyse."
 
 
--- show usage and exit
-showUsage :: Opts -> IO Opts
-showUsage _ = do
-    progName <- getProgName
-    putStrLn $ usageInfo (header progName) cmdLineArgs
-    exitSuccess
-
-
-runWith :: [Opts -> IO Opts] -> [String] -> [IO (Maybe NerResponse)]
+runWith :: Opts -> [String] -> [IO (Maybe NerResponse)]
 runWith opts files = do
-    options <- foldl (>>=) (return defaultOptions) opts
-    let u = url options
-    let t = txt options
-    let ner = performNer u
-    if t /= L.empty
+    let ner = performNer $ url opts
+        t = txt opts
+    [ner t]
+{-    if t /= L.empty
         then [ner t]
-        else map ner $ readToLbs files
-{-
-nicta-ner-client-hs.hs:135:52:
-    Couldn't match type `IO Opts' with `[Opts]'
-    Expected type: [Opts -> [Opts]]
-      Actual type: [Opts -> IO Opts]
-    In the third argument of `foldl', namely `opts'
-    In a stmt of a 'do' block:
-      options <- foldl (>>=) (return defaultOptions) opts
-    In the expression:
-      do { options <- foldl (>>=) (return defaultOptions) opts;
-           let u = url options;
-           let t = txt options;
-           let ner = performNer u;
-           .... }
-
+        else map (liftM ner) $ readToLbs files
+-}{-            fileContents <- sequence $ readToLbs files
+            map ner fileContents
 -}
 
-readToLbs :: [String] -> [L.ByteString]
+readToLbs :: [String] -> [IO L.ByteString]
 readToLbs [] = []
-readToLbs _ = undefined -- map someReadFunction
+readToLbs files = map (liftM encodeUtf8 . TIO.readFile) files
 
 
-type WebServiceUrl = String
-performNer :: WebServiceUrl -> L.ByteString -> IO (Maybe NerResponse)
-performNer url txt = withManager $ \manager -> do
-    req' <- liftIO $ parseUrl url
-    let req = req' { method = "POST", requestBody = RequestBodyLBS txt }
+performNer :: String -> L.ByteString -> IO (Maybe NerResponse)
+performNer webServiceUrl analyseTxt = withManager $ \manager -> do
+    req' <- liftIO $ parseUrl webServiceUrl
+    let req = req' { method = "POST", requestBody = RequestBodyLBS analyseTxt }
     res <- httpLbs req manager
     return (decode $ responseBody res :: Maybe NerResponse)
 
