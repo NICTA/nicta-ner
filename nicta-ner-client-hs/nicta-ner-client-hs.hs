@@ -38,33 +38,6 @@ import System.Environment        (getProgName, getArgs)
 import System.Exit               (exitSuccess)
 
 
-cmdLineArgs :: [OptDescr (Opts -> Opts)]
-cmdLineArgs =
-    [ Option "h" ["help"]
-        (NoArg (\opts -> opts {usage = True})) "Show this help message."
-
-    , Option [] ["url"]
-        (ReqArg (\arg opts -> opts {url = arg}) "<webservice url>")
-        ("The full URL to the NER web service. Default: " ++ url defaultOpts)
-
-    , Option [] ["txt"]
-        (ReqArg (\arg opts -> opts {txt = (encodeUtf8 . T.pack) arg})
-            "<text to analyse>")
-        "The text to perform NER analysis on."
-    ]
-
-data Opts = Opts { usage :: Bool
-                 , url   :: String
-                 , txt   :: L.ByteString
-                 }
-
-defaultOpts :: Opts
-defaultOpts = Opts { usage = False
-                   , url   = "http://ner.t3as.org/nicta-ner-web/rest/v1.0/ner"
-                   , txt   = L.empty
-                   }
-
-
 data NerType = Person | Organization | Location | Date | Unknown deriving (Show)
 
 type StartIndex = Int
@@ -101,6 +74,32 @@ instance FromJSON NerResponse where
                             v .: "phrases" <*>
                             v .: "tokens"
     parseJSON _          = mzero
+
+data Opts = Opts { usage :: Bool
+                 , url   :: String
+                 , txt   :: L.ByteString
+                 }
+
+defaultOpts :: Opts
+defaultOpts = Opts { usage = False
+                   , url   = "http://ner.t3as.org/nicta-ner-web/rest/v1.0/ner"
+                   , txt   = L.empty
+                   }
+
+cmdLineArgs :: [OptDescr (Opts -> Opts)]
+cmdLineArgs =
+    [ Option "h" ["help"]
+        (NoArg (\opts -> opts {usage = True})) "Show this help message."
+
+    , Option [] ["url"]
+        (ReqArg (\arg opts -> opts {url = arg}) "<webservice url>")
+        ("The full URL to the NER web service. Default: " ++ url defaultOpts)
+
+    , Option [] ["txt"]
+        (ReqArg (\arg opts -> opts {txt = (encodeUtf8 . T.pack) arg})
+            "<text to analyse>")
+        "The text to perform NER analysis on."
+    ]
 
 
 main :: IO ()
