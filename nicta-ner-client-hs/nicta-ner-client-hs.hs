@@ -136,16 +136,13 @@ runWith :: Opts -> [String] -> [IO (Maybe NerResponse)]
 runWith opts files = do
     let ner = performNer $ url opts
         t = txt opts
-    [ner t]
-{-    if t /= L.empty
+    if t /= L.empty
         then [ner t]
-        else map (liftM ner) $ readToLbs files
--}{-            fileContents <- sequence $ readToLbs files
-            map ner fileContents
--}
+        else map (>>= ner) $ readToLbs files
 
 readToLbs :: [String] -> [IO L.ByteString]
 readToLbs [] = []
+-- is it really necessary to encode to UTF8?
 readToLbs files = map (liftM encodeUtf8 . TIO.readFile) files
 
 
