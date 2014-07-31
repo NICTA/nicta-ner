@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License along with
 this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -}
 
+--import Prelude as P
 import Control.Applicative       ((<*>), (<$>))
 import Control.Monad             (mzero,liftM)
 import Control.Monad.IO.Class    (liftIO)
@@ -25,9 +26,10 @@ import Data.Aeson                (Value (Object), FromJSON, parseJSON, (.:)
 import Data.ByteString.Lazy as L (ByteString, empty)
 import Data.Maybe                (catMaybes)
 import Data.Version              (showVersion)
-import Data.Text.Lazy as T       (Text, pack)
-import Data.Text.Lazy.IO as TIO  (readFile)
-import Data.Text.Lazy.Encoding   (encodeUtf8)
+import qualified Data.Text as T            (Text, pack, intercalate, unpack, empty, concat)
+import qualified Data.Text.Lazy.IO as TIO  (readFile)
+import qualified Data.Text.Lazy as LT      (pack)
+import Data.Text.Lazy.Encoding as LTE (encodeUtf8)
 import Network.HTTP.Conduit      (RequestBody (RequestBodyLBS), Response (..)
                                  , httpLbs, method, parseUrl, requestBody
                                  , withManager)
@@ -40,21 +42,19 @@ import System.Exit               (exitSuccess)
 
 data NerType = Person | Organization | Location | Date | Unknown deriving (Show)
 
-type StartIndex = Int
-data NerEntity = NerEntity T.Text NerType StartIndex
+data Token = Token { startIndex    :: Int
+                   , text          :: T.Text
+                   } deriving (Show, Read)
 
-data Token = Token  { startIndex    :: Int
-                    , text          :: T.Text
-                    } deriving (Show)
-
-data Phrase = Phrase    { phrase        :: [Token]
-                        , phraseType    :: T.Text
-                        , score         :: [Double]
-                        } deriving (Show)
+data Phrase = Phrase { phrase         :: [Token]
+                     , phraseType     :: T.Text
+                     , phrasePosition :: Int
+                     , score          :: [Double]
+                     } deriving (Show, Read)
 
 data NerResponse = NerResponse  { phrases   :: [[Phrase]]
                                 , tokens    :: [[Token]]
-                                } deriving (Show)
+                                } deriving (Show, Read)
 
 instance FromJSON Token where
     parseJSON (Object v) = Token <$>
@@ -66,6 +66,7 @@ instance FromJSON Phrase where
     parseJSON (Object v) = Phrase <$>
                             v .: "phrase" <*>
                             v .: "phraseType" <*>
+                            v .: "phrasePosition" <*>
                             v .: "score"
     parseJSON _          = mzero
 
@@ -74,6 +75,54 @@ instance FromJSON NerResponse where
                             v .: "phrases" <*>
                             v .: "tokens"
     parseJSON _          = mzero
+
+-- TODO: remove debug data when finished with it
+test :: NerResponse
+test = NerResponse {
+        phrases = [[Phrase {phrase = [Token {startIndex = 0, text = "Jack"}],
+                            phraseType = "PERSON",
+                            phrasePosition = 0, score = [0.0,40.0,-10.0]}
+                   ,Phrase {phrase = [Token {startIndex = 9, text = "Jill"}],
+                            phraseType = "PERSON",
+                            phrasePosition = 2, score = [0.0,40.0,-10.0]}
+                  ]],
+        tokens = [[Token {startIndex = 0, text = "Jack"}
+                  ,Token {startIndex = 5, text = "and"}
+                  ,Token {startIndex = 9, text = "Jill"}
+                  ,Token {startIndex = 13, text = "."}
+                 ]]
+        }
+
+responseToString :: NerResponse -> String
+responseToString NerResponse {phrases = pss, tokens = tss} =
+    T.unpack (foldl
+        (\acc (ps, ts) -> T.concat
+            [ acc
+            , tokensToText ts
+            , "\n===============================================\n"
+            , phrasesToText ps
+            ]
+        )
+        T.empty
+        (zip pss tss)
+    )
+
+phrasesToText :: [Phrase] -> T.Text
+phrasesToText ps = T.concat $ map
+    (\p -> T.concat
+        [ T.pack (show (phrasePosition p)), ": "
+        , T.intercalate " " (map text (phrase p)), "\t"
+        , phraseType p, "\t"
+        , T.intercalate ", " (map (T.pack . show) (score p)), "\t"
+        , "\t" -- TODO: attachedWordMap
+        -- , p.phrasePosition, p.phraseStubPosition, p.phraseStubLength, p.phraseLength
+        , "\n"
+        ]
+    )
+    ps
+
+tokensToText :: [Token] -> T.Text
+tokensToText ts = T.intercalate " " (map text ts)
 
 data Opts = Opts { usage :: Bool
                  , url   :: String
@@ -96,7 +145,7 @@ cmdLineArgs =
         ("The full URL to the NER web service. Default: " ++ url defaultOpts)
 
     , Option [] ["txt"]
-        (ReqArg (\arg opts -> opts {txt = (encodeUtf8 . T.pack) arg})
+        (ReqArg (\arg opts -> opts {txt = (LTE.encodeUtf8 . LT.pack) arg})
             "<text to analyse>")
         "The text to perform NER analysis on."
     ]
@@ -107,13 +156,13 @@ main = do
     args <- getArgs
     progName <- getProgName
     (opts, files) <- parseArgs progName args
-    if (usage opts || (txt opts == L.empty && null files))
+    if usage opts || (txt opts == L.empty && null files)
         then do
             putStrLn $ usageInfo (header progName) cmdLineArgs
             exitSuccess
         else do
             results <- sequence $ runWith opts files
-            mapM_ print $ catMaybes results
+            mapM_ (putStrLn . responseToString) (catMaybes results)
 
 
 parseArgs :: String -> [String] -> IO (Opts, [String])
