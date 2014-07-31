@@ -58,6 +58,7 @@ public class NerWebService {
     @Produces(MediaType.APPLICATION_JSON)
     public NerResultSet ner(final String text) throws IOException {
         final NamedEntityAnalyser nea = new NamedEntityAnalyser(conf);
+        // TODO: size limit!
         final NerResultSet resultSet = nea.process(URLDecoder.decode(text, "UTF-8"));
         System.out.println(resultSet);
         return resultSet;
