@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License along with
 this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -}
 
---import Prelude as P
 import Control.Applicative       ((<*>), (<$>))
 import Control.Monad             (mzero,liftM)
 import Control.Monad.IO.Class    (liftIO)
@@ -44,17 +43,20 @@ data NerType = Person | Organization | Location | Date | Unknown deriving (Show)
 
 data Token = Token { startIndex    :: Int
                    , text          :: T.Text
-                   } deriving (Show, Read)
+                   } deriving (Show)
 
-data Phrase = Phrase { phrase         :: [Token]
-                     , phraseType     :: T.Text
-                     , phrasePosition :: Int
-                     , score          :: [Double]
-                     } deriving (Show, Read)
+data Phrase = Phrase { phrase             :: [Token]
+                     , phraseType         :: T.Text
+                     , phrasePosition     :: Int
+                     , phraseStubPosition :: Int
+                     , phraseStubLength   :: Int
+                     , phraseLength       :: Int
+                     , score              :: [Double]
+                     } deriving (Show)
 
 data NerResponse = NerResponse  { phrases   :: [[Phrase]]
                                 , tokens    :: [[Token]]
-                                } deriving (Show, Read)
+                                } deriving (Show)
 
 instance FromJSON Token where
     parseJSON (Object v) = Token <$>
@@ -67,6 +69,9 @@ instance FromJSON Phrase where
                             v .: "phrase" <*>
                             v .: "phraseType" <*>
                             v .: "phrasePosition" <*>
+                            v .: "phraseStubPosition" <*>
+                            v .: "phraseStubLength" <*>
+                            v .: "phraseLength" <*>
                             v .: "score"
     parseJSON _          = mzero
 
@@ -79,12 +84,22 @@ instance FromJSON NerResponse where
 -- TODO: remove debug data when finished with it
 test :: NerResponse
 test = NerResponse {
-        phrases = [[Phrase {phrase = [Token {startIndex = 0, text = "Jack"}],
-                            phraseType = "PERSON",
-                            phrasePosition = 0, score = [0.0,40.0,-10.0]}
-                   ,Phrase {phrase = [Token {startIndex = 9, text = "Jill"}],
-                            phraseType = "PERSON",
-                            phrasePosition = 2, score = [0.0,40.0,-10.0]}
+        phrases = [[Phrase {phrase = [Token {startIndex = 0, text = "Jack"}]
+                           , phraseType = "PERSON"
+                           , phrasePosition = 0
+                           , phraseStubPosition = 0
+                           , phraseStubLength = 0
+                           , phraseLength = 0
+                           , score = [0.0,40.0,-10.0]
+                           }
+                   ,Phrase {phrase = [Token {startIndex = 9, text = "Jill"}]
+                           , phraseType = "PERSON"
+                           , phrasePosition = 2
+                           , phraseStubPosition = 0
+                           , phraseStubLength = 0
+                           , phraseLength = 0
+                           , score = [0.0,40.0,-10.0]
+                           }
                   ]],
         tokens = [[Token {startIndex = 0, text = "Jack"}
                   ,Token {startIndex = 5, text = "and"}
@@ -108,18 +123,30 @@ responseToString NerResponse {phrases = pss, tokens = tss} =
     )
 
 phrasesToText :: [Phrase] -> T.Text
-phrasesToText ps = T.concat $ map
+phrasesToText = T.concat . map
+    -- the text we want to generate
+    -- 0: John  PERSON  11.25, 40.0, -10.0  null    0:0:0:1:1
     (\p -> T.concat
+        -- 0: John\t
         [ T.pack (show (phrasePosition p)), ": "
         , T.intercalate " " (map text (phrase p)), "\t"
+        -- PERSON\t
         , phraseType p, "\t"
+        -- 11.25, 40.0, -10.0\t
         , T.intercalate ", " (map (T.pack . show) (score p)), "\t"
+        -- null\t  this is a bad example...
         , "\t" -- TODO: attachedWordMap
-        -- , p.phrasePosition, p.phraseStubPosition, p.phraseStubLength, p.phraseLength
-        , "\n"
+        -- 0:0:1:1\n
+        , t $ startIndex (head (phrase p)), ":"
+        , t $ phrasePosition p, ":"
+        , t $ phraseStubPosition p, ":"
+        , t $ phraseStubLength p, ":"
+        , t $ phraseLength p, "\n"
         ]
     )
-    ps
+    where
+        t = T.pack . show
+
 
 tokensToText :: [Token] -> T.Text
 tokensToText ts = T.intercalate " " (map text ts)
