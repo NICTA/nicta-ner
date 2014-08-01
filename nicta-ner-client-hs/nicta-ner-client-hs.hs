@@ -17,27 +17,27 @@ You should have received a copy of the GNU General Public License along with
 this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 -}
 
-import Control.Applicative       ((<*>), (<$>))
-import Control.Monad             (mzero,liftM)
-import Control.Monad.IO.Class    (liftIO)
-import Data.Aeson                (Value (Object), FromJSON, parseJSON, (.:)
-                                 , decode)
+import Control.Applicative      ((<*>), (<$>))
+import Control.Monad            (mzero,liftM)
+import Control.Monad.IO.Class   (liftIO)
+import Data.Aeson               (Value (Object), FromJSON, parseJSON, (.:)
+                                , decode)
 import Data.ByteString.Lazy as L (ByteString, empty)
-import qualified Data.Map as M   (Map, lookup, singleton, empty)
-import Data.Maybe                (catMaybes, fromMaybe)
-import Data.Version              (showVersion)
-import qualified Data.Text as T            (Text, pack, intercalate, unpack, empty, concat)
+import qualified Data.Map as M  (Map, lookup)
+import Data.Maybe               (catMaybes, fromMaybe)
+import Data.Version             (showVersion)
+import qualified Data.Text as T (Text, pack, intercalate, unpack, empty, concat)
 import qualified Data.Text.Lazy.IO as TIO  (readFile)
-import qualified Data.Text.Lazy as LT      (pack)
+import qualified Data.Text.Lazy as LT (pack)
 import Data.Text.Lazy.Encoding as LTE (encodeUtf8)
-import Network.HTTP.Conduit      (RequestBody (RequestBodyLBS), Response (..)
-                                 , httpLbs, method, parseUrl, requestBody
-                                 , withManager)
+import Network.HTTP.Conduit     (RequestBody (RequestBodyLBS) , Response (..)
+                                , httpLbs, method, requestBody, parseUrl
+                                , withManager)
 import Paths_nicta_ner_client_hs (version)
-import System.Console.GetOpt     (ArgOrder (Permute), ArgDescr (NoArg, ReqArg)
-                                 , OptDescr (Option), getOpt, usageInfo)
-import System.Environment        (getProgName, getArgs)
-import System.Exit               (exitSuccess)
+import System.Console.GetOpt    (ArgOrder (Permute), ArgDescr (NoArg, ReqArg)
+                                , OptDescr (Option), getOpt, usageInfo)
+import System.Environment       (getProgName, getArgs)
+import System.Exit              (exitSuccess)
 
 
 data NerType = Person | Organization | Location | Date | Unknown deriving (Show)
@@ -84,89 +84,18 @@ instance FromJSON NerResponse where
                             v .: "tokens"
     parseJSON _          = mzero
 
--- TODO: remove debug data when finished with it
-test :: NerResponse
-test = NerResponse {
-        phrases = [[Phrase {phrase = [Token {startIndex = 0, text = "Jack"}]
-                           , phraseType = "PERSON"
-                           , phrasePosition = 0
-                           , phraseStubPosition = 0
-                           , phraseStubLength = 0
-                           , phraseLength = 0
-                           , attachedWordMap = M.singleton "prep" "in"
-                           , score = [0.0,40.0,-10.0]
-                           }
-                   ,Phrase {phrase = [Token {startIndex = 9, text = "Jill"}]
-                           , phraseType = "PERSON"
-                           , phrasePosition = 2
-                           , phraseStubPosition = 0
-                           , phraseStubLength = 0
-                           , phraseLength = 0
-                           , attachedWordMap = M.empty
-                           , score = [0.0,40.0,-10.0]
-                           }
-                  ]],
-        tokens = [[Token {startIndex = 0, text = "Jack"}
-                  ,Token {startIndex = 5, text = "and"}
-                  ,Token {startIndex = 9, text = "Jill"}
-                  ,Token {startIndex = 13, text = "."}
-                 ]]
-        }
-
-responseToString :: NerResponse -> String
-responseToString NerResponse {phrases = pss, tokens = tss} =
-    T.unpack (foldl
-        (\acc (ps, ts) -> T.concat
-            [ acc
-            , tokensToText ts
-            , "\n===============================================\n"
-            , phrasesToText ps
-            , "\n"
-            ]
-        )
-        T.empty
-        (zip pss tss)
-    )
-
-phrasesToText :: [Phrase] -> T.Text
-phrasesToText = T.concat . map
-    -- the text we want to generate
-    -- 0: John  PERSON  11.25, 40.0, -10.0  null    0:0:0:1:1
-    (\p -> T.concat
-        -- 0: John\t
-        [ t $ phrasePosition p, ": "
-        , T.intercalate " " (map text (phrase p)), "\t"
-        -- PERSON\t
-        , phraseType p, "\t"
-        -- 11.25, 40.0, -10.0\t
-        , T.intercalate ", " (map (T.pack . show) (score p)), "\t"
-        -- null\t  this is a bad example...
-        , fromMaybe "null" (M.lookup "prep" (attachedWordMap p)), "\t" -- TODO: attachedWordMap
-        -- 0:0:1:1\n
-        , t $ startIndex (head (phrase p)), ":"
-        , t $ phrasePosition p, ":"
-        , t $ phraseStubPosition p, ":"
-        , t $ phraseStubLength p, ":"
-        , t $ phraseLength p, "\n"
-        ]
-    )
-    where
-        t = T.pack . show
-
-
-tokensToText :: [Token] -> T.Text
-tokensToText ts = T.intercalate " " (map text ts)
-
 data Opts = Opts { usage :: Bool
                  , url   :: String
                  , txt   :: L.ByteString
                  }
+
 
 defaultOpts :: Opts
 defaultOpts = Opts { usage = False
                    , url   = "http://ner.t3as.org/nicta-ner-web/rest/v1.0/ner"
                    , txt   = L.empty
                    }
+
 
 cmdLineArgs :: [OptDescr (Opts -> Opts)]
 cmdLineArgs =
@@ -222,6 +151,7 @@ runWith opts files = do
         then [ner t]
         else map (>>= ner) $ readToLbs files
 
+
 readToLbs :: [String] -> [IO L.ByteString]
 readToLbs [] = []
 -- is it really necessary to encode to UTF8?
@@ -234,6 +164,52 @@ performNer webServiceUrl analyseTxt = withManager $ \manager -> do
     let req = req' { method = "POST", requestBody = RequestBodyLBS analyseTxt }
     res <- httpLbs req manager
     return (decode $ responseBody res :: Maybe NerResponse)
+
+
+responseToString :: NerResponse -> String
+responseToString NerResponse {phrases = pss, tokens = tss} =
+    T.unpack (foldl
+        (\acc (ps, ts) -> T.concat
+            [ acc
+            , tokensToText ts
+            , "\n===============================================\n"
+            , phrasesToText ps
+            , "\n"
+            ]
+        )
+        T.empty
+        (zip pss tss)
+    )
+
+
+phrasesToText :: [Phrase] -> T.Text
+phrasesToText = T.concat . map
+    -- the text we want to generate
+    -- 0: John  PERSON  11.25, 40.0, -10.0  null    0:0:0:1:1
+    (\p -> T.concat
+        -- 0: John\t
+        [ t $ phrasePosition p, ": "
+        , T.intercalate " " (map text (phrase p)), "\t"
+        -- PERSON\t
+        , phraseType p, "\t"
+        -- 11.25, 40.0, -10.0\t
+        , T.intercalate ", " (map (T.pack . show) (score p)), "\t"
+        -- null\t  this is a bad example...
+        , fromMaybe "null" (M.lookup "prep" (attachedWordMap p)), "\t"
+        -- 0:0:1:1\n
+        , t $ startIndex (head (phrase p)), ":"
+        , t $ phrasePosition p, ":"
+        , t $ phraseStubPosition p, ":"
+        , t $ phraseStubLength p, ":"
+        , t $ phraseLength p, "\n"
+        ]
+    )
+    where
+        t = T.pack . show
+
+
+tokensToText :: [Token] -> T.Text
+tokensToText ts = T.intercalate " " (map text ts)
 
 
 nerType :: T.Text -> NerType
