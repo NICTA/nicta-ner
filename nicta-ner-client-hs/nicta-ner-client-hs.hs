@@ -23,7 +23,8 @@ import Control.Monad.IO.Class    (liftIO)
 import Data.Aeson                (Value (Object), FromJSON, parseJSON, (.:)
                                  , decode)
 import Data.ByteString.Lazy as L (ByteString, empty)
-import Data.Maybe                (catMaybes)
+import qualified Data.Map as M   (Map, lookup, singleton, empty)
+import Data.Maybe                (catMaybes, fromMaybe)
 import Data.Version              (showVersion)
 import qualified Data.Text as T            (Text, pack, intercalate, unpack, empty, concat)
 import qualified Data.Text.Lazy.IO as TIO  (readFile)
@@ -51,6 +52,7 @@ data Phrase = Phrase { phrase             :: [Token]
                      , phraseStubPosition :: Int
                      , phraseStubLength   :: Int
                      , phraseLength       :: Int
+                     , attachedWordMap    :: M.Map T.Text T.Text
                      , score              :: [Double]
                      } deriving (Show)
 
@@ -72,6 +74,7 @@ instance FromJSON Phrase where
                             v .: "phraseStubPosition" <*>
                             v .: "phraseStubLength" <*>
                             v .: "phraseLength" <*>
+                            v .: "attachedWordMap" <*>
                             v .: "score"
     parseJSON _          = mzero
 
@@ -90,6 +93,7 @@ test = NerResponse {
                            , phraseStubPosition = 0
                            , phraseStubLength = 0
                            , phraseLength = 0
+                           , attachedWordMap = M.singleton "prep" "in"
                            , score = [0.0,40.0,-10.0]
                            }
                    ,Phrase {phrase = [Token {startIndex = 9, text = "Jill"}]
@@ -98,6 +102,7 @@ test = NerResponse {
                            , phraseStubPosition = 0
                            , phraseStubLength = 0
                            , phraseLength = 0
+                           , attachedWordMap = M.empty
                            , score = [0.0,40.0,-10.0]
                            }
                   ]],
@@ -116,6 +121,7 @@ responseToString NerResponse {phrases = pss, tokens = tss} =
             , tokensToText ts
             , "\n===============================================\n"
             , phrasesToText ps
+            , "\n"
             ]
         )
         T.empty
@@ -128,14 +134,14 @@ phrasesToText = T.concat . map
     -- 0: John  PERSON  11.25, 40.0, -10.0  null    0:0:0:1:1
     (\p -> T.concat
         -- 0: John\t
-        [ T.pack (show (phrasePosition p)), ": "
+        [ t $ phrasePosition p, ": "
         , T.intercalate " " (map text (phrase p)), "\t"
         -- PERSON\t
         , phraseType p, "\t"
         -- 11.25, 40.0, -10.0\t
         , T.intercalate ", " (map (T.pack . show) (score p)), "\t"
         -- null\t  this is a bad example...
-        , "\t" -- TODO: attachedWordMap
+        , fromMaybe "null" (M.lookup "prep" (attachedWordMap p)), "\t" -- TODO: attachedWordMap
         -- 0:0:1:1\n
         , t $ startIndex (head (phrase p)), ":"
         , t $ phrasePosition p, ":"
