@@ -30,21 +30,26 @@
             <input type=submit>
 
 <h2>Named-Entities recognised:
-    $if null ents
+    $if null nerResponse
         \
     $else
-        \ #{L.length ents}
+        \ #{L.length nerResponse}
+
 <p>
-    $if null ents
+    $if null nerResponse
         No entities found.
     $else
         <table>
             <tr class=header>
                 <th>Entity
                 <th>Type
+                <th>Preposition
+                <th>Scores
                 <th>Word start index
-            $forall NerEntity word typ index <- ents
+            $forall NerEntity word typ prep scores index <- nerResponse
                 <tr>
                     <td>#{word}
                     <td>#{show typ}
+                    <td>#{prep}
+                    <td>#{scores}
                     <td>#{index}

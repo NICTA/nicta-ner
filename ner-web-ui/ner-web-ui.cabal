@@ -76,6 +76,8 @@ library
                  , monad-logger                  >= 0.3        && < 0.4
                  , fast-logger                   >= 2.1.4      && < 2.2
                  , wai-logger                    >= 2.1        && < 2.2
+                 , transformers                  >= 0.3        && <0.5
+                 , containers                    >= 0.5        && <0.6
 
 executable         ner-web-ui
     if flag(library-only)

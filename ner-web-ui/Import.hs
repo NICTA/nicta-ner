@@ -21,12 +21,13 @@ module Import
 
 import           Prelude              as Import hiding (head, init, last,
                                                  readFile, tail, writeFile,
-                                                 words, length)
+                                                 words, length, lookup)
 import           Yesod                as Import hiding (Route (..))
 
 import           Control.Applicative  as Import (pure, (<$>), (<*>))
-import           Data.Text            as Import (Text, words, head, length)
-import           Data.Char            as Import (isUpper)
+import           Data.Text            as Import (Text, words, head, length,
+                                                 pack)
+import           Data.Map             as Import (lookup)
 
 import           Foundation           as Import
 import           Settings             as Import
