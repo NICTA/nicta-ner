@@ -114,7 +114,7 @@ phrasesToText = T.concat . map
     (\p -> T.concat
         -- 0: John\t
         [ t $ phrasePosition p, ": "
-        , T.intercalate " " (map text (phrase p)), "\t"
+        , tokensToText (phrase p), "\t"
         -- PERSON\t
         , phraseType p, "\t"
         -- 11.25, 40.0, -10.0\t
