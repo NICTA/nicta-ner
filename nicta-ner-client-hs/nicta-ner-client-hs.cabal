@@ -18,15 +18,15 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src-library
   exposed-modules:     Nicta.Ner.Client
-  build-depends:       base >=4.6 && <4.7
-                       , aeson >=0.7 && <0.8
-                       , bytestring >=0.10 && <0.11
-                       , conduit >=1.1 && <1.2
-                       , conduit-extra >=1.1 && <1.2
-                       , containers >=0.5 && <0.6
-                       , http-conduit >=2.1 && <2.2
-                       , text >=1.1 && <1.2
-                       , transformers >=0.4 && <0.5
+  build-depends:       base                   >= 4.6  && <4.7
+                       , aeson                >= 0.6  && < 0.8
+                       , bytestring           >= 0.9  && < 0.11
+                       , conduit              >= 1.0  && < 2.0
+                       , conduit-extra        >= 1.0  && <2.0
+                       , containers           >= 0.5  && <0.6
+                       , http-conduit         >= 2.1  && < 2.2
+                       , text                 >= 0.11 && < 2.0
+                       , transformers         >= 0.3  && <0.5
   default-language:    Haskell2010
 
 executable nicta-ner-client-hs
@@ -34,9 +34,9 @@ executable nicta-ner-client-hs
   hs-source-dirs:      src-cmdline
   -- other-modules:
   -- other-extensions:
-  build-depends:       base >=4.6 && <4.7
+  build-depends:       base                   >=4.6   && <4.7
                        , nicta-ner-client-hs
-                       , bytestring >=0.10 && <0.11
-                       , text >=1.1 && <1.2
+                       , bytestring           >= 0.9  && < 0.11
+                       , text                 >= 0.11 && < 2.0
   default-language:    Haskell2010
 
