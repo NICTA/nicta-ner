@@ -26,10 +26,8 @@ First, make sure you have `haskell-platform` installed for your OS, with a `caba
 
     cabal --version
 
-Change into the directory of this README.md, and run the following commands:
+Change into the directory of this README.md, and run the following commands (which will also build the nicta-ner-client-hs dependency):
 
     cabal sandbox init
-    cabal install --enable-tests . yesod-platform yesod-bin --max-backjumps=-1 --reorder-goals -j3
+    cabal install ../nicta-ner-client-hs/ . yesod-platform yesod-bin --max-backjumps=-1 --reorder-goals -j4
     yesod devel
-
-
