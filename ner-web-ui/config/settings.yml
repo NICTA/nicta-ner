@@ -4,6 +4,7 @@ Default: &defaults
   #approot: "http://localhost:3000"
   copyright: © 2014 NICTA
   #analytics: UA-YOURCODE
+  nerWebServiceUrl: http://localhost:8080/nicta-ner-web/rest/v1.0/ner
 
 Development:
   <<: *defaults
@@ -16,4 +17,5 @@ Staging:
 
 Production:
   #approot: "http://www.example.com"
+  nerWebServiceUrl: http://ner.t3as.org/nicta-ner-web/rest/v1.0/ner
   <<: *defaults
