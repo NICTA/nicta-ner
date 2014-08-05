@@ -25,7 +25,7 @@ All rights reserved.
 This software is under the GPL version 3.
 Please see the license file LICENSE.txt
 
-The contents (data/documentation/artwork) is under the Creative Commons 3.0 BY-SA 
+The contents (data/documentation/artwork) is under the Creative Commons 3.0 BY-SA
 More information about "Creative Commons" license can be found at
 http://creativecommons.org/licenses/by-sa/3.0/
 
@@ -44,3 +44,5 @@ The NICTA NER project contains a number of subprojects implementing various func
 1. [NICTA NER library](nicta-ner) This is the core NER library that does the actual processing work. This can be run from the command line or imported into a JVM based project.
 2. [NER webservice](nicta-ner-web) A simple webservice that wraps the NER library.
 3. [NER client](nicta-ner-client) A simple Java client for the remote webservice that can be used either from the command line, or by importing the Java library in your own JVM based projects.
+4. [NER Web User Interface](ner-web-ui) A simple Haskell/Yesod based demo user interface for the web service.
+5. [NER Haskell client](nicta-ner-client-hs) A client for the web service written in Haskell (which the Yesod web UI makes use of).

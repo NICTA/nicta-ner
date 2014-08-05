@@ -31,3 +31,11 @@ Change into the directory of this README.md, and run the following commands (whi
     cabal sandbox init
     cabal install ../nicta-ner-client-hs/ . yesod-platform yesod-bin --max-backjumps=-1 --reorder-goals -j4
     yesod devel
+
+
+## Deploying
+
+Deploying is easiest done by building a Keter package, and then making use of that:
+
+    yesod keter
+
