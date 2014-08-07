@@ -30,10 +30,16 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
+
+import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 
 @Path("v1.0/ner")
 public class NerWebService {
@@ -54,13 +60,24 @@ public class NerWebService {
 
     @SuppressWarnings("MethodMayBeStatic")
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(APPLICATION_FORM_URLENCODED)
+    @Produces(APPLICATION_JSON)
     public NerResultSet ner(final String text) throws IOException {
         final NamedEntityAnalyser nea = new NamedEntityAnalyser(conf);
         // TODO: size limit!
-        final NerResultSet resultSet = nea.process(URLDecoder.decode(text, "UTF-8"));
-        System.out.println(resultSet);
-        return resultSet;
+        try {
+            final NerResultSet resultSet = nea.process(URLDecoder.decode(text, "UTF-8"));
+            System.out.println(resultSet);
+            return resultSet;
+        }
+        catch (final IllegalArgumentException e) {
+            throw new BadRequest("Input does not appear to be '" + APPLICATION_FORM_URLENCODED + "' encoded.", e);
+        }
+    }
+
+    private static class BadRequest extends WebApplicationException {
+        BadRequest(final String message, final Throwable e) {
+            super(message, e, Response.status(BAD_REQUEST).encoding(TEXT_PLAIN).entity(message).build());
+        }
     }
 }
