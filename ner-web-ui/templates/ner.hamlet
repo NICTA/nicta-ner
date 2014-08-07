@@ -13,6 +13,8 @@
 <p>
     Full instructions on how to use the web service will be published in due course, but simple instructions can be
     had from the web service itself:
+    <br>
+    <br>
     <a href="/nicta-ner-web/rest/v1.0/ner">/nicta-ner-web/rest/v1.0/ner
 
 <p>
@@ -39,7 +41,7 @@
     $if null nerResponse
         No entities found.
     $else
-        <table>
+        <table class=alternatingRows>
             <tr class=header>
                 <th>Entity
                 <th>Type
@@ -51,5 +53,5 @@
                     <td>#{word}
                     <td>#{show typ}
                     <td>#{prep}
-                    <td>#{scores}
+                    <td style="white-space: nowrap">#{scores}
                     <td>#{index}

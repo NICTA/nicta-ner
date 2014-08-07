@@ -25,3 +25,9 @@ th
 
 td, th
     padding: 0.2em 1em
+
+.alternatingRows tr:nth-child(even)
+    background: whitesmoke
+
+.alternatingRows tr:nth-child(odd)
+    background: white
