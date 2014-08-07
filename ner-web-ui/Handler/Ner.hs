@@ -20,12 +20,11 @@ this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 module Handler.Ner where
 
 import           Import
-import           Control.Monad                  (liftM)
-import qualified Data.List               as L   (concat, length, head)
-import           Data.Maybe                     (fromJust, fromMaybe)
-import qualified Data.Text               as T   (intercalate, unpack)
-import qualified Data.Text.Lazy          as LT  (fromStrict)
-import qualified Data.Text.Lazy.Encoding as LTE (encodeUtf8)
+import           Control.Monad            (liftM)
+import qualified Data.List          as L  (concat, length, head)
+import           Data.Maybe               (fromJust, fromMaybe)
+import qualified Data.Text          as T  (intercalate, unpack)
+import qualified Data.Text.Encoding as TE (encodeUtf8)
 import           Nicta.Ner.Client
 
 
@@ -55,7 +54,7 @@ postNerR = do
 
 analyse :: String -> Text -> IO (Maybe NerResponse)
 analyse webServiceUrl t = do
-    let encoded = (LTE.encodeUtf8 . LT.fromStrict) t
+    let encoded = TE.encodeUtf8 t
     performNer webServiceUrl encoded
 
 

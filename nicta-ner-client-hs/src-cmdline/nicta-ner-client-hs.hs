@@ -20,12 +20,12 @@ this program. If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 import Nicta.Ner.Client
 
 import Control.Monad            (liftM)
-import Data.ByteString.Lazy as L (ByteString, empty)
+import Data.ByteString          (ByteString, empty)
 import Data.Maybe               (catMaybes)
 import Data.Version             (showVersion)
-import qualified Data.Text.Lazy.IO as TIO  (readFile)
-import qualified Data.Text.Lazy as LT (pack)
-import Data.Text.Lazy.Encoding as LTE (encodeUtf8)
+import qualified Data.Text.IO as TIO  (readFile)
+import qualified Data.Text as T (pack)
+import Data.Text.Encoding as TE (encodeUtf8)
 import Paths_nicta_ner_client_hs (version)
 import System.Console.GetOpt    (ArgOrder (Permute), ArgDescr (NoArg, ReqArg)
                                 , OptDescr (Option), getOpt, usageInfo)
@@ -36,7 +36,7 @@ import System.Exit              (exitSuccess)
 defaultOpts :: Opts
 defaultOpts = Opts { usage = False
                    , url   = "http://ner.t3as.org/nicta-ner-web/rest/v1.0/ner"
-                   , txt   = L.empty
+                   , txt   = empty
                    }
 
 
@@ -50,7 +50,7 @@ cmdLineArgs =
         ("The full URL to the NER web service. Default: " ++ url defaultOpts)
 
     , Option [] ["txt"]
-        (ReqArg (\arg opts -> opts {txt = (LTE.encodeUtf8 . LT.pack) arg})
+        (ReqArg (\arg opts -> opts {txt = (TE.encodeUtf8 . T.pack) arg})
             "<text to analyse>")
         "The text to perform NER analysis on."
     ]
@@ -61,7 +61,7 @@ main = do
     args <- getArgs
     progName <- getProgName
     (opts, files) <- parseArgs progName args
-    if usage opts || (txt opts == L.empty && null files)
+    if usage opts || (txt opts == empty && null files)
         then do
             putStrLn $ usageInfo (header progName) cmdLineArgs
             exitSuccess
@@ -90,12 +90,12 @@ runWith :: Opts -> [String] -> [IO (Maybe NerResponse)]
 runWith opts files = do
     let ner = performNer $ url opts
         t = txt opts
-    if t /= L.empty
+    if t /= empty
         then [ner t]
         else map (>>= ner) $ readToLbs files
 
 
-readToLbs :: [String] -> [IO L.ByteString]
+readToLbs :: [String] -> [IO ByteString]
 readToLbs [] = []
 -- is it really necessary to encode to UTF8?
 readToLbs files = map (liftM encodeUtf8 . TIO.readFile) files

@@ -24,13 +24,14 @@ import Control.Monad            (mzero)
 import Control.Monad.IO.Class   (liftIO)
 import Data.Aeson               (Value (Object), FromJSON, parseJSON, (.:)
                                 , decode)
-import Data.ByteString.Lazy as L (ByteString)
+import Data.ByteString          (ByteString)
 import qualified Data.Map as M  (Map, lookup)
 import Data.Maybe               (fromMaybe)
 import qualified Data.Text as T (Text, pack, intercalate, unpack, empty, concat)
-import Network.HTTP.Conduit     (RequestBody (RequestBodyLBS) , Response (..)
+import Network.HTTP.Conduit     (RequestBody (RequestBodyBS) , Response (..)
                                 , httpLbs, method, requestBody, parseUrl
                                 , withManager)
+import Network.HTTP.Types       (urlEncode)
 
 
 data NerType = Person | Organization | Location | Date | Unknown deriving (Show)
@@ -79,14 +80,15 @@ instance FromJSON NerResponse where
 
 data Opts = Opts { usage :: Bool
                  , url   :: String
-                 , txt   :: L.ByteString
+                 , txt   :: ByteString
                  }
 
 
-performNer :: String -> L.ByteString -> IO (Maybe NerResponse)
+performNer :: String -> ByteString -> IO (Maybe NerResponse)
 performNer webServiceUrl analyseTxt = withManager $ \manager -> do
     req' <- liftIO $ parseUrl webServiceUrl
-    let req = req' { method = "POST", requestBody = RequestBodyLBS analyseTxt }
+    let encodedTxt = urlEncode True analyseTxt
+        req = req' { method = "POST", requestBody = RequestBodyBS encodedTxt }
     res <- httpLbs req manager
     return (decode $ responseBody res :: Maybe NerResponse)
 
