@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                nicta-ner-client-hs
-version:             0.2.1
+version:             0.3.0-SNAPSHOT
 synopsis:            NICTA t3as Named-Entity Recognition client
 description:         A simple client for the NICTA t3as Named-Entity Recognition web service.
 homepage:            http://t3as.org/
@@ -34,7 +34,7 @@ executable nicta-ner-client-hs
   hs-source-dirs:      src-cmdline
   -- other-modules:
   -- other-extensions:
-  build-depends:       base                   >=4.6   && <4.7
+  build-depends:       base                   >= 4.6  && <4.7
                        , nicta-ner-client-hs
                        , bytestring           >= 0.9  && < 0.11
                        , text                 >= 0.11 && < 2.0
