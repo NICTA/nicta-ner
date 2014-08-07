@@ -29,6 +29,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import static javax.ws.rs.core.Response.Status.Family;
 
@@ -46,9 +48,10 @@ public class NerClient {
         target = ClientBuilder.newClient().register(new JacksonFeature()).target(url + NER_SERVICE_PATH);
     }
 
-    public NerResultSet call(final String input) {
+    public NerResultSet call(final String input) throws UnsupportedEncodingException {
+        final String encodedInput = URLEncoder.encode(input, "UTF-8");
         final Response response = target.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON_TYPE)
-                                        .post(Entity.entity(input, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+                                        .post(Entity.entity(encodedInput, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         if (Family.SUCCESSFUL != response.getStatusInfo().getFamily()) {
             final Response.StatusType statusInfo = response.getStatusInfo();
             throw new RuntimeException("NER request failed with status " + statusInfo.getStatusCode()
