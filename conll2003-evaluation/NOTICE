@@ -1,0 +1,32 @@
+NICTA t3as Named-Entity Recognition web service
+
+Copyright (C) 2010 NICTA
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+  
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+  
+You should have received a copy of the GNU General Public
+License along with this program.  If not, see
+
+http://www.gnu.org/licenses/gpl-3.0.html.
+
+This program links to or is a derivative of:
+
+  BeanShell under GNU LESSER GENERAL PUBLIC LICENSE
+  FindBugs-jsr305 under The Apache Software License, Version 2.0
+  Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
+  Jackson-annotations under The Apache Software License, Version 2.0
+  JCommander under The Apache Software License, Version 2.0
+  NICTA t3as Named-Entity Recognition common files under GNU GENERAL PUBLIC LICENSE Version 3
+  NICTA t3as Named-Entity Recognition library under GNU GENERAL PUBLIC LICENSE Version 3
+  NICTA t3as NER CoNLL 2003 evaluation under GNU GENERAL PUBLIC LICENSE Version 3
+  TestNG under Apache License, Version 2.0
+  TestNG System.out printer under Apache License Version 2.0
+
