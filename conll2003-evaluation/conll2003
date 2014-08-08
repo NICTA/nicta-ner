@@ -1,0 +1,3 @@
+#!/bin/bash
+
+java -jar target/conll2003-evaluation-*-shade.jar "$@"
