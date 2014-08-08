@@ -68,6 +68,7 @@ public final class IO {
                 public boolean processLine(@Nonnull final String line) {
                     final String l = line.trim();
                     if (!l.isEmpty() && !l.startsWith("#")) {
+                        // TODO: probably don't want to split on spaces, and probably want to lowercase everything (also remember to lowercase queries)
                         for (final String part : SPACES.split(l)) {
                             if (eliminatePrepAndConj) {
                                 final String wordType = Dictionary.checkup(part);
