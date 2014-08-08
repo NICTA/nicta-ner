@@ -55,7 +55,6 @@ The baseline results that anybody that was looking to participate in CoNLL-2003 
 
 
 ## Full CoNLL-2003 results
-
                 +-----------+---------+-----------+
      English    | precision |  recall |     F     |
     +------------+-----------+---------+-----------+

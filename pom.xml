@@ -169,6 +169,7 @@
                 <module>nicta-ner</module>
                 <module>nicta-ner-web</module>
                 <module>nicta-ner-client</module>
+                <module>conll2003-evaluation</module>
             </modules>
 
             <build>
@@ -198,7 +199,7 @@
                 <module>nicta-ner-common</module>
                 <module>nicta-ner</module>
                 <module>nicta-ner-client</module>
-                <!-- excluding the WAR modules -->
+                <!-- excluding the WAR and CoNLL modules -->
             </modules>
 
             <properties>
