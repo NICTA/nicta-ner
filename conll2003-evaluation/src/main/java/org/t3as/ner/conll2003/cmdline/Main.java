@@ -23,9 +23,13 @@ package org.t3as.ner.conll2003.cmdline;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import org.t3as.ner.conll2003.ConllReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public final class Main {
 
@@ -35,7 +39,13 @@ public final class Main {
     public static void main(final String[] args) throws IOException {
         final Options opts = getOptions(args);
 
-        System.out.println(opts.file);
+        try (final ConllReader r = new ConllReader(opts.file.get(0))) {
+            while (r.hasNext()) {
+                final Collection<String> sentences = r.next();
+                for (final String s : sentences)
+                System.out.println(s);
+            }
+        }
     }
 
     @SuppressWarnings("CallToSystemExit")
@@ -51,8 +61,10 @@ public final class Main {
             jc.usage();
             System.exit(0);
         }
-        if (opts.file == null) {
-            System.out.println("Please pass a CoNLL 2003 test file.");
+        if (opts.file.isEmpty() || !opts.file.get(0).canRead()) {
+            System.out.println("Please pass a readable CoNLL 2003 test file.");
+            jc.usage();
+            System.exit(1);
         }
         return opts;
     }
@@ -61,7 +73,8 @@ public final class Main {
         @Parameter(help = true, names = {"-h", "--help"}, description = "Show this help message.")
         boolean showUsage;
 
+        // we are going to fail if there is anything else but 1 single file, so just call it file
         @Parameter(description = "<CoNLL 2003 test file>")
-        File file;
+        List<File> file = new ArrayList<>();
     }
 }
