@@ -37,5 +37,6 @@ Change into the directory of this README.md, and run the following commands (whi
 
 Deploying is easiest done by building a Keter package, and then making use of that:
 
+    cabal install -j4 ../nicta-ner-client-hs/ .
     yesod keter
 
