@@ -5,7 +5,6 @@ NICTA t3as Named-Entity Recognition is a rule based Named-Entity Recognition lib
 This is currently a work-in-progress - so far it has mostly just been cleaned up and a simple web service and client have been added. Some of the things that still need to be completed:
 
 * update all the word lists
-* add a simple demo web front end for people to evaluate the library
 * new features, and lots of tweaking of the existing features.
 
 

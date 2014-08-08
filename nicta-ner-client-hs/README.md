@@ -25,4 +25,4 @@ Change into the directory of this README.md, and run the following commands:
     cabal sandbox init
     cabal install --only-dependencies -j4
     cabal install
-    .cabal-sandbox/bin/nicta-ner-client-hs
+    .cabal-sandbox/bin/nicta-ner-client-hs --help

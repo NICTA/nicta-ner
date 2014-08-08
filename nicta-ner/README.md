@@ -64,6 +64,17 @@ Using jar in the java code:
         HashMap<String, String> resultMap = nerResultSet.getMappedResult();
 
 
+## NER classes
+
+the NICTA t3as Named-Entity Recognition library currently returns result classified into one of these classes:
+
+    UNKNOWN
+    PERSON
+    ORGANIZATION
+    LOCATION
+    DATE
+
+
 ## Package outline
 
 ### nicta.ner                        
