@@ -1,5 +1,3 @@
-package org.t3as.ner.conll2003;
-
 /*
  * #%L
  * NICTA t3as NER CoNLL 2003 evaluation
@@ -21,6 +19,7 @@ package org.t3as.ner.conll2003;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.t3as.ner.conll2003;
 
 import org.t3as.ner.NerResultSet;
 import org.t3as.ner.Phrase;
@@ -51,5 +50,28 @@ public final class Util {
         }
 
         return m;
+    }
+
+    public static String translateClassification(final NerClassification nerClas, final NerClassification previous) {
+        if (nerClas == null) return "O";
+
+        final String prefix = previous == null ? "I-" : "B-";
+
+        switch (nerClas.type) {
+            case LOCATION:
+                return prefix + "LOC";
+            case ORGANIZATION:
+                return prefix + "ORG";
+            case PERSON:
+                return prefix + "PER";
+            case UNKNOWN:
+                return prefix + "MISC";
+
+            // DATE and anything else new we do should return null, since CoNLL only do the 4 types above
+            case DATE:
+            default:
+                //noinspection ReturnOfNull
+                return null;
+        }
     }
 }

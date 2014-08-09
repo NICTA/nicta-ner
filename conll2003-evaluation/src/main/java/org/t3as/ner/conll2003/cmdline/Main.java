@@ -49,7 +49,6 @@ public final class Main {
 
         final NamedEntityAnalyser nea = new NamedEntityAnalyser(new Configuration());
 
-        // TODO: check if letting our DATE type through lowers our score, and if so filter it
         try (final ConllReader r = new ConllReader(opts.file.get(0))) {
             while (r.hasNext()) {
                 System.out.println("-DOCSTART- -X- O O");
@@ -63,12 +62,15 @@ public final class Main {
                         final ConllToken conllToken = conllSentence.tokens.get(i);
                         final NerClassification nerClas = phraseMap.get(i);
                         if (nerClas != null && !conllToken.token.equals(nerClas.nerToken)) {
+                            System.err.println(nerResultSet);
                             System.err.printf("Ner Token '%s' not the same as CoNLL Token '%s', position %d in the " +
                                               "sentence '%s'\n", nerClas.nerToken, conllToken.token, i,
                                               conllSentence.sentence);
+                            System.err.println();
                         }
                         else {
-                            final String clas = nerClas == null ? "O" : nerClas.type.toString();
+                            final NerClassification previous = i == 0 ? null : phraseMap.get(i);
+                            final String clas = Util.translateClassification(nerClas, previous);
                             System.out.printf("%s %s %s\n", conllToken.token, conllToken.classifiers, clas);
                         }
                     }
