@@ -1,3 +1,5 @@
+package org.t3as.ner.conll2003;
+
 /*
  * #%L
  * NICTA t3as NER CoNLL 2003 evaluation
@@ -19,20 +21,16 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package org.t3as.ner.conll2003;
 
-import com.google.common.collect.ImmutableList;
+import org.t3as.ner.NameType;
 
-import java.util.Collection;
+public class NerClassification {
 
-public class Sentence {
+    public final String nerToken;
+    public final NameType type;
 
-    public final String sentence;
-    public final ImmutableList<ConllToken> tokens;
-
-    public Sentence(final String s, final Collection<ConllToken> tokens) {
-        this.sentence = s;
-        //noinspection AssignmentToCollectionOrArrayFieldFromParameter
-        this.tokens = ImmutableList.copyOf(tokens);
+    public NerClassification(final String nerToken, final NameType type) {
+        this.nerToken = nerToken;
+        this.type = type;
     }
 }

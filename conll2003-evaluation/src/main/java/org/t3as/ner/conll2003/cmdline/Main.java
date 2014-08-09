@@ -23,15 +23,21 @@ package org.t3as.ner.conll2003.cmdline;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import org.t3as.ner.NamedEntityAnalyser;
+import org.t3as.ner.NerResultSet;
 import org.t3as.ner.conll2003.ConllReader;
 import org.t3as.ner.conll2003.ConllToken;
+import org.t3as.ner.conll2003.NerClassification;
 import org.t3as.ner.conll2003.Sentence;
+import org.t3as.ner.conll2003.Util;
+import org.t3as.ner.resource.Configuration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public final class Main {
 
@@ -41,14 +47,32 @@ public final class Main {
     public static void main(final String[] args) throws IOException {
         final Options opts = getOptions(args);
 
+        final NamedEntityAnalyser nea = new NamedEntityAnalyser(new Configuration());
+
+        // TODO: check if letting our DATE type through lowers our score, and if so filter it
         try (final ConllReader r = new ConllReader(opts.file.get(0))) {
             while (r.hasNext()) {
+                System.out.println("-DOCSTART- -X- O O");
+                System.out.println();
                 final Collection<Sentence> sentences = r.next();
-                for (final Sentence s : sentences) {
-                    System.out.println(s.sentence);
-                    for (ConllToken t : s.tokens) {
-                        System.out.println(t);
+                for (final Sentence conllSentence : sentences) {
+                    final NerResultSet nerResultSet = nea.process(conllSentence.sentence);
+                    //System.out.println(nerResultSet);
+                    final Map<Integer, NerClassification> phraseMap = Util.positionClassificationMap(nerResultSet);
+                    for (int i = 0; i < conllSentence.tokens.size(); i++) {
+                        final ConllToken conllToken = conllSentence.tokens.get(i);
+                        final NerClassification nerClas = phraseMap.get(i);
+                        if (nerClas != null && !conllToken.token.equals(nerClas.nerToken)) {
+                            System.err.printf("Ner Token '%s' not the same as CoNLL Token '%s', position %d in the " +
+                                              "sentence '%s'\n", nerClas.nerToken, conllToken.token, i,
+                                              conllSentence.sentence);
+                        }
+                        else {
+                            final String clas = nerClas == null ? "O" : nerClas.type.toString();
+                            System.out.printf("%s %s %s\n", conllToken.token, conllToken.classifiers, clas);
+                        }
                     }
+                    System.out.println();
                 }
             }
         }
