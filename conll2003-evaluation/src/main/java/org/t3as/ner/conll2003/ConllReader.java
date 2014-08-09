@@ -35,7 +35,7 @@ public class ConllReader implements Closeable {
     private static final Pattern SPACES = Pattern.compile(" ");
 
     private final BufferedReader r;
-    private Collection<String> next;
+    private Collection<Sentence> next;
 
     public ConllReader(final File testFile) throws IOException {
         r = new BufferedReader(new FileReader(testFile));
@@ -49,7 +49,7 @@ public class ConllReader implements Closeable {
         return !next.isEmpty();
     }
 
-    public Collection<String> next() {
+    public Collection<Sentence> next() {
         return next;
     }
 
@@ -85,17 +85,18 @@ public class ConllReader implements Closeable {
         CRICKET NNP I-NP O
         [...]
      */
-    // TODO: need to save the existing type at least (and may as well save the entire rest of the line), so have to change the datastructure
-    private Collection<String> readDoc() throws IOException {
-        final Collection<String> sentences = new ArrayList<>();
+    private Collection<Sentence> readDoc() throws IOException {
+        final Collection<Sentence> sentences = new ArrayList<>();
         StringBuilder sentence = new StringBuilder();
+        Collection<ConllToken> tokens = new ArrayList<>();
         for (String line; (line = r.readLine()) != null; ) {
             // empty line means end-of-sentence
             if (line.isEmpty()) {
                 // if we have an empty line and something in the actual sentence then add it
                 if (sentence.length() > 0) {
-                    sentences.add(sentence.toString());
+                    sentences.add(new Sentence(sentence.toString(), tokens));
                     sentence = new StringBuilder();
+                    tokens = new ArrayList<>();
                 }
             }
             else {
@@ -110,12 +111,13 @@ public class ConllReader implements Closeable {
                     default:
                         if (sentence.length() > 0) sentence.append(" ");
                         sentence.append(parts[0]);
+                        tokens.add(new ConllToken(parts[0], parts[1]));
                 }
             }
         }
 
         // if we run out of data in the file
-        if (sentence.length() > 0) sentences.add(sentence.toString());
+        if (sentence.length() > 0) sentences.add(new Sentence(sentence.toString(), tokens));
         return sentences;
     }
 }

@@ -24,6 +24,8 @@ package org.t3as.ner.conll2003.cmdline;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.t3as.ner.conll2003.ConllReader;
+import org.t3as.ner.conll2003.ConllToken;
+import org.t3as.ner.conll2003.Sentence;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +43,13 @@ public final class Main {
 
         try (final ConllReader r = new ConllReader(opts.file.get(0))) {
             while (r.hasNext()) {
-                final Collection<String> sentences = r.next();
-                for (final String s : sentences)
-                System.out.println(s);
+                final Collection<Sentence> sentences = r.next();
+                for (final Sentence s : sentences) {
+                    System.out.println(s.sentence);
+                    for (ConllToken t : s.tokens) {
+                        System.out.println(t);
+                    }
+                }
             }
         }
     }
