@@ -56,17 +56,17 @@ public final class Main {
                 final Collection<Sentence> sentences = r.next();
                 for (final Sentence conllSentence : sentences) {
                     final NerResultSet nerResultSet = nea.process(conllSentence.sentence);
-                    //System.out.println(nerResultSet);
                     final Map<Integer, NerClassification> phraseMap = Util.positionClassificationMap(nerResultSet);
                     for (int i = 0; i < conllSentence.tokens.size(); i++) {
                         final ConllToken conllToken = conllSentence.tokens.get(i);
                         final NerClassification nerClas = phraseMap.get(i);
                         if (nerClas != null && !conllToken.token.equals(nerClas.nerToken)) {
-                            System.err.println(nerResultSet);
+                            System.err.println("########### Error start");
+                            System.err.print(nerResultSet);
                             System.err.printf("Ner Token '%s' not the same as CoNLL Token '%s', position %d in the " +
                                               "sentence '%s'\n", nerClas.nerToken, conllToken.token, i,
                                               conllSentence.sentence);
-                            System.err.println();
+                            System.err.println("########### Error ends\n");
                         }
                         else {
                             final NerClassification previous = i == 0 ? null : phraseMap.get(i);

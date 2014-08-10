@@ -36,15 +36,25 @@ public final class Util {
     public static Map<Integer, NerClassification> positionClassificationMap(final NerResultSet nerResultSet) {
         final Map<Integer, NerClassification> m = new HashMap<>();
 
+        final Map<Integer, Integer> startIndexToStubPos = new HashMap<>();
+        int stubPos = 0;
+        for (final List<Token> list : nerResultSet.tokens) {
+            for (final Token t : list) {
+                startIndexToStubPos.put(t.startIndex, stubPos++);
+            }
+        }
+
         for (final List<Phrase> sentence : nerResultSet.phrases) {
             for (final Phrase p : sentence) {
-                int stubPos = p.phraseStubPosition;
                 for (final Token t : p.phrase) {
-                    if (m.put(stubPos, new NerClassification(t.text, p.phraseType)) != null) {
+                    final int pos = startIndexToStubPos.get(t.startIndex);
+                    if (m.put(pos, new NerClassification(t.text, p.phraseType)) != null) {
+                        System.err.println("###########" +
+                                           " Error start");
+                        System.err.print(nerResultSet);
                         throw new IllegalStateException("Tried to add a Token to the position classification map " +
-                                                        "that is already there!");
+                                                        "with pos " + pos + " that is already there!");
                     }
-                    stubPos++;
                 }
             }
         }
