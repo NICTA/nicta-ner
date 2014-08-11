@@ -9,6 +9,25 @@ To compare the NICTA t3as NER library with other NER tools we will be doing a Co
 By carrying out the same evaluation we can then compare ourselves to the results of the other teams that participated, as given on the web page linked above.
 
 
+## NICTA t3as NER scores
+
+### 2014-08-11 - Current score
+#### testa
+    processed 51578 tokens with 5942 phrases; found: 6051 phrases; correct: 3129.
+    accuracy:  90.96%; precision:  51.71%; recall:  52.66%; FB1:  52.18
+                  LOC: precision:  60.72%; recall:  66.14%; FB1:  63.31  2001
+                 MISC: precision:  21.23%; recall:  43.06%; FB1:  28.44  1870
+                  ORG: precision:  48.61%; recall:  10.44%; FB1:  17.19  288
+                  PER: precision:  72.78%; recall:  74.76%; FB1:  73.75  1892
+#### testb
+    processed 46666 tokens with 5648 phrases; found: 5750 phrases; correct: 2729.
+    accuracy:  88.97%; precision:  47.46%; recall:  48.32%; FB1:  47.89
+                  LOC: precision:  55.91%; recall:  65.23%; FB1:  60.21  1946
+                 MISC: precision:  17.37%; recall:  43.02%; FB1:  24.74  1739
+                  ORG: precision:  48.04%; recall:  11.08%; FB1:  18.00  383
+                  PER: precision:  68.67%; recall:  71.43%; FB1:  70.02  1682
+
+
 ## CoNLL-2003 Baseline results
 
 The baseline results that anybody that was looking to participate in CoNLL-2003 should beat are:
@@ -28,30 +47,6 @@ The baseline results that anybody that was looking to participate in CoNLL-2003 
                  MISC: precision:  76.09%; recall:  67.09%; FB1:  71.31  619
                   ORG: precision:  71.43%; recall:  52.08%; FB1:  60.24  1211
                   PER: precision:  57.04%; recall:  14.29%; FB1:  22.85  405
-
-### testa without B- and I- prefix (`conlleval -r`)
-    processed 51578 tokens with 8603 phrases; found: 6206 phrases; correct: 1230.
-    accuracy:  84.76%; precision:  19.82%; recall:  14.30%; FB1:  16.61
-                B-LOC: precision:   0.00%; recall:   0.00%; FB1:   0.00  1946
-               B-MISC: precision:   0.24%; recall:  50.00%; FB1:   0.48  826
-                B-ORG: precision:   0.00%; recall:   0.00%; FB1:   0.00  1221
-                B-PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  955
-                I-LOC: precision:  89.15%; recall:   9.03%; FB1:  16.39  212
-               I-MISC: precision:  98.56%; recall:  16.22%; FB1:  27.85  208
-                I-ORG: precision:  98.60%; recall:  13.48%; FB1:  23.72  286
-                I-PER: precision: 100.00%; recall:  17.53%; FB1:  29.83  552
-
-### testb without B- and I- prefix (`conlleval -r`)
-    processed 46666 tokens with 8112 phrases; found: 4758 phrases; correct: 738.
-    accuracy:  83.18%; precision:  15.51%; recall:   9.10%; FB1:  11.47
-                B-LOC: precision:   0.17%; recall:  50.00%; FB1:   0.34  1763
-               B-MISC: precision:   0.97%; recall:  66.67%; FB1:   1.91  619
-                B-ORG: precision:   0.41%; recall: 100.00%; FB1:   0.82  1211
-                B-PER: precision:   0.00%; recall:   0.00%; FB1:   0.00  405
-                I-LOC: precision:  89.07%; recall:   8.49%; FB1:  15.51  183
-               I-MISC: precision:  90.00%; recall:   9.90%; FB1:  17.84  100
-                I-ORG: precision:  98.17%; recall:  12.89%; FB1:  22.78  327
-                I-PER: precision: 100.00%; recall:   5.41%; FB1:  10.26  150
 
 
 ## Full CoNLL-2003 results
