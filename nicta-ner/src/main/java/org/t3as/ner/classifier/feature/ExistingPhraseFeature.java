@@ -41,13 +41,8 @@ public class ExistingPhraseFeature extends Feature {
     }
 
     @Override
-    public double score(final Phrase _p) {
-        String phrase = "";
-        for (int i = 0; i < _p.phrase.size(); i++) {
-            phrase += _p.phrase.get(i).text + " ";
-        }
-        phrase = Strings.simplify(phrase);
-
+    public double score(final Phrase p) {
+        final String phrase = Strings.simplify(p.phraseString());
         return PHRASES.contains(phrase) ? 1.0f : 0.0f;
     }
 }

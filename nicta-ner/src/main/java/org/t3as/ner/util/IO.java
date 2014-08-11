@@ -36,7 +36,6 @@ import java.util.Set;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Resources.getResource;
 import static com.google.common.io.Resources.readLines;
-import static java.util.Locale.ENGLISH;
 import static org.t3as.ner.util.Strings.simplify;
 
 public final class IO {
@@ -70,7 +69,6 @@ public final class IO {
                 public boolean processLine(@Nonnull final String line) {
                     final String l = simplify(line);
                     if (!l.isEmpty() && !l.startsWith("#")) {
-                        // TODO: probably don't want to split on spaces, and probably want to lowercase everything (also remember to lowercase queries)
                         for (final String part : SPACES.split(l)) {
                             if (eliminatePrepAndConj) {
                                 final String wordType = Dictionary.checkup(part);
