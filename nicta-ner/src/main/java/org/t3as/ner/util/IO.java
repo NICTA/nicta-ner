@@ -36,6 +36,8 @@ import java.util.Set;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Resources.getResource;
 import static com.google.common.io.Resources.readLines;
+import static java.util.Locale.ENGLISH;
+import static org.t3as.ner.util.Strings.simplify;
 
 public final class IO {
 
@@ -50,7 +52,7 @@ public final class IO {
             readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
                 public boolean processLine(@Nonnull final String line) {
-                    final String l = line.trim();
+                    final String l = simplify(line);
                     // add to the containing HashSet we are currently in the init block of
                     if (!l.startsWith("#") && !l.isEmpty()) add(l);
                     return true;
@@ -66,7 +68,7 @@ public final class IO {
             readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
                 public boolean processLine(@Nonnull final String line) {
-                    final String l = line.trim();
+                    final String l = simplify(line);
                     if (!l.isEmpty() && !l.startsWith("#")) {
                         // TODO: probably don't want to split on spaces, and probably want to lowercase everything (also remember to lowercase queries)
                         for (final String part : SPACES.split(l)) {
@@ -93,7 +95,7 @@ public final class IO {
             readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
                 public boolean processLine(@Nonnull final String line) {
-                    final String l = line.trim();
+                    final String l = simplify(line);
                     // add to the containing HashSet we are currently in the init block of
                     if (!l.isEmpty() && !l.startsWith("#")) add(l.toLowerCase());
                     return true;
@@ -109,7 +111,7 @@ public final class IO {
             readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
                 public boolean processLine(@Nonnull final String line) {
-                    final String l = line.trim();
+                    final String l = simplify(line);
                     if (!l.isEmpty() && !l.startsWith("#")) {
                         final List<String> parts = TABS.splitToList(l);
                         // add the parts to the map we are in the init block of

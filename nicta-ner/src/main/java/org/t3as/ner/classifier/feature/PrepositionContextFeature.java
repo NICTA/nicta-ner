@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import org.t3as.ner.Phrase;
 import org.t3as.ner.util.IO;
+import org.t3as.ner.util.Strings;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
@@ -41,6 +42,6 @@ public class PrepositionContextFeature extends Feature {
 
     @Override
     public double score(final Phrase _p) {
-        return WORDS.contains(_p.attachedWordMap.get("prep")) ? 1.0f : 0.0f;
+        return WORDS.contains(Strings.simplify(_p.attachedWordMap.get("prep"))) ? 1.0f : 0.0f;
     }
 }

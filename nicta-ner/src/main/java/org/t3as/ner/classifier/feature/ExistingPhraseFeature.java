@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import org.t3as.ner.Phrase;
 import org.t3as.ner.util.IO;
+import org.t3as.ner.util.Strings;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class ExistingPhraseFeature extends Feature {
         for (int i = 0; i < _p.phrase.size(); i++) {
             phrase += _p.phrase.get(i).text + " ";
         }
-        phrase = phrase.trim();
+        phrase = Strings.simplify(phrase);
 
         return PHRASES.contains(phrase) ? 1.0f : 0.0f;
     }
