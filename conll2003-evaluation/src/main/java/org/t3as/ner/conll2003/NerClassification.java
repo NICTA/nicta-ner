@@ -1,5 +1,3 @@
-package org.t3as.ner.conll2003;
-
 /*
  * #%L
  * NICTA t3as NER CoNLL 2003 evaluation
@@ -21,6 +19,7 @@ package org.t3as.ner.conll2003;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package org.t3as.ner.conll2003;
 
 import org.t3as.ner.NameType;
 

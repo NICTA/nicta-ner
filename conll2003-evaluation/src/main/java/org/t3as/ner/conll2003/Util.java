@@ -31,29 +31,23 @@ import java.util.Map;
 
 public final class Util {
 
+    public static final String NOTHING = "O";
+
     private Util() {}
 
+    /** Return a Map of Token startIndex to classification of the Phrase that Token is a part of. */
     public static Map<Integer, NerClassification> positionClassificationMap(final NerResultSet nerResultSet) {
         final Map<Integer, NerClassification> m = new HashMap<>();
-
-        final Map<Integer, Integer> startIndexToStubPos = new HashMap<>();
-        int stubPos = 0;
-        for (final List<Token> list : nerResultSet.tokens) {
-            for (final Token t : list) {
-                startIndexToStubPos.put(t.startIndex, stubPos++);
-            }
-        }
 
         for (final List<Phrase> sentence : nerResultSet.phrases) {
             for (final Phrase p : sentence) {
                 for (final Token t : p.phrase) {
-                    final int pos = startIndexToStubPos.get(t.startIndex);
-                    if (m.put(pos, new NerClassification(t.text, p.phraseType)) != null) {
-                        System.err.println("###########" +
-                                           " Error start");
+                    if (m.put(t.startIndex, new NerClassification(t.text, p.phraseType)) != null) {
+                        // since modifying the contents of the map this error should now never happen
+                        System.err.println("########### Error start");
                         System.err.print(nerResultSet);
                         throw new IllegalStateException("Tried to add a Token to the position classification map " +
-                                                        "with pos " + pos + " that is already there!");
+                                                        "with startIndex " + t.startIndex + " that is already there!");
                     }
                 }
             }
@@ -63,7 +57,7 @@ public final class Util {
     }
 
     public static String translateClassification(final NerClassification nerClas, final NerClassification previous) {
-        if (nerClas == null) return "O";
+        if (nerClas == null) return NOTHING;
 
         final String prefix = previous == null ? "I-" : "B-";
 
@@ -77,11 +71,10 @@ public final class Util {
             case UNKNOWN:
                 return prefix + "MISC";
 
-            // DATE and anything else new we do should return null, since CoNLL only do the 4 types above
+            // DATE and anything else new we do should return nothing found, since CoNLL only do the 4 types above
             case DATE:
             default:
-                //noinspection ReturnOfNull
-                return null;
+                return NOTHING;
         }
     }
 }

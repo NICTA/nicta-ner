@@ -51,7 +51,7 @@ public final class Main {
 
         try (final ConllReader r = new ConllReader(opts.file.get(0))) {
             while (r.hasNext()) {
-                System.out.println("-DOCSTART- -X- O O");
+                System.out.println("-DOCSTART- -X- O O O");
                 System.out.println();
                 final Collection<Sentence> sentences = r.next();
                 for (final Sentence conllSentence : sentences) {
@@ -59,20 +59,11 @@ public final class Main {
                     final Map<Integer, NerClassification> phraseMap = Util.positionClassificationMap(nerResultSet);
                     for (int i = 0; i < conllSentence.tokens.size(); i++) {
                         final ConllToken conllToken = conllSentence.tokens.get(i);
-                        final NerClassification nerClas = phraseMap.get(i);
-                        if (nerClas != null && !conllToken.token.equals(nerClas.nerToken)) {
-                            System.err.println("########### Error start");
-                            System.err.print(nerResultSet);
-                            System.err.printf("Ner Token '%s' not the same as CoNLL Token '%s', position %d in the " +
-                                              "sentence '%s'\n", nerClas.nerToken, conllToken.token, i,
-                                              conllSentence.sentence);
-                            System.err.println("########### Error ends\n");
-                        }
-                        else {
-                            final NerClassification previous = i == 0 ? null : phraseMap.get(i);
-                            final String clas = Util.translateClassification(nerClas, previous);
-                            System.out.printf("%s %s %s\n", conllToken.token, conllToken.classifiers, clas);
-                        }
+                        final NerClassification nerClas = phraseMap.get(conllToken.startIndex);
+                        // TODO: finding previous is broken
+                        //final NerClassification previous = i == 0 ? null : phraseMap.get(i-1);
+                        final String clas = Util.translateClassification(nerClas, null);
+                        System.out.printf("%s %s %s\n", conllToken.token, conllToken.classifiers, clas);
                     }
                     System.out.println();
                 }

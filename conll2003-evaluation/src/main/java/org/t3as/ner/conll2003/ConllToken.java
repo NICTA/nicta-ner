@@ -23,14 +23,16 @@ package org.t3as.ner.conll2003;
 
 public class ConllToken {
 
+    public final int startIndex;
     public final String token;
     public final String classifiers;
 
-    public ConllToken(final String t, final String classifiers) {
+    public ConllToken(final int startIndex, final String t, final String classifiers) {
+        this.startIndex = startIndex;
         this.token = t;
         this.classifiers = classifiers;
     }
 
     @Override
-    public String toString() { return token + ": " + classifiers; }
+    public String toString() { return startIndex + ": " + token + " " + classifiers; }
 }

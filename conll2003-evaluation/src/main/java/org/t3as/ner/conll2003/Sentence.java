@@ -32,7 +32,6 @@ public class Sentence {
 
     public Sentence(final String s, final Collection<ConllToken> tokens) {
         this.sentence = s;
-        //noinspection AssignmentToCollectionOrArrayFieldFromParameter
         this.tokens = ImmutableList.copyOf(tokens);
     }
 }
