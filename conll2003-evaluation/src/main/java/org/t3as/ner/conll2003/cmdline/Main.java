@@ -57,13 +57,15 @@ public final class Main {
                 for (final Sentence conllSentence : sentences) {
                     final NerResultSet nerResultSet = nea.process(conllSentence.sentence);
                     final Map<Integer, NerClassification> phraseMap = Util.positionClassificationMap(nerResultSet);
+                    ConllToken previousToken = null;
                     for (int i = 0; i < conllSentence.tokens.size(); i++) {
                         final ConllToken conllToken = conllSentence.tokens.get(i);
                         final NerClassification nerClas = phraseMap.get(conllToken.startIndex);
-                        // TODO: finding previous is broken
-                        //final NerClassification previous = i == 0 ? null : phraseMap.get(i-1);
-                        final String clas = Util.translateClassification(nerClas, null);
+                        final NerClassification previousClas = previousToken == null
+                                                               ? null : phraseMap.get(previousToken.startIndex);
+                        final String clas = Util.translateClassification(nerClas, previousClas);
                         System.out.printf("%s %s %s\n", conllToken.token, conllToken.classifiers, clas);
+                        previousToken = conllToken;
                     }
                     System.out.println();
                 }

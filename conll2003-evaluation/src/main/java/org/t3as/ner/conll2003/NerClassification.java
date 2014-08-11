@@ -27,9 +27,11 @@ public class NerClassification {
 
     public final String nerToken;
     public final NameType type;
+    public final int phraseStartIndex;
 
-    public NerClassification(final String nerToken, final NameType type) {
+    public NerClassification(final String nerToken, final NameType type, final int phraseStartIndex) {
         this.nerToken = nerToken;
         this.type = type;
+        this.phraseStartIndex = phraseStartIndex;
     }
 }

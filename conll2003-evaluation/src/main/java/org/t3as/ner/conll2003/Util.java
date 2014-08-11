@@ -41,8 +41,11 @@ public final class Util {
 
         for (final List<Phrase> sentence : nerResultSet.phrases) {
             for (final Phrase p : sentence) {
+                final int phraseStartIndex = p.phrase.get(0).startIndex;
                 for (final Token t : p.phrase) {
-                    if (m.put(t.startIndex, new NerClassification(t.text, p.phraseType)) != null) {
+                    final NerClassification clas = new NerClassification(t.text, p.phraseType, phraseStartIndex);
+                    final NerClassification replaced = m.put(t.startIndex, clas);
+                    if (replaced != null) {
                         // since modifying the contents of the map this error should now never happen
                         System.err.println("########### Error start");
                         System.err.print(nerResultSet);
@@ -59,7 +62,12 @@ public final class Util {
     public static String translateClassification(final NerClassification nerClas, final NerClassification previous) {
         if (nerClas == null) return NOTHING;
 
-        final String prefix = previous == null ? "I-" : "B-";
+        // If there is a previous classificationfrom a different phrase of the same type, then indicate a new
+        //   classification using 'B-' prefix, otherwise it is the same phrase and we use the regular 'I-' prefix.
+        final String prefix = previous != null
+                              && previous.phraseStartIndex != nerClas.phraseStartIndex
+                              && previous.type == nerClas.type
+                              ? "B-" : "I-";
 
         switch (nerClas.type) {
             case LOCATION:
