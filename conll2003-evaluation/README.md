@@ -9,6 +9,13 @@ To compare the NICTA t3as NER library with other NER tools we will be doing a Co
 By carrying out the same evaluation we can then compare ourselves to the results of the other teams that participated, as given on the web page linked above.
 
 
+## Performing the CoNLL 2003 evaluation
+
+Follow the instructions at the URL until you have a working `baseline`, then run:
+
+    ./conll2003 eng.testb | $CONLL_HOME/bin/conlleval
+
+
 ## NICTA t3as NER scores
 
 ### 2014-08-11 - Current score
