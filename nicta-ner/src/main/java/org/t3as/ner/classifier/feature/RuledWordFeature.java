@@ -48,7 +48,7 @@ public class RuledWordFeature extends Feature {
         for (int i = 0; i < _p.phrase.size(); i++) {
             final String word = Strings.simplify(_p.phrase.get(i).text);
             if ("of".equalsIgnoreCase(word)) break;
-            final double x = (WORDS.contains(word)) ? 1.0f : 0.0f;
+            final double x = (WORDS.contains(word)) ? 1.0 : 0.0;
             score += weight * x;
             weight += 0.25;
         }

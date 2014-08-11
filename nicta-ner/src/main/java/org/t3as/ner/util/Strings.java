@@ -24,7 +24,6 @@ package org.t3as.ner.util;
 import java.text.Normalizer;
 
 import static java.lang.Character.isUpperCase;
-import static java.util.Locale.ENGLISH;
 
 public final class Strings {
 
@@ -74,8 +73,10 @@ public final class Strings {
         return s.charAt(s.length() -1);
     }
 
+    @SuppressWarnings("ReturnOfNull")
     public static String simplify(final String s) {
+        if (s == null) return null;
         final String s1 = Normalizer.normalize(s, Normalizer.Form.NFC);
-        return s1.trim().toLowerCase(ENGLISH);
+        return s1.trim(); // lowercasing everything needs more thought: .toLowerCase(Locale.ENGLISH);
     }
 }

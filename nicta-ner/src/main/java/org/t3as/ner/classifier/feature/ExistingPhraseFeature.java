@@ -43,6 +43,6 @@ public class ExistingPhraseFeature extends Feature {
     @Override
     public double score(final Phrase p) {
         final String phrase = Strings.simplify(p.phraseString());
-        return PHRASES.contains(phrase) ? 1.0f : 0.0f;
+        return PHRASES.contains(phrase) ? 1.0 : 0.0;
     }
 }

@@ -42,6 +42,7 @@ public class PrepositionContextFeature extends Feature {
 
     @Override
     public double score(final Phrase _p) {
-        return WORDS.contains(Strings.simplify(_p.attachedWordMap.get("prep"))) ? 1.0f : 0.0f;
+        final String prep = _p.attachedWordMap.get("prep");
+        return WORDS.contains(Strings.simplify(prep)) ? 1.0 : 0.0;
     }
 }
