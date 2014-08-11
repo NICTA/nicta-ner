@@ -45,3 +45,4 @@ The NICTA NER project contains a number of subprojects implementing various func
 3. [NER client](nicta-ner-client) A simple Java client for the remote webservice that can be used either from the command line, or by importing the Java library in your own JVM based projects.
 4. [NER Web User Interface](ner-web-ui) A simple Haskell/Yesod based demo user interface for the web service.
 5. [NER Haskell client](nicta-ner-client-hs) A client for the web service written in Haskell (which the Yesod web UI makes use of).
+6. [CoNLL 2003 evaluation](conll2003-evaluation) Code for carrying out an evaluation of the NER library against the CoNLL 2003 shared task.
