@@ -30,11 +30,11 @@ import java.util.List;
 @Immutable
 public class FeatureMap {
 
-    private final Feature[] feature_array;
+    private final Feature[] featureArray;
     private final double[][] w;
 
     public FeatureMap(final List<Feature> features, final double[][] _w) {
-        feature_array = features.toArray(new Feature[features.size()]);
+        featureArray = features.toArray(new Feature[features.size()]);
         // array deep copy
         w = new double[_w.length][];
         for (int i = 0; i < _w.length; i++) {
@@ -42,11 +42,11 @@ public class FeatureMap {
         }
     }
 
-    public double score(final Phrase _p, final int wi) {
+    public double score(final Phrase p, final int wi) {
         double score = 0.0f;
-        for (int i = 0; i < feature_array.length; i++) {
+        for (int i = 0; i < featureArray.length; i++) {
             if (w[wi][i] == 0) continue;
-            score += feature_array[i].score(_p) * w[wi][i];
+            score += featureArray[i].score(p) * w[wi][i];
         }
         return score;
     }
@@ -56,12 +56,12 @@ public class FeatureMap {
         if (this == o) return true;
         if (!(o instanceof FeatureMap)) return false;
         final FeatureMap that = (FeatureMap) o;
-        return Arrays.equals(feature_array, that.feature_array) && Arrays.deepEquals(w, that.w);
+        return Arrays.equals(featureArray, that.featureArray) && Arrays.deepEquals(w, that.w);
     }
 
     @Override
     public int hashCode() {
-        int result = Arrays.hashCode(feature_array);
+        int result = Arrays.hashCode(featureArray);
         result = 31 * result + Arrays.deepHashCode(w);
         return result;
     }
@@ -69,7 +69,7 @@ public class FeatureMap {
     @Override
     public String toString() {
         return "FeatureMap{" +
-               "feature_array=" + Arrays.toString(feature_array) +
+               "featureArray=" + Arrays.toString(featureArray) +
                ", w=" + Arrays.deepToString(w) +
                '}';
     }

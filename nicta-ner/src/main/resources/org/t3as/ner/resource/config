@@ -17,10 +17,10 @@
 # <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 
-# NAME TYPES:
+# NAME TYPES: (order matters, these are the rows in the w array
 Name Types: LOCATION PERSON ORGANIZATION
 
-# FEATURES:
+# FEATURES: (order matters, each feature is indexed into the w array below
 Feature: RuledWordFeature PERSON_NAME
 Feature: RuledWordFeature PERSON_KEYWORD
 Feature: RuledWordFeature COUNTRY_NAME
@@ -37,5 +37,7 @@ Feature: RuledWordFeature WIKI_ORG_EXTRACTION
 Feature: RuledWordFeature WIKI_PER_EXTRACTION
 Feature: RuledWordFeature WIKI_LOC_EXTRACTION
 
-# W:
+
+# W: each value corresponds to the weight of that feature for that particular entity class type
+#             LOCATION                  |               PERSON                      |                ORGANIZATION
 w: 0 0 15 15 0 0 0 25 20 10 10 0 0 0 10 | 20 30 0 0 0 -10 25 -10 0 0 0 0 -10 10 -10 | 0 0 0 0 25 25 -10 -10 0 0 0 10 10 -10 -10
