@@ -62,7 +62,7 @@ public final class Util {
     public static String translateClassification(final NerClassification nerClas, final NerClassification previous) {
         if (nerClas == null) return NOTHING;
 
-        // If there is a previous classificationfrom a different phrase of the same type, then indicate a new
+        // If there is a previous classification from a different phrase of the same type, then indicate a new
         //   classification using 'B-' prefix, otherwise it is the same phrase and we use the regular 'I-' prefix.
         final String prefix = previous != null
                               && previous.phraseStartIndex != nerClas.phraseStartIndex
@@ -79,7 +79,7 @@ public final class Util {
             case UNKNOWN:
                 return prefix + "MISC";
 
-            // DATE and anything else new we do should return nothing found, since CoNLL only do the 4 types above
+            // DATE and any other new classes we add should return nothing found, since CoNLL only do the 4 types above
             case DATE:
             default:
                 return NOTHING;

@@ -43,6 +43,12 @@ public final class Main {
 
     private Main() {}
 
+    /**
+     * Parse the CoNLL 2003 test data into sentences, use NICTA t3as NER to analyse the text, and print out the results
+     * so that they can be checked by the 'conlleval' tool. See here for more info:
+     *
+     * http://www.cnts.ua.ac.be/conll2003/ner/
+     */
     @SuppressWarnings("MethodNamesDifferingOnlyByCase")
     public static void main(final String[] args) throws IOException {
         final Options opts = getOptions(args);
@@ -51,22 +57,26 @@ public final class Main {
 
         try (final ConllReader r = new ConllReader(opts.file.get(0))) {
             while (r.hasNext()) {
-                System.out.println("-DOCSTART- -X- O O O");
-                System.out.println();
+                // each section in the test results data starts with a DOCSTART
+                System.out.println("-DOCSTART- -X- O O O\n");
                 final Collection<Sentence> sentences = r.next();
+
                 for (final Sentence conllSentence : sentences) {
                     final NerResultSet nerResultSet = nea.process(conllSentence.sentence);
                     final Map<Integer, NerClassification> phraseMap = Util.positionClassificationMap(nerResultSet);
+
                     ConllToken previousToken = null;
-                    for (int i = 0; i < conllSentence.tokens.size(); i++) {
-                        final ConllToken conllToken = conllSentence.tokens.get(i);
+                    for (final ConllToken conllToken : conllSentence.tokens) {
                         final NerClassification nerClas = phraseMap.get(conllToken.startIndex);
                         final NerClassification previousClas = previousToken == null
                                                                ? null : phraseMap.get(previousToken.startIndex);
                         final String clas = Util.translateClassification(nerClas, previousClas);
+
+                        // print out the token, the test annotations, and our classification of the token
                         System.out.printf("%s %s %s\n", conllToken.token, conllToken.classifiers, clas);
                         previousToken = conllToken;
                     }
+                    // finish each sentence with a newline
                     System.out.println();
                 }
             }
