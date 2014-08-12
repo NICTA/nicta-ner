@@ -15,6 +15,11 @@ Follow the instructions at the URL until you have a working `baseline`, then run
 
     ./conll2003 eng.testb | $CONLL_HOME/bin/conlleval
 
+To investigate where things have gone wrong, do something like the following to see each word followed by the manual human ground truth classification followed by the NICTA NER classification:
+
+    ./conll2003 eng.testb > nicta.eng.testb
+    cat nicta.eng.testb | cut -d\  -f1,4,5 | less
+    
 
 ## NICTA t3as NER scores
 
