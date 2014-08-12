@@ -78,7 +78,7 @@ The baseline results that anybody that was looking to participate in CoNLL-2003 
                   PER: precision:  57.04%; recall:  14.29%; FB1:  22.85  405
 
 
-## Full CoNLL-2003 results
+## Full CoNLL-2003 results (testb)
                 +-----------+---------+-----------+
      English    | precision |  recall |     F     |
     +------------+-----------+---------+-----------+
