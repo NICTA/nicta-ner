@@ -40,4 +40,4 @@ Feature: RuledWordFeature WIKI_LOC_EXTRACTION
 
 # W: each value corresponds to the weight of that feature for that particular entity class type
 #             LOCATION                  |               PERSON                      |                ORGANIZATION
-w: 0 0 15 15 0 0 0 25 20 10 10 0 0 0 10 | 20 30 0 0 0 -10 25 -10 0 0 0 0 -10 10 -10 | 0 0 0 0 25 25 -10 -10 0 0 0 10 10 -10 -10
+w: 0 0 15 15 0 0 0 25 20 10 10 0 0 0 5 | 20 30 0 0 0 -10 25 -10 0 0 0 0 0 5 0 | 0 0 0 0 25 25 -10 -10 0 0 0 10 5 0 0
