@@ -25,10 +25,12 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import org.t3as.ner.Phrase;
 import org.t3as.ner.util.IO;
-import org.t3as.ner.util.Strings;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
+
+import static org.t3as.ner.util.Strings.simplify;
+import static org.t3as.ner.util.Strings.toEngLowerCase;
 
 @Immutable
 public class PrepositionContextFeature extends Feature {
@@ -37,12 +39,13 @@ public class PrepositionContextFeature extends Feature {
 
     public PrepositionContextFeature(final String filename) throws IOException {
         super(filename);
-        WORDS = ImmutableSet.copyOf(IO.createSingleWordSet(getClass(), filename, false));
+        WORDS = ImmutableSet.copyOf(IO.createLowercaseSingleWordSet(getClass(), filename, false));
     }
 
     @Override
     public double score(final Phrase _p) {
-        final String prep = _p.attachedWordMap.get("prep");
-        return WORDS.contains(Strings.simplify(prep)) ? 1.0 : 0.0;
+        String prep = _p.attachedWordMap.get("prep");
+        if (prep != null) prep = toEngLowerCase(prep);
+        return WORDS.contains(simplify(prep)) ? 1.0 : 0.0;
     }
 }

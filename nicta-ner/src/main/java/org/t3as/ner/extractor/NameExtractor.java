@@ -22,11 +22,11 @@
 package org.t3as.ner.extractor;
 
 import org.t3as.ner.NerResultSet;
+import org.t3as.ner.Phrase;
+import org.t3as.ner.Token;
 import org.t3as.ner.data.Date;
 import org.t3as.ner.data.DatePhraseModel;
 import org.t3as.ner.data.Name;
-import org.t3as.ner.Phrase;
-import org.t3as.ner.Token;
 import org.t3as.ner.resource.Configuration;
 import org.t3as.ner.util.Dictionary;
 import org.t3as.ner.util.IO;
@@ -48,6 +48,7 @@ import static org.t3as.ner.util.Dictionary.isPastTense;
 import static org.t3as.ner.util.Dictionary.isPlural;
 import static org.t3as.ner.util.Strings.equalsIgnoreCase;
 import static org.t3as.ner.util.Strings.startsWith;
+import static org.t3as.ner.util.Strings.toEngLowerCase;
 import static org.t3as.ner.util.Tokenizer.Mode.WITH_PUNCTUATION;
 
 // TODO: full of very long methods, please to fix
@@ -59,7 +60,7 @@ public class NameExtractor {
     private static final Set<String> NON_NAME_WORDS;
 
     static {
-        try { NON_NAME_WORDS = IO.lowerCasedWordSet(NameExtractor.class, "NON_NAME_WORDS"); }
+        try { NON_NAME_WORDS = IO.wordSet(NameExtractor.class, "NON_NAME_WORDS"); }
         catch (final IOException ioe) { throw new RuntimeException("Could not load the NON_NAME_WORDS file.", ioe); }
     }
 
@@ -138,7 +139,7 @@ public class NameExtractor {
 
                 //handling non-name single words such as: Monday, January, etc.
                 if (currentPhrase.size() == 1 && phraseStubStartPtr == phrasePos) {
-                    if (NON_NAME_WORDS.contains(currentPhrase.get(0).text.toLowerCase())) {
+                    if (NON_NAME_WORDS.contains(currentPhrase.get(0).text)) {
                         currentPhrase.clear();
                         wordPtr--;
                     }
@@ -217,7 +218,7 @@ public class NameExtractor {
         final boolean isName = isName(_text.get(_pos).text, isFirstWord, nextWordIsName);
 
         /*
-        String wordType = dict.checkup(_text.get(_pos).toLowerCase());
+        String wordType = dict.checkup(Strings.toEngLowerCase(_text.get(_pos));
         if (isFirstWord && !isName && wordType != null && wordType.startsWith("JJ")) {
             // if the first word is determined not to be a name but it is an adj.,
             // and if the second word is a name, we consider the first word to be a name as well.
@@ -241,7 +242,7 @@ public class NameExtractor {
                 // we need to deal with the first word in the sentence very carefully.
                 // as we can not tell if the first word is a name by detecting upper case characters.
                 final String type_original = Dictionary.checkup(_text);
-                final String type_lowercase = Dictionary.checkup(_text.toLowerCase());
+                final String type_lowercase = Dictionary.checkup(toEngLowerCase(_text));
                 if (type_original == null) {
                     // if the word cannot be found in the dictionary, we consider it as a name entity.
                     if (type_lowercase == null) return true;
@@ -291,8 +292,8 @@ public class NameExtractor {
                 phraseSequence.add(currentNamePhrase);
                 nameSequenceMeetEnd = true;
             }
-            else if (Dictionary.checkup(attachedWord.toLowerCase()) != null && Dictionary
-                    .checkup(attachedWord.toLowerCase())
+            else if (Dictionary.checkup(toEngLowerCase(attachedWord)) != null && Dictionary
+                    .checkup(toEngLowerCase(attachedWord))
                     .startsWith("IN")) {
                 prep = attachedWord;
                 phraseSequence.add(currentNamePhrase);

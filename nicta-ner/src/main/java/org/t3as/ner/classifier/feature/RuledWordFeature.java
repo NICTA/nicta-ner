@@ -30,6 +30,8 @@ import org.t3as.ner.util.Strings;
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 
+import static org.t3as.ner.util.Strings.toEngLowerCase;
+
 @Immutable
 public class RuledWordFeature extends Feature {
 
@@ -37,7 +39,7 @@ public class RuledWordFeature extends Feature {
 
     public RuledWordFeature(final String filename) throws IOException {
         super(filename);
-        WORDS = ImmutableSet.copyOf(IO.createSingleWordSet(getClass(), filename, true));
+        WORDS = ImmutableSet.copyOf(IO.createLowercaseSingleWordSet(getClass(), filename, true));
     }
 
     @SuppressWarnings("MagicNumber")
@@ -46,7 +48,7 @@ public class RuledWordFeature extends Feature {
         double score = 0.0f;
         double weight = 0.75f;    // weight increases 0.2 every word backward till the word "of" appears.
         for (int i = 0; i < _p.phrase.size(); i++) {
-            final String word = Strings.simplify(_p.phrase.get(i).text);
+            final String word = Strings.simplify(toEngLowerCase(_p.phrase.get(i).text));
             if ("of".equalsIgnoreCase(word)) break;
             final double x = (WORDS.contains(word)) ? 1.0 : 0.0;
             score += weight * x;

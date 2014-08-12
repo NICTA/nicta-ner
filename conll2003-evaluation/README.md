@@ -23,7 +23,24 @@ To investigate where things have gone wrong, do something like the following to 
 
 ## NICTA t3as NER scores
 
-### 2014-08-11 - Current score
+### 2014-08-12 - Current score
+#### testa
+    processed 51578 tokens with 5942 phrases; found: 6065 phrases; correct: 3305.
+    accuracy:  91.29%; precision:  54.49%; recall:  55.62%; FB1:  55.05
+                  LOC: precision:  60.66%; recall:  77.14%; FB1:  67.91  2336
+                 MISC: precision:  27.91%; recall:  40.56%; FB1:  33.07  1340
+                  ORG: precision:  37.89%; recall:  10.96%; FB1:  17.00  388
+                  PER: precision:  68.32%; recall:  74.21%; FB1:  71.14  2001
+
+#### testb
+    processed 46666 tokens with 5648 phrases; found: 5767 phrases; correct: 2952.
+    accuracy:  89.50%; precision:  51.19%; recall:  52.27%; FB1:  51.72
+                  LOC: precision:  56.12%; recall:  76.92%; FB1:  64.90  2286
+                 MISC: precision:  25.76%; recall:  42.31%; FB1:  32.02  1153
+                  ORG: precision:  42.27%; recall:  12.34%; FB1:  19.11  485
+                  PER: precision:  63.32%; recall:  72.17%; FB1:  67.46  1843
+
+### 2014-08-11
 #### testa
     processed 51578 tokens with 5942 phrases; found: 6051 phrases; correct: 3129.
     accuracy:  90.96%; precision:  51.71%; recall:  52.66%; FB1:  52.18

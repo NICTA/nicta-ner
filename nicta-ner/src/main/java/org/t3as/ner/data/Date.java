@@ -37,6 +37,7 @@ import static org.t3as.ner.data.Date.DateType.NONE;
 import static org.t3as.ner.data.Date.DateType.TIME;
 import static org.t3as.ner.data.Date.DateType.TIME_AM_PM;
 import static org.t3as.ner.util.Strings.equalsIgnoreCase;
+import static org.t3as.ner.util.Strings.toEngLowerCase;
 
 // TODO: very suspicious date parsing going on, can we improve this?
 public class Date extends Phrase {
@@ -98,7 +99,7 @@ public class Date extends Phrase {
         try {
             final int dd = Integer.parseInt(_word.substring(0, _word.length() - 2));
             if (equalsIgnoreCase(_word, "1st", "21st", "31st", "2nd", "22nd", "3rd", "23rd")
-                 || _word.toLowerCase().endsWith("th")) {
+                 || toEngLowerCase(_word).endsWith("th")) {
                 if (dd > 0 && dd <= THIRTYONE_DAYS) {
                     return DATE_DD;
                 }

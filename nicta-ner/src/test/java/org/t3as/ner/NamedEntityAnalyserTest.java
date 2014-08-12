@@ -61,13 +61,13 @@ public class NamedEntityAnalyserTest {
                 {"John",
                  new ArrayList<Result>() {{
                      // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
-                     add(new Result("John", PERSON, of(11.25, 40., -10.), none()));
+                     add(new Result("John", PERSON, of(11.25, 43.75, -6.25), none()));
                  }}},
 
                 {"John and Jane Doe Doe live in New Zealand in November.",
                  new ArrayList<Result>() {{
                      // 0: John	PERSON	11.25, 40.0, -10.0	null	0:0:1:1
-                     add(new Result("John", PERSON, of(11.25, 40., -10.), none()));
+                     add(new Result("John", PERSON, of(11.25, 43.75, -6.25), none()));
                      // 2: Jane Doe Doe	PERSON	0.0, 60.0, 0.0	null	2:2:3:3
                      add(new Result("Jane Doe Doe", PERSON, of(0., 60., 0.), none()));
                      // 7: New Zealand	LOCATION	95.0, 5.0, 0.0	in	7:7:2:2
@@ -79,9 +79,9 @@ public class NamedEntityAnalyserTest {
                 {"Jim bought 300 shares of Acme Corp. in 2006.",
                  new ArrayList<Result>() {{
                      // 0: Jim	PERSON	0.0, 40.0, -10.0	null	0:0:1:1
-                     add(new Result("Jim", PERSON, of(0., 40., -10.), none()));
+                     add(new Result("Jim", PERSON, of(0.0, 30.0, 18.75), none()));
                      // 5: Acme Corp	PERSON	0.0, 20.0, 0.0	of	5:5:2:2
-                     add(new Result("Acme Corp", PERSON, of(0., 20., 0.), ImmutableMap.of("prep", "of")));
+                     add(new Result("Acme Corp", PERSON, of(0.0, 20.0, 8.75), ImmutableMap.of("prep", "of")));
                      // 1: 2006	DATE	0.0, 0.0, 0.0	in	1:1:1:1
                      add(new Result("2006", DATE, of(0., 0., 0.), ImmutableMap.of("prep", "in")));
                  }}},
@@ -89,11 +89,11 @@ public class NamedEntityAnalyserTest {
                 {"Næsby is in Denmark, as is Næsbyholm Slot, which is outside the town of Glumsø.",
                  new ArrayList<Result>() {{
                      // 0: Næsby	ORGANIZATION	0.0, -7.5, 7.5	null	0:0:1:1
-                     add(new Result("Næsby", ORGANIZATION, of(0., -7.5, 7.5), none()));
+                     add(new Result("Næsby", ORGANIZATION, of(0.0, 0.0, 3.75), none()));
                      // 3: Denmark	LOCATION	46.25, -5.0, 25.0	in	3:3:1:1
                      add(new Result("Denmark", LOCATION, of(46.25, -5., 25.), ImmutableMap.of("prep", "in")));
                      // 7: Næsbyholm Slot UNKNOWN 0.0, 0.0, 0.0	null	7:7:2:2
-                     add(new Result("Næsbyholm Slot", UNKNOWN, of(0., 0., 0.), none()));
+                     add(new Result("Næsbyholm Slot", LOCATION, of(5.0, 0.0, 0.0), none()));
                      // 16: Glumsø	UNKNOWN	0.0, 0.0, 0.0	of	16:16:1:1
                      add(new Result("Glumsø", UNKNOWN, of(0., 0., 0.), ImmutableMap.of("prep", "of")));
                  }}},
@@ -101,13 +101,13 @@ public class NamedEntityAnalyserTest {
                 {new String(Files.readAllBytes(Paths.get("src/test/resources/test1.txt"))),
                  new ArrayList<Result>() {{
                      // 4: UK	LOCATION	21.25, 0.0, 10.0	in	4:5:1:2
-                     add(new Result("UK", LOCATION, of(21.25, 0., 10.), ImmutableMap.of("prep", "in")));
+                     add(new Result("UK", UNKNOWN, of(10.0, 0.0, 10.0), ImmutableMap.of("prep", "in")));
                      // 13: 1965	DATE	0.0, 0.0, 0.0	null	13:13:1:1
                      add(new Result("1965", DATE, of(0., 0., 0.), none()));
                      // 2: Eoghan	PERSON	0.0, 7.5, -7.5	null	2:2:1:1
                      add(new Result("Eoghan", PERSON, of(0., 7.5, -7.5), none()));
                      // 6: Ford Escort	PERSON	11.25, 15.0, 0.0	null	6:7:2:3
-                     add(new Result("Ford Escort", PERSON, of(11.25, 15., 0.), none()));
+                     add(new Result("Ford Escort", LOCATION, of(11.25, 15., 0.), none()));
                      // 3: Toyota Camry	PERSON	0.0, 35.0, -20.0	null	3:4:2:3
                      add(new Result("Toyota Camry", PERSON, of(0., 35., -20.), none()));
                      // 13: Feb	UNKNOWN	0.0, 0.0, 0.0	of	13:13:1:1
@@ -122,7 +122,7 @@ public class NamedEntityAnalyserTest {
                      // 19: Foreign	UNKNOWN	0.0, 0.0, 0.0	for	19:20:1:2
                      add(new Result("Foreign", UNKNOWN, of(0., 0., 0.), ImmutableMap.of("prep", "for")));
                      // 22: Commonwealth Office	UNKNOWN	0.0, 0.0, 0.0	for	22:22:2:2
-                     add(new Result("Commonwealth Office", UNKNOWN, of(0., 0., 0.), ImmutableMap.of("prep", "for")));
+                     add(new Result("Commonwealth Office", LOCATION, of(0., 0., 0.), ImmutableMap.of("prep", "for")));
                      //4: China	LOCATION	36.25, 30.0, -20.0	from	4:4:1:1
                      add(new Result("China", LOCATION, of(36.25, 30.0, -20.0), ImmutableMap.of("prep", "from")));
                      //6: America	LOCATION	36.25, 30.0, -20.0	from	6:6:1:1
@@ -175,9 +175,9 @@ public class NamedEntityAnalyserTest {
                 {"John Smith, John.",
                  new ArrayList<Result>() {{
                      //0: John Smith	PERSON	26.25, 60.0, -10.0	null	0:0:2:2
-                     add(new Result("John Smith", PERSON, of(26.25, 60.0, -10.0), none()));
+                     add(new Result("John Smith", PERSON, of(26.25, 63.75, -6.25), none()));
                      //3: John	PERSON	11.25, 40.0, -10.0	null	3:3:1:1
-                     add(new Result("John", PERSON, of(11.25, 40.0, -10.0), none()));
+                     add(new Result("John", PERSON, of(11.25, 43.75, -6.25), none()));
                  }}},
 
                 // TODO: add these tests

@@ -37,6 +37,7 @@ import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Resources.getResource;
 import static com.google.common.io.Resources.readLines;
 import static org.t3as.ner.util.Strings.simplify;
+import static org.t3as.ner.util.Strings.toEngLowerCase;
 
 public final class IO {
 
@@ -45,15 +46,15 @@ public final class IO {
 
     private IO() {}
 
-    /** Return a Set containing trimmed lines read from a file, skipping comments. */
-    public static Set<String> lines(final Class<?> origin, final String resource) throws IOException {
+    /** Return a Set containing trimmed lowercaseLines read from a file, skipping comments. */
+    public static Set<String> lowercaseLines(final Class<?> origin, final String resource) throws IOException {
         return ImmutableSet.copyOf(new HashSet<String>() {{
             readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
                 public boolean processLine(@Nonnull final String line) {
                     final String l = simplify(line);
                     // add to the containing HashSet we are currently in the init block of
-                    if (!l.startsWith("#") && !l.isEmpty()) add(l);
+                    if (!l.startsWith("#") && !l.isEmpty()) add(toEngLowerCase(l));
                     return true;
                 }
             });
@@ -61,8 +62,8 @@ public final class IO {
     }
 
     /** Returns a Set containing only single words. */
-    public static ImmutableSet<String> createSingleWordSet(final Class<?> origin, final String resource,
-                                                           final boolean eliminatePrepAndConj) throws IOException {
+    public static ImmutableSet<String> createLowercaseSingleWordSet(final Class<?> origin, final String resource,
+                                                                    final boolean eliminatePrepAndConj) throws IOException {
         return ImmutableSet.copyOf(new HashSet<String>() {{
             readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
@@ -77,7 +78,7 @@ public final class IO {
                                 }
                             }
                             // add to the containing HashSet we are currently in the init block of
-                            add(part);
+                            add(toEngLowerCase(part));
                         }
                     }
                     return true;
@@ -87,7 +88,7 @@ public final class IO {
     }
 
     /** Return a set containing all non-comment non-empty lower cased words. */
-    public static ImmutableSet<String> lowerCasedWordSet(final Class<?> origin, final String resource)
+    public static ImmutableSet<String> wordSet(final Class<?> origin, final String resource)
             throws IOException {
         return ImmutableSet.copyOf(new HashSet<String>() {{
             readResource(origin, resource, new NullReturnLineProcessor() {
@@ -95,7 +96,7 @@ public final class IO {
                 public boolean processLine(@Nonnull final String line) {
                     final String l = simplify(line);
                     // add to the containing HashSet we are currently in the init block of
-                    if (!l.isEmpty() && !l.startsWith("#")) add(l.toLowerCase());
+                    if (!l.isEmpty() && !l.startsWith("#")) add(l);
                     return true;
                 }
             });

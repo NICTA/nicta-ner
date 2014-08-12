@@ -24,6 +24,8 @@ package org.t3as.ner.util;
 import java.io.IOException;
 import java.util.Map;
 
+import static org.t3as.ner.util.Strings.toEngLowerCase;
+
 public final class Dictionary {
 
     private static final Map<String, String> dict;
@@ -45,7 +47,7 @@ public final class Dictionary {
 
     /** This method checks if the word is a plural form. */
     public static boolean isPlural(final String _word) {
-        final String word = _word.toLowerCase();
+        final String word = toEngLowerCase(_word);
 
         // word + s
         if (word.endsWith("s")) {
@@ -70,7 +72,7 @@ public final class Dictionary {
 
     /** This method checks if the word is a past tense word. */
     public static boolean isPastTense(final String _word) {
-        final String word = _word.toLowerCase();
+        final String word = toEngLowerCase(_word);
 
         // word(e) + d
         if (word.endsWith("d")) {

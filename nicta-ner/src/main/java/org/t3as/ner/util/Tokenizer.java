@@ -40,6 +40,7 @@ import static org.t3as.ner.util.Strings.equalss;
 import static org.t3as.ner.util.Strings.initChar;
 import static org.t3as.ner.util.Strings.isSingleUppercaseChar;
 import static org.t3as.ner.util.Strings.lastChar;
+import static org.t3as.ner.util.Strings.toEngLowerCase;
 import static org.t3as.ner.util.Tokenizer.Mode.WITHOUT_PUNCTUATION;
 import static org.t3as.ner.util.Tokenizer.Mode.WITH_PUNCTUATION;
 
@@ -58,7 +59,7 @@ public class Tokenizer {
     private static final ImmutableCollection<String> ABBREVIATION_EXCEPTIONS;
 
     static {
-        try { ABBREVIATION_EXCEPTIONS = ImmutableList.copyOf(IO.lines(Tokenizer.class, "TokenizerAbbreviation")); }
+        try { ABBREVIATION_EXCEPTIONS = ImmutableList.copyOf(IO.lowercaseLines(Tokenizer.class, "TokenizerAbbreviation")); }
         catch (final IOException e) { throw new RuntimeException("Could not load the TokenizerAbbreviation file.", e); }
     }
 
@@ -162,7 +163,7 @@ public class Tokenizer {
         else {
             final int previousWordIndex = currentSentence.size() - 1;
             final Token previousWord = currentSentence.get(previousWordIndex);
-            if (ABBREVIATION_EXCEPTIONS.contains(previousWord.text)
+            if (ABBREVIATION_EXCEPTIONS.contains(toEngLowerCase(previousWord.text))
                 || isSingleUppercaseChar(previousWord.text)
                 || previousWord.text.contains(".")) {
                 currentSentence.set(previousWordIndex, new Token(previousWord.startIndex, previousWord.text + "."));

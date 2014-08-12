@@ -30,6 +30,8 @@ import org.t3as.ner.util.Strings;
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 
+import static org.t3as.ner.util.Strings.toEngLowerCase;
+
 @Immutable
 public class ExistingPhraseFeature extends Feature {
 
@@ -37,12 +39,12 @@ public class ExistingPhraseFeature extends Feature {
 
     public ExistingPhraseFeature(final String filename) throws IOException {
         super(filename);
-        PHRASES = ImmutableSet.copyOf(IO.lines(getClass(), filename));
+        PHRASES = ImmutableSet.copyOf(IO.lowercaseLines(getClass(), filename));
     }
 
     @Override
     public double score(final Phrase p) {
         final String phrase = Strings.simplify(p.phraseString());
-        return PHRASES.contains(phrase) ? 1.0 : 0.0;
+        return PHRASES.contains(toEngLowerCase(phrase)) ? 1.0 : 0.0;
     }
 }
