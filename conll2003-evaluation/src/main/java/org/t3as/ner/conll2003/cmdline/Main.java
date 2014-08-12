@@ -23,65 +23,22 @@ package org.t3as.ner.conll2003.cmdline;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import org.t3as.ner.NamedEntityAnalyser;
-import org.t3as.ner.NerResultSet;
-import org.t3as.ner.conll2003.ConllReader;
-import org.t3as.ner.conll2003.ConllToken;
-import org.t3as.ner.conll2003.NerClassification;
-import org.t3as.ner.conll2003.Sentence;
-import org.t3as.ner.conll2003.Util;
-import org.t3as.ner.resource.Configuration;
+import org.t3as.ner.conll2003.ConllEvaluation;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public final class Main {
 
     private Main() {}
 
-    /**
-     * Parse the CoNLL 2003 test data into sentences, use NICTA t3as NER to analyse the text, and print out the results
-     * so that they can be checked by the 'conlleval' tool. See here for more info:
-     * <p/>
-     * http://www.cnts.ua.ac.be/conll2003/ner/
-     */
     @SuppressWarnings("MethodNamesDifferingOnlyByCase")
     public static void main(final String[] args) throws IOException {
         final Options opts = getOptions(args);
 
-        final NamedEntityAnalyser nea = new NamedEntityAnalyser(new Configuration());
-
-        try (final ConllReader r = new ConllReader(opts.file.get(0))) {
-            while (r.hasNext()) {
-                // each section in the test results data starts with a DOCSTART
-                System.out.println("-DOCSTART- -X- O O O\n");
-                final Collection<Sentence> sentences = r.next();
-
-                for (final Sentence conllSentence : sentences) {
-                    final NerResultSet nerResultSet = nea.process(conllSentence.sentence);
-                    final Map<Integer, NerClassification> phraseMap = Util.positionClassificationMap(nerResultSet);
-
-                    ConllToken previousToken = null;
-                    for (final ConllToken conllToken : conllSentence.tokens) {
-                        final NerClassification nerClas = phraseMap.get(conllToken.startIndex);
-                        final NerClassification previousClas = previousToken == null
-                                                               ? null : phraseMap.get(previousToken.startIndex);
-                        final String clas = Util.translateClassification(nerClas, previousClas);
-
-                        // print out the token, the test annotations, and our classification of the token
-                        System.out.printf("%s %s %s %s\n",
-                                          conllToken.token, conllToken.classifiers, conllToken.truth, clas);
-                        previousToken = conllToken;
-                    }
-                    // finish each sentence with a newline
-                    System.out.println();
-                }
-            }
-        }
+        new ConllEvaluation(opts.file.get(0)).evaluate();
     }
 
     @SuppressWarnings("CallToSystemExit")
