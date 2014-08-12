@@ -21,6 +21,7 @@
  */
 package org.t3as.ner.resource;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import org.t3as.ner.classifier.feature.Feature;
 import org.t3as.ner.classifier.feature.FeatureMap;
@@ -50,12 +51,12 @@ public class Configuration {
     /** Constructor. Read in the config file. */
     public Configuration(final String configResource) throws IOException {
         final Pattern COLONS = Pattern.compile(":");
-        final Pattern SPACES = Pattern.compile(" ");
+        final Splitter SPACES = Splitter.on(' ').trimResults().omitEmptyStrings();
 
         // name type texts
         final List<NameType> nameTypes = new ArrayList<>();
         // w texts
-        String[] wTexts = null;
+        List<String> wTexts = ImmutableList.of();
         // Feature array specifies the features used in name type recognition.
         final List<Feature> features = new ArrayList<>();
 
@@ -72,22 +73,21 @@ public class Configuration {
                 final String[] parts = COLONS.split(line, 2);
                 switch (parts[0]) {
                     case "Name Types":
-                        final String[] types = SPACES.split(parts[1].trim());
-                        for (final String s : types) {
+                        for (final String s : SPACES.split(parts[1])) {
                             nameTypes.add(NameType.valueOf(s));
                         }
                         break;
 
                     case "Feature":
-                        final String[] c = SPACES.split(parts[1].trim());
-                        if (c.length != 2) {
+                        final List<String> c = SPACES.splitToList(parts[1]);
+                        if (c.size() != 2) {
                             throw new IllegalArgumentException("Config File Syntax Error: '" + line + "'");
                         }
-                        features.add(Feature.generateFeatureByName(c[0], c[1]));
+                        features.add(Feature.generateFeatureByName(c.get(0), c.get(1)));
                         break;
 
                     case "w":
-                        wTexts = SPACES.split(parts[1].trim().replace("| ", ""));
+                        wTexts = SPACES.splitToList(parts[1].replace("| ", ""));
                         break;
 
                     default:
@@ -96,11 +96,11 @@ public class Configuration {
             }
         }
 
-        if (nameTypes.isEmpty() || features.isEmpty() || wTexts == null)
+        if (nameTypes.isEmpty() || features.isEmpty() || wTexts.isEmpty())
             throw new IllegalArgumentException("Config File Syntax Error, no Name Types, Features, or w params.");
 
         // if syntax error, throw exception.
-        if (wTexts.length != features.size() * nameTypes.size())
+        if (wTexts.size() != features.size() * nameTypes.size())
             throw new IllegalArgumentException(
                     "Config File Syntax Error, number of w params do not equal (num Name Types * num Features)");
 
@@ -114,7 +114,7 @@ public class Configuration {
         int wi = 0;
         for (int i = 0; i < name_types.size(); i++) {
             for (int j = 0; j < features.size(); j++) {
-                w[i][j] = Double.parseDouble(wTexts[wi]);
+                w[i][j] = Double.parseDouble(wTexts.get(wi));
                 wi++;
             }
         }

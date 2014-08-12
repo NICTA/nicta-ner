@@ -41,21 +41,16 @@ public abstract class Feature {
     /** Factory method create features by name. */
     public static Feature generateFeatureByName(final String feature, final String resource)
             throws IllegalArgumentException, IOException {
-        final Feature f;
         switch (feature) {
             case "RuledWordFeature":
-                f = new RuledWordFeature(resource);
-                break;
+                return new RuledWordFeature(resource);
             case "PrepositionContextFeature":
-                f = new PrepositionContextFeature(resource);
-                break;
+                return new PrepositionContextFeature(resource);
             case "ExistingPhraseFeature":
-                f = new ExistingPhraseFeature(resource);
-                break;
+                return new ExistingPhraseFeature(resource);
             default:
                 throw new IllegalArgumentException("Unknown feature: '" + feature + "'");
         }
-        return f;
     }
 
     @Override
