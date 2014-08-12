@@ -26,13 +26,15 @@ public class ConllToken {
     public final int startIndex;
     public final String token;
     public final String classifiers;
+    public final String truth;
 
-    public ConllToken(final int startIndex, final String t, final String classifiers) {
+    public ConllToken(final int startIndex, final String t, final String classifiers, final String truth) {
         this.startIndex = startIndex;
         this.token = t;
         this.classifiers = classifiers;
+        this.truth = truth;
     }
 
     @Override
-    public String toString() { return startIndex + ": " + token + " " + classifiers; }
+    public String toString() { return startIndex + ": " + token + " " + classifiers + " " + truth; }
 }

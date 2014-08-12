@@ -46,7 +46,7 @@ public final class Main {
     /**
      * Parse the CoNLL 2003 test data into sentences, use NICTA t3as NER to analyse the text, and print out the results
      * so that they can be checked by the 'conlleval' tool. See here for more info:
-     *
+     * <p/>
      * http://www.cnts.ua.ac.be/conll2003/ner/
      */
     @SuppressWarnings("MethodNamesDifferingOnlyByCase")
@@ -73,7 +73,8 @@ public final class Main {
                         final String clas = Util.translateClassification(nerClas, previousClas);
 
                         // print out the token, the test annotations, and our classification of the token
-                        System.out.printf("%s %s %s\n", conllToken.token, conllToken.classifiers, clas);
+                        System.out.printf("%s %s %s %s\n",
+                                          conllToken.token, conllToken.classifiers, conllToken.truth, clas);
                         previousToken = conllToken;
                     }
                     // finish each sentence with a newline

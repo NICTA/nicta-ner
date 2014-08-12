@@ -103,7 +103,7 @@ public class ConllReader implements Closeable {
             }
             else {
                 // this assumes there is ever only a single space between token and classifiers
-                final String[] parts = SPACES.split(line, 2);
+                final String[] parts = SPACES.split(line);
                 switch (parts[0]) {
                     case "-DOCSTART-":
                         // we use DOCSTART as the end of the current doc, also throw away the following empty line
@@ -114,7 +114,7 @@ public class ConllReader implements Closeable {
                     default:
                         if (sentence.length() > 0) sentence.append(" ");
                         sentence.append(parts[0]);
-                        tokens.add(new ConllToken(tokenStartIndex, parts[0], parts[1]));
+                        tokens.add(new ConllToken(tokenStartIndex, parts[0], parts[1] + " " + parts[2], parts[3]));
                         tokenStartIndex += parts[0].length() + 1; // add 1 for the space between tokens
                 }
             }
