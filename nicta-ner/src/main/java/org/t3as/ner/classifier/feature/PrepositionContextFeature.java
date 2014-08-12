@@ -37,15 +37,19 @@ public class PrepositionContextFeature extends Feature {
 
     private final ImmutableCollection<String> WORDS;
 
-    public PrepositionContextFeature(final String filename) throws IOException {
-        super(filename);
+    public PrepositionContextFeature(final String filename, final int[] weights) throws IOException {
+        super(filename, weights);
         WORDS = ImmutableSet.copyOf(IO.createLowercaseSingleWordSet(getClass(), filename, false));
     }
 
     @Override
-    public double score(final Phrase _p) {
-        String prep = _p.attachedWordMap.get("prep");
+    public double score(final Phrase p, final int weightIndex) {
+        final int w = getWeight(weightIndex);
+        if (w == 0) return 0;
+
+        String prep = p.attachedWordMap.get("prep");
         if (prep != null) prep = toEngLowerCase(prep);
-        return WORDS.contains(simplify(prep)) ? 1.0 : 0.0;
+        final double score = WORDS.contains(simplify(prep)) ? 1.0 : 0.0;
+        return score * w;
     }
 }

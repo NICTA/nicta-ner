@@ -37,14 +37,18 @@ public class ExistingPhraseFeature extends Feature {
 
     private final ImmutableCollection<String> PHRASES;
 
-    public ExistingPhraseFeature(final String filename) throws IOException {
-        super(filename);
+    public ExistingPhraseFeature(final String filename, final int[] weights) throws IOException {
+        super(filename, weights);
         PHRASES = ImmutableSet.copyOf(IO.lowercaseLines(getClass(), filename));
     }
 
     @Override
-    public double score(final Phrase p) {
+    public double score(final Phrase p, final int weightIndex) {
+        final int w = getWeight(weightIndex);
+        if (w == 0) return 0;
+
         final String phrase = Strings.simplify(p.phraseString());
-        return PHRASES.contains(toEngLowerCase(phrase)) ? 1.0 : 0.0;
+        final double score = PHRASES.contains(toEngLowerCase(phrase)) ? 1.0 : 0.0;
+        return score * w;
     }
 }

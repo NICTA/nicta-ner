@@ -23,9 +23,9 @@ package org.t3as.ner.resource;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import org.t3as.ner.NameType;
 import org.t3as.ner.classifier.feature.Feature;
 import org.t3as.ner.classifier.feature.FeatureMap;
-import org.t3as.ner.NameType;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.BufferedReader;
@@ -55,8 +55,6 @@ public class Configuration {
 
         // name type texts
         final List<NameType> nameTypes = new ArrayList<>();
-        // w texts
-        List<String> wTexts = ImmutableList.of();
         // Feature array specifies the features used in name type recognition.
         final List<Feature> features = new ArrayList<>();
 
@@ -79,15 +77,19 @@ public class Configuration {
                         break;
 
                     case "Feature":
-                        final List<String> c = SPACES.splitToList(parts[1]);
-                        if (c.size() != 2) {
+                        final List<String> c = SPACES.limit(3).splitToList(parts[1]);
+                        if (c.size() != 3) {
                             throw new IllegalArgumentException("Config File Syntax Error: '" + line + "'");
                         }
-                        features.add(Feature.generateFeatureByName(c.get(0), c.get(1)));
-                        break;
-
-                    case "w":
-                        wTexts = SPACES.splitToList(parts[1].replace("| ", ""));
+                        final List<String> ss = SPACES.splitToList(c.get(2));
+                        if (ss.isEmpty()) {
+                            throw new IllegalArgumentException("No weights found for config line '" + parts[1] + "'");
+                        }
+                        final int[] weights = new int[ss.size()];
+                        for (int i = 0; i < ss.size(); i++) {
+                            weights[i] = Integer.parseInt(ss.get(i));
+                        }
+                        features.add(Feature.generateFeatureByName(c.get(0), c.get(1), weights));
                         break;
 
                     default:
@@ -96,31 +98,14 @@ public class Configuration {
             }
         }
 
-        if (nameTypes.isEmpty() || features.isEmpty() || wTexts.isEmpty())
-            throw new IllegalArgumentException("Config File Syntax Error, no Name Types, Features, or w params.");
-
-        // if syntax error, throw exception.
-        if (wTexts.size() != features.size() * nameTypes.size())
-            throw new IllegalArgumentException(
-                    "Config File Syntax Error, number of w params do not equal (num Name Types * num Features)");
-
-        /* w is the coefficient array. */
-        final double[][] w = new double[nameTypes.size()][features.size()];
+        if (nameTypes.isEmpty() || features.isEmpty())
+            throw new IllegalArgumentException("Config File Syntax Error, no Name Types or Features");
 
         // name_types information
         name_types = ImmutableList.copyOf(nameTypes);
 
-        // weight array
-        int wi = 0;
-        for (int i = 0; i < name_types.size(); i++) {
-            for (int j = 0; j < features.size(); j++) {
-                w[i][j] = Double.parseDouble(wTexts.get(wi));
-                wi++;
-            }
-        }
-
         // create feature map
-        feature_map = new FeatureMap(features, w);
+        feature_map = new FeatureMap(features);
     }
 
     public FeatureMap getFeatureMap() { return feature_map; }

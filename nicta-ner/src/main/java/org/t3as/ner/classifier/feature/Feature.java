@@ -26,38 +26,46 @@ import org.t3as.ner.Phrase;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
+import java.util.Arrays;
 
 /** This abstract class is a parent of features. */
 @Immutable
 public abstract class Feature {
 
     private final String resource;
+    private final int[] weights;
 
-    protected Feature(final String resource) { this.resource = resource; }
+    protected Feature(final String resource, final int[] weights) {
+        this.resource = resource;
+        this.weights = weights;
+    }
 
     /** Returns a score of the phrase according to the particular feature. */
-    public abstract double score(Phrase _p);
+    public abstract double score(final Phrase _p, final int weightIndex);
 
     /** Factory method create features by name. */
-    public static Feature generateFeatureByName(final String feature, final String resource)
+    public static Feature generateFeatureByName(final String feature, final String resource, final int[] scores)
             throws IllegalArgumentException, IOException {
         switch (feature) {
             case "RuledWordFeature":
-                return new RuledWordFeature(resource);
+                return new RuledWordFeature(resource, scores);
             case "PrepositionContextFeature":
-                return new PrepositionContextFeature(resource);
+                return new PrepositionContextFeature(resource, scores);
             case "ExistingPhraseFeature":
-                return new ExistingPhraseFeature(resource);
+                return new ExistingPhraseFeature(resource, scores);
             default:
                 throw new IllegalArgumentException("Unknown feature: '" + feature + "'");
         }
     }
+
+    protected int getWeight(final int weightIndex) { return weights[weightIndex]; }
 
     @Override
     public String toString() {
         // useful toString helper as it will also show class name - so we don't need an override in the subclasses
         return Objects.toStringHelper(this)
                       .add("resource", resource)
+                      .add("weights", weights)
                       .toString();
     }
 
@@ -66,13 +74,12 @@ public abstract class Feature {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Feature feature = (Feature) o;
-        return resource.equals(feature.resource);
+        return resource.equals(feature.resource)
+               && Arrays.toString(weights).equals(Arrays.toString(feature.weights));
     }
 
     @Override
     public int hashCode() {
-        int result = getClass().hashCode();
-        result = 31 * result + resource.hashCode();
-        return result;
+        return Objects.hashCode(getClass(), resource, Arrays.toString(weights));
     }
 }

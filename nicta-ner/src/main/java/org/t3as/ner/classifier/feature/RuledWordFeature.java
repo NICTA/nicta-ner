@@ -37,23 +37,26 @@ public class RuledWordFeature extends Feature {
 
     private final ImmutableCollection<String> WORDS;
 
-    public RuledWordFeature(final String filename) throws IOException {
-        super(filename);
+    public RuledWordFeature(final String filename, final int[] weights) throws IOException {
+        super(filename, weights);
         WORDS = ImmutableSet.copyOf(IO.createLowercaseSingleWordSet(getClass(), filename, true));
     }
 
     @SuppressWarnings("MagicNumber")
     @Override
-    public double score(final Phrase _p) {
-        double score = 0.0f;
-        double weight = 0.75f;    // weight increases 0.2 every word backward till the word "of" appears.
-        for (int i = 0; i < _p.phrase.size(); i++) {
-            final String word = Strings.simplify(toEngLowerCase(_p.phrase.get(i).text));
+    public double score(final Phrase p, final int weightIndex) {
+        final int w = getWeight(weightIndex);
+        if (w == 0) return 0;
+
+        double score = 0.0;
+        double weight = 0.75;    // weight increases 0.2 every word backward till the word "of" appears.
+        for (int i = 0; i < p.phrase.size(); i++) {
+            final String word = Strings.simplify(toEngLowerCase(p.phrase.get(i).text));
             if ("of".equalsIgnoreCase(word)) break;
             final double x = (WORDS.contains(word)) ? 1.0 : 0.0;
             score += weight * x;
             weight += 0.25;
         }
-        return score;
+        return score * w;
     }
 }

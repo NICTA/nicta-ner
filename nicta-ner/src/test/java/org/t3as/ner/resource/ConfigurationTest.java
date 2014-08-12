@@ -21,9 +21,9 @@
  */
 package org.t3as.ner.resource;
 
+import org.t3as.ner.NameType;
 import org.t3as.ner.classifier.feature.Feature;
 import org.t3as.ner.classifier.feature.FeatureMap;
-import org.t3as.ner.NameType;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -43,26 +43,22 @@ public class ConfigurationTest {
                 {Configuration.DEFAULT_CONFIG_RESOURCE,
                  new Result(new FeatureMap(
                          new ArrayList<Feature>() {{
-                             add(generateFeatureByName("RuledWordFeature", "PERSON_NAME"));
-                             add(generateFeatureByName("RuledWordFeature", "PERSON_KEYWORD"));
-                             add(generateFeatureByName("RuledWordFeature", "COUNTRY_NAME"));
-                             add(generateFeatureByName("RuledWordFeature", "CITY_NAME"));
-                             add(generateFeatureByName("RuledWordFeature", "ORG_KEYWORD"));
-                             add(generateFeatureByName("ExistingPhraseFeature", "WIKI_ORG"));
-                             add(generateFeatureByName("ExistingPhraseFeature", "WIKI_PERSON"));
-                             add(generateFeatureByName("ExistingPhraseFeature", "WIKI_PLACE"));
-                             add(generateFeatureByName("RuledWordFeature", "PLACE_KEYWORD"));
-                             add(generateFeatureByName("RuledWordFeature", "STATES"));
-                             add(generateFeatureByName("PrepositionContextFeature", "PREP_LOCATION"));
-                             add(generateFeatureByName("PrepositionContextFeature", "PREP_ORG"));
-                             add(generateFeatureByName("RuledWordFeature", "WIKI_ORG_EXTRACTION"));
-                             add(generateFeatureByName("RuledWordFeature", "WIKI_PER_EXTRACTION"));
-                             add(generateFeatureByName("RuledWordFeature", "WIKI_LOC_EXTRACTION"));
-                         }},
-                         new double[][]{
-                                 {0.0, 0.0, 15.0, 15.0, 0.0, 0.0, 0.0, 25.0, 20.0, 10.0, 10.0, 0.0, 0.0, 0.0, 5.0},
-                                 {20.0, 30.0, 0.0, 0.0, 0.0, -10.0, 25.0, -10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0, 0.0},
-                                 {0.0, 0.0, 0.0, 0.0, 25.0, 25.0, -10.0, -10.0, 0.0, 0.0, 0.0, 10.0, 5.0, 0.0, 0.0}}),
+                             add(generateFeatureByName("RuledWordFeature",          "PERSON_NAME",          new int[]{0,   20,   0}));
+                             add(generateFeatureByName("RuledWordFeature",          "PERSON_KEYWORD",       new int[]{0,   30,   0}));
+                             add(generateFeatureByName("RuledWordFeature",          "COUNTRY_NAME",         new int[]{15,   0,   0}));
+                             add(generateFeatureByName("RuledWordFeature",          "CITY_NAME",            new int[]{15,   0,   0}));
+                             add(generateFeatureByName("RuledWordFeature",          "ORG_KEYWORD",          new int[]{0,    0,  25}));
+                             add(generateFeatureByName("ExistingPhraseFeature",     "WIKI_ORG",             new int[]{0,  -10,  25}));
+                             add(generateFeatureByName("ExistingPhraseFeature",     "WIKI_PERSON",          new int[]{0,   25, -10}));
+                             add(generateFeatureByName("ExistingPhraseFeature",     "WIKI_PLACE",           new int[]{25, -10, -10}));
+                             add(generateFeatureByName("RuledWordFeature",          "PLACE_KEYWORD",        new int[]{20,   0,   0}));
+                             add(generateFeatureByName("RuledWordFeature",          "STATES",               new int[]{10,   0,   0}));
+                             add(generateFeatureByName("PrepositionContextFeature", "PREP_LOCATION",        new int[]{10,   0,   0}));
+                             add(generateFeatureByName("PrepositionContextFeature", "PREP_ORG",             new int[]{0,    0,  10}));
+                             add(generateFeatureByName("RuledWordFeature",          "WIKI_ORG_EXTRACTION",  new int[]{0,    0,   5}));
+                             add(generateFeatureByName("RuledWordFeature",          "WIKI_PER_EXTRACTION",  new int[]{0,    5,   0}));
+                             add(generateFeatureByName("RuledWordFeature",          "WIKI_LOC_EXTRACTION",  new int[]{5,    0,   0}));
+                         }}),
                             new ArrayList<NameType>() {{
                                 add(NameType.LOCATION);
                                 add(NameType.PERSON);
