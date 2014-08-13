@@ -40,7 +40,8 @@ public class ConfigurationTest {
     public Object[][] configTestProvider() throws IOException {
         //noinspection MagicNumber
         return new Object[][]{
-                {Configuration.DEFAULT_CONFIG_RESOURCE,
+                {"test-config" +
+                 "",
                  new Result(new FeatureMap(
                          new ArrayList<Feature>() {{
                              add(generateFeatureByName("RuledWordFeature",          "PERSON_NAME",          new int[]{0,   20,   0}));
