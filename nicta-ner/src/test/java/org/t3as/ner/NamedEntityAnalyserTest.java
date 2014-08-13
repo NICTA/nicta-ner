@@ -71,7 +71,7 @@ public class NamedEntityAnalyserTest {
                      // 2: Jane Doe Doe	PERSON	0.0, 60.0, 0.0	null	2:2:3:3
                      add(new Result("Jane Doe Doe", PERSON, of(0., 60., 0.), none()));
                      // 7: New Zealand	LOCATION	95.0, 5.0, 0.0	in	7:7:2:2
-                     add(new Result("New Zealand", LOCATION, of(95., 5., 0.), ImmutableMap.of("prep", "in")));
+                     add(new Result("New Zealand", LOCATION, of(95.0, 5.0, -10.0), ImmutableMap.of("prep", "in")));
                      // 10: November	DATE	0.0, 0.0, 0.0	in	10:10:1:1
                      add(new Result("November", DATE, of(0., 0., 0.), ImmutableMap.of("prep", "in")));
                  }}},
@@ -91,7 +91,7 @@ public class NamedEntityAnalyserTest {
                      // 0: Næsby	ORGANIZATION	0.0, -7.5, 7.5	null	0:0:1:1
                      add(new Result("Næsby", ORGANIZATION, of(0.0, 0.0, 3.75), none()));
                      // 3: Denmark	LOCATION	46.25, -5.0, 25.0	in	3:3:1:1
-                     add(new Result("Denmark", LOCATION, of(46.25, -5., 25.), ImmutableMap.of("prep", "in")));
+                     add(new Result("Denmark", LOCATION, of(46.25, -5.0, 15.0), ImmutableMap.of("prep", "in")));
                      // 7: Næsbyholm Slot UNKNOWN 0.0, 0.0, 0.0	null	7:7:2:2
                      add(new Result("Næsbyholm Slot", LOCATION, of(5.0, 0.0, 0.0), none()));
                      // 16: Glumsø	UNKNOWN	0.0, 0.0, 0.0	of	16:16:1:1
@@ -101,7 +101,7 @@ public class NamedEntityAnalyserTest {
                 {new String(Files.readAllBytes(Paths.get("src/test/resources/test1.txt"))),
                  new ArrayList<Result>() {{
                      // 4: UK	LOCATION	21.25, 0.0, 10.0	in	4:5:1:2
-                     add(new Result("UK", UNKNOWN, of(10.0, 0.0, 10.0), ImmutableMap.of("prep", "in")));
+                     add(new Result("UK", LOCATION, of(10.0, 0.0, 0.0), ImmutableMap.of("prep", "in")));
                      // 13: 1965	DATE	0.0, 0.0, 0.0	null	13:13:1:1
                      add(new Result("1965", DATE, of(0., 0., 0.), none()));
                      // 2: Eoghan	PERSON	0.0, 7.5, -7.5	null	2:2:1:1

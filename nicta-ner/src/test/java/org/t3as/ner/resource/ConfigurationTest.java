@@ -54,7 +54,7 @@ public class ConfigurationTest {
                              add(generateFeatureByName("RuledWordFeature",          "PLACE_KEYWORD",        new int[]{20,   0,   0}));
                              add(generateFeatureByName("RuledWordFeature",          "STATES",               new int[]{10,   0,   0}));
                              add(generateFeatureByName("PrepositionContextFeature", "PREP_LOCATION",        new int[]{10,   0,   0}));
-                             add(generateFeatureByName("PrepositionContextFeature", "PREP_ORG",             new int[]{0,    0,  10}));
+                             //add(generateFeatureByName("PrepositionContextFeature", "PREP_ORG",             new int[]{0,    0,  10}));
                              add(generateFeatureByName("RuledWordFeature",          "WIKI_ORG_EXTRACTION",  new int[]{0,    0,   5}));
                              add(generateFeatureByName("RuledWordFeature",          "WIKI_PER_EXTRACTION",  new int[]{0,    5,   0}));
                              add(generateFeatureByName("RuledWordFeature",          "WIKI_LOC_EXTRACTION",  new int[]{5,    0,   0}));
