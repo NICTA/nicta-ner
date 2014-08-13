@@ -32,7 +32,7 @@ Feature: ExistingPhraseFeature WIKI_PLACE           25     -10    -10
 Feature: RuledWordFeature PLACE_KEYWORD             20       0      0
 Feature: RuledWordFeature STATES                    10       0      0
 Feature: PrepositionContextFeature PREP_LOCATION    10       0      0
-Feature: PrepositionContextFeature PREP_ORG          0       0     10
+#Feature: PrepositionContextFeature PREP_ORG          0       0     10
 Feature: RuledWordFeature WIKI_ORG_EXTRACTION        0       0      5
 Feature: RuledWordFeature WIKI_PER_EXTRACTION        0       5      0
 Feature: RuledWordFeature WIKI_LOC_EXTRACTION        5       0      0
