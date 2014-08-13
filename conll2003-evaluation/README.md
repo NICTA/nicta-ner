@@ -13,12 +13,9 @@ By carrying out the same evaluation we can then compare ourselves to the results
 
 Follow the instructions at the URL until you have a working `baseline`, then run:
 
-    ./conll2003 eng.testb | $CONLL_HOME/bin/conlleval
+    ./conll2003 eng.testb 2> disagreements.list | $CONLL_HOME/bin/conlleval
 
-To investigate where things have gone wrong, do something like the following to see each word followed by the manual human ground truth classification followed by the NICTA NER classification:
-
-    ./conll2003 eng.testb > nicta.eng.testb
-    cat nicta.eng.testb | cut -d\  -f1,4,5 | less
+When the `conll2003` tool is run it prints out all the disagreements on `stderr` between the ground truth and the NICTA NER classification for tokens in the sentences. In the command line above this is redirected to the file `disagreements.list`. This file can then be analysed to try to understand how the NICTA NER library can be improved.
     
 
 ## NICTA t3as NER scores

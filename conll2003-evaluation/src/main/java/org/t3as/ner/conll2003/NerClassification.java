@@ -21,6 +21,9 @@
  */
 package org.t3as.ner.conll2003;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
+import com.google.common.primitives.Doubles;
 import org.t3as.ner.NameType;
 
 public class NerClassification {
@@ -28,10 +31,13 @@ public class NerClassification {
     public final String nerToken;
     public final NameType type;
     public final int phraseStartIndex;
+    public final ImmutableCollection<Double> scores;
 
-    public NerClassification(final String nerToken, final NameType type, final int phraseStartIndex) {
+    public NerClassification(final String nerToken, final NameType type, final int phraseStartIndex,
+                             final double[] scores) {
         this.nerToken = nerToken;
         this.type = type;
         this.phraseStartIndex = phraseStartIndex;
+        this.scores = ImmutableList.copyOf(Doubles.asList(scores));
     }
 }

@@ -43,7 +43,8 @@ public final class Util {
             for (final Phrase p : sentence) {
                 final int phraseStartIndex = p.phrase.get(0).startIndex;
                 for (final Token t : p.phrase) {
-                    final NerClassification clas = new NerClassification(t.text, p.phraseType, phraseStartIndex);
+                    final NerClassification clas =
+                            new NerClassification(t.text, p.phraseType, phraseStartIndex, p.score);
                     final NerClassification replaced = m.put(t.startIndex, clas);
                     if (replaced != null) {
                         // since modifying the contents of the map this error should now never happen

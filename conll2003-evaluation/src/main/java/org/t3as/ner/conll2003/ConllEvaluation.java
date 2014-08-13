@@ -28,6 +28,7 @@ import org.t3as.ner.resource.Configuration;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -54,6 +55,7 @@ public class ConllEvaluation {
                 for (final Sentence conllSentence : sentences) {
                     final NerResultSet nerResultSet = nea.process(conllSentence.sentence);
                     final Map<Integer, NerClassification> phraseMap = Util.positionClassificationMap(nerResultSet);
+                    final Map<ConllToken, String> disagreements = new LinkedHashMap<>();
 
                     ConllToken previousToken = null;
                     for (final ConllToken conllToken : conllSentence.tokens) {
@@ -66,11 +68,42 @@ public class ConllEvaluation {
                         System.out.printf("%s %s %s %s\n",
                                           conllToken.token, conllToken.classifiers, conllToken.truth, clas);
                         previousToken = conllToken;
+
+                        // if the truth doesn't match the NICTA result then print out more info on stderr
+                        if (!conllToken.truth.equals(clas)) {
+                            disagreements.put(conllToken, clas);
+                        }
                     }
                     // finish each sentence with a newline
                     System.out.println();
+
+                    if (!disagreements.isEmpty()) {
+                        printDisagreements(conllSentence, phraseMap, disagreements);
+                    }
                 }
             }
         }
+    }
+
+    private static void printDisagreements(final Sentence conllSentence,
+                                           final Map<Integer, NerClassification> phraseMap,
+                                           final Map<ConllToken, String> disagreements) {
+        System.err.println(conllSentence.sentence);
+        for (final Map.Entry<ConllToken, String> e : disagreements.entrySet()) {
+            final ConllToken conllToken = e.getKey();
+            final NerClassification nerClassification = phraseMap.get(conllToken.startIndex);
+
+            if (nerClassification == null) {
+                System.err.printf("%d: '%s':%s <no match>\n", conllToken.startIndex, conllToken.token,
+                                  conllToken.truth);
+
+            }
+            else {
+                System.err.printf("%d: '%s':%s '%s':%s  %s\n", conllToken.startIndex, conllToken.token,
+                                  conllToken.truth, nerClassification.nerToken, e.getValue(),
+                                  nerClassification.scores);
+            }
+        }
+        System.err.println();
     }
 }
