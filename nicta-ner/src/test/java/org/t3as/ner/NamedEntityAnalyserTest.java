@@ -71,7 +71,7 @@ public class NamedEntityAnalyserTest {
                      // 2: Jane Doe Doe	PERSON	0.0, 60.0, 0.0	null	2:2:3:3
                      add(new Result("Jane Doe Doe", PERSON, of(0., 60., 0.), none()));
                      // 7: New Zealand	LOCATION	95.0, 5.0, 0.0	in	7:7:2:2
-                     add(new Result("New Zealand", LOCATION, of(87.5, 5.0, -10.0), ImmutableMap.of("prep", "in")));
+                     add(new Result("New Zealand", LOCATION, of(76.25, 5.0, -10.0), ImmutableMap.of("prep", "in")));
                      // 10: November	DATE	0.0, 0.0, 0.0	in	10:10:1:1
                      add(new Result("November", DATE, of(0., 0., 0.), ImmutableMap.of("prep", "in")));
                  }}},
@@ -83,7 +83,7 @@ public class NamedEntityAnalyserTest {
                      // 5: Acme Corp	PERSON	0.0, 20.0, 0.0	of	5:5:2:2
                      add(new Result("Acme Corp", PERSON, of(0.0, 20.0, 8.75), ImmutableMap.of("prep", "of")));
                      // 1: 2006	DATE	0.0, 0.0, 0.0	in	1:1:1:1
-                     add(new Result("2006", DATE, of(0., 0., 0.), ImmutableMap.of("prep", "in")));
+                     add(new Result("2006", DATE, of(0.0, 0.0, 0.0), ImmutableMap.of("prep", "in")));
                  }}},
 
                 {"Næsby is in Denmark, as is Næsbyholm Slot, which is outside the town of Glumsø.",
@@ -91,7 +91,7 @@ public class NamedEntityAnalyserTest {
                      // 0: Næsby	ORGANIZATION	0.0, -7.5, 7.5	null	0:0:1:1
                      add(new Result("Næsby", ORGANIZATION, of(0.0, 0.0, 3.75), none()));
                      // 3: Denmark	LOCATION	46.25, -5.0, 25.0	in	3:3:1:1
-                     add(new Result("Denmark", LOCATION, of(46.25, -5.0, 15.0), ImmutableMap.of("prep", "in")));
+                     add(new Result("Denmark", LOCATION, of(50.0, -5.0, 15.0), ImmutableMap.of("prep", "in")));
                      // 7: Næsbyholm Slot UNKNOWN 0.0, 0.0, 0.0	null	7:7:2:2
                      add(new Result("Næsbyholm Slot", LOCATION, of(5.0, 0.0, 0.0), none()));
                      // 16: Glumsø	UNKNOWN	0.0, 0.0, 0.0	of	16:16:1:1
@@ -105,30 +105,30 @@ public class NamedEntityAnalyserTest {
                      // 13: 1965	DATE	0.0, 0.0, 0.0	null	13:13:1:1
                      add(new Result("1965", DATE, of(0., 0., 0.), none()));
                      // 2: Eoghan	PERSON	0.0, 7.5, -7.5	null	2:2:1:1
-                     add(new Result("Eoghan", PERSON, of(0., 7.5, -7.5), none()));
+                     add(new Result("Eoghan", PERSON, of(0.0, 3.75, 0.0), none()));
                      // 6: Ford Escort	PERSON	11.25, 15.0, 0.0	null	6:7:2:3
-                     add(new Result("Ford Escort", LOCATION, of(11.25, 15., 0.), none()));
+                     add(new Result("Ford Escort", LOCATION, of(16.25, 15.0, 0.0), none()));
                      // 3: Toyota Camry	PERSON	0.0, 35.0, -20.0	null	3:4:2:3
-                     add(new Result("Toyota Camry", PERSON, of(0., 35., -20.), none()));
+                     add(new Result("Toyota Camry", PERSON, of(0.0, 30.0, -10.0), none()));
                      // 13: Feb	UNKNOWN	0.0, 0.0, 0.0	of	13:13:1:1
-                     add(new Result("Feb", UNKNOWN, of(0., 0., 0.), ImmutableMap.of("prep", "of")));
+                     add(new Result("Feb", UNKNOWN, of(0.0, 0.0, 0.0), ImmutableMap.of("prep", "of")));
                      // 16: Tues	UNKNOWN	0.0, 0.0, 0.0	on	16:17:1:2
-                     add(new Result("Tues", UNKNOWN, of(0., 0., 0.), ImmutableMap.of("prep", "on")));
+                     add(new Result("Tues", UNKNOWN, of(0.0, 0.0, 0.0), ImmutableMap.of("prep", "on")));
                      // 10: H123ABC	UNKNOWN	0.0, 0.0, 0.0	null	10:10:1:1
-                     add(new Result("H123ABC", UNKNOWN, of(0., 0., 0.), none()));
+                     add(new Result("H123ABC", UNKNOWN, of(0.0, 0.0, 0.0), none()));
                      // 5: Department of Health	ORGANIZATION	0.0, 0.0, 18.75	for	5:6:3:4
-                     add(new Result("Department of Health", ORGANIZATION, of(0., 0., 18.75),
+                     add(new Result("Department of Health", ORGANIZATION, of(0.0, 0.0, 18.75),
                                     ImmutableMap.of("prep", "for")));
                      // 19: Foreign	UNKNOWN	0.0, 0.0, 0.0	for	19:20:1:2
                      add(new Result("Foreign", UNKNOWN, of(0., 0., 0.), ImmutableMap.of("prep", "for")));
                      // 22: Commonwealth Office	UNKNOWN	0.0, 0.0, 0.0	for	22:22:2:2
-                     add(new Result("Commonwealth Office", LOCATION, of(0., 0., 0.), ImmutableMap.of("prep", "for")));
+                     add(new Result("Commonwealth Office", LOCATION, of(5.0, 0.0, 0.0), ImmutableMap.of("prep", "for")));
                      //4: China	LOCATION	36.25, 30.0, -20.0	from	4:4:1:1
-                     add(new Result("China", LOCATION, of(36.25, 30.0, -20.0), ImmutableMap.of("prep", "from")));
+                     add(new Result("China", LOCATION, of(40.0, 30.0, -20.0), ImmutableMap.of("prep", "from")));
                      //6: America	LOCATION	36.25, 30.0, -20.0	from	6:6:1:1
-                     add(new Result("America", LOCATION, of(36.25, 30.0, -20.0), ImmutableMap.of("prep", "from")));
+                     add(new Result("America", PERSON, of(25.0, 30.0, -20.0), ImmutableMap.of("prep", "from")));
                      //8: Australia	LOCATION	43.75, -20.0, 15.0	from	8:8:1:1
-                     add(new Result("Australia", LOCATION, of(43.75, -20.0, 15.0), ImmutableMap.of("prep", "from")));
+                     add(new Result("Australia", LOCATION, of(40.0, -20.0, 15.0), ImmutableMap.of("prep", "from")));
                  }}},
 
                 {"Apple (Apple Inc.) is a company with the stock symbol AAPL.",
@@ -226,12 +226,20 @@ public class NamedEntityAnalyserTest {
         assertTrue(mappedResult.isEmpty(), "Result map is not empty: " + mappedResult);
 
         // now match the other Phrase details
-        for (int i = 0; i < result.phrases.get(0).size(); i++) {
-            final Phrase p = result.phrases.get(0).get(i);
+        // first flatten the List<List<Phrase>>
+        final List<Phrase> flat = new ArrayList<>();
+        for (final List<Phrase> l : result.phrases) {
+            for (final Phrase p : l) {
+                flat.add(p);
+            }
+        }
+        for (int i = 0; i < flat.size(); i++) {
+            final Phrase p = flat.get(i);
             final Result r = resultList.get(i);
 
-            assertEquals(p.score, r.scores, "Phrase '" + p.phraseString() + "', expected '" + Arrays.toString(r.scores)
-                                            + "' but found '" + Arrays.toString(p.score) + "'");
+            assertEquals(p.score, r.scores,
+                         "Phrase '" + p.phraseString() + "', expected '" + Arrays.toString(r.scores)
+                         + "' but found '" + Arrays.toString(p.score) + "'");
 
             assertEquals(p.attachedWordMap, r.attachedWordMap);
         }
@@ -251,6 +259,16 @@ public class NamedEntityAnalyserTest {
             this.type = type;
             this.scores = Doubles.toArray(scores);
             this.attachedWordMap = attachedWordMap;
+        }
+
+        @Override
+        public String toString() {
+            return "Result{" +
+                   "phrase='" + phrase + '\'' +
+                   ", type=" + type +
+                   ", scores=" + Arrays.toString(scores) +
+                   ", attachedWordMap=" + attachedWordMap +
+                   '}';
         }
     }
 }
