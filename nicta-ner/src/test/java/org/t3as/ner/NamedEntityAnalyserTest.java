@@ -71,7 +71,7 @@ public class NamedEntityAnalyserTest {
                      // 2: Jane Doe Doe	PERSON	0.0, 60.0, 0.0	null	2:2:3:3
                      add(new Result("Jane Doe Doe", PERSON, of(0., 60., 0.), none()));
                      // 7: New Zealand	LOCATION	95.0, 5.0, 0.0	in	7:7:2:2
-                     add(new Result("New Zealand", LOCATION, of(95.0, 5.0, -10.0), ImmutableMap.of("prep", "in")));
+                     add(new Result("New Zealand", LOCATION, of(87.5, 5.0, -10.0), ImmutableMap.of("prep", "in")));
                      // 10: November	DATE	0.0, 0.0, 0.0	in	10:10:1:1
                      add(new Result("November", DATE, of(0., 0., 0.), ImmutableMap.of("prep", "in")));
                  }}},

@@ -52,7 +52,7 @@ public class ConfigurationTest {
                              add(generateFeatureByName("ExistingPhraseFeature",     "WIKI_PERSON",          new int[]{0,   25, -10}));
                              add(generateFeatureByName("ExistingPhraseFeature",     "WIKI_PLACE",           new int[]{25, -10, -10}));
                              add(generateFeatureByName("RuledWordFeature",          "PLACE_KEYWORD",        new int[]{20,   0,   0}));
-                             add(generateFeatureByName("RuledWordFeature",          "STATES",               new int[]{10,   0,   0}));
+                             add(generateFeatureByName("ExistingPhraseFeature",     "STATES",               new int[]{10,   0,   0}));
                              add(generateFeatureByName("PrepositionContextFeature", "PREP_LOCATION",        new int[]{10,   0,   0}));
                              //add(generateFeatureByName("PrepositionContextFeature", "PREP_ORG",             new int[]{0,    0,  10}));
                              add(generateFeatureByName("RuledWordFeature",          "WIKI_ORG_EXTRACTION",  new int[]{0,    0,   5}));
