@@ -53,6 +53,11 @@ public class DateMatcherTest {
         };
     }
 
+    @Test
+    public void testDataProviders() throws IOException {
+        configTestProvider();
+    }
+
     @Test(dataProvider = "dateStrings")
     public void testIsDate(final String s, final boolean expected) {
         Assert.assertEquals(DateMatcher.isDate(s), expected, s);

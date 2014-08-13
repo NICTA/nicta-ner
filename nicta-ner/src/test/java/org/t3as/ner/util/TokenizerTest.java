@@ -80,6 +80,11 @@ public class TokenizerTest {
         };
     }
 
+    @Test
+    public void testDataProviders() {
+        text();
+    }
+
     @Test(dataProvider = "text")
     public void testProcess(final String text, final List<List<Token>> expected) {
         final Tokenizer t = new Tokenizer(Tokenizer.Mode.WITH_PUNCTUATION);

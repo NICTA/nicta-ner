@@ -23,7 +23,6 @@ Name Types: LOCATION PERSON ORGANIZATION
 # FEATURES and weights:                       LOCATION  PERSON   ORGANIZATION
 Feature: RuledWordFeature PERSON_NAME                0      20      0
 Feature: RuledWordFeature PERSON_KEYWORD             0      30      0
-Feature: RuledWordFeature COUNTRY_NAME              15       0      0
 Feature: RuledWordFeature CITY_NAME                 15       0      0
 Feature: RuledWordFeature ORG_KEYWORD                0       0     25
 Feature: ExistingPhraseFeature WIKI_ORG              0     -10     25

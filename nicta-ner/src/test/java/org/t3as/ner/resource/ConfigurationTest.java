@@ -46,7 +46,6 @@ public class ConfigurationTest {
                          new ArrayList<Feature>() {{
                              add(generateFeatureByName("RuledWordFeature",          "PERSON_NAME",          new int[]{0,   20,   0}));
                              add(generateFeatureByName("RuledWordFeature",          "PERSON_KEYWORD",       new int[]{0,   30,   0}));
-                             add(generateFeatureByName("RuledWordFeature",          "COUNTRY_NAME",         new int[]{15,   0,   0}));
                              add(generateFeatureByName("RuledWordFeature",          "CITY_NAME",            new int[]{15,   0,   0}));
                              add(generateFeatureByName("RuledWordFeature",          "ORG_KEYWORD",          new int[]{0,    0,  25}));
                              add(generateFeatureByName("ExistingPhraseFeature",     "WIKI_ORG",             new int[]{0,  -10,  25}));
@@ -67,6 +66,11 @@ public class ConfigurationTest {
                             }}
                  )},
         };
+    }
+
+    @Test
+    public void testDataProviders() throws IOException {
+        configTestProvider();
     }
 
     @Test(dataProvider = "configTest")

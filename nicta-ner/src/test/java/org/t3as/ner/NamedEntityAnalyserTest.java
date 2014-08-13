@@ -194,6 +194,11 @@ public class NamedEntityAnalyserTest {
     }
 
     @Test
+    public void testDataProviders() throws IOException {
+        primeNumbers();
+    }
+
+    @Test
     public void doubleCreateNea() throws IOException {
         // check that we don't have any leaky static references
         final Configuration config = new Configuration();
