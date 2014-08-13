@@ -22,6 +22,7 @@
 package org.t3as.ner.classifier.feature;
 
 import com.google.common.base.Objects;
+import com.google.common.primitives.Ints;
 import org.t3as.ner.Phrase;
 
 import javax.annotation.concurrent.Immutable;
@@ -37,7 +38,8 @@ public abstract class Feature {
 
     protected Feature(final String resource, final int[] weights) {
         this.resource = resource;
-        this.weights = weights;
+        this.weights = new int[weights.length];
+        System.arraycopy(weights, 0, this.weights, 0, weights.length);
     }
 
     /** Returns a score of the phrase according to the particular feature. */
@@ -65,7 +67,7 @@ public abstract class Feature {
         // useful toString helper as it will also show class name - so we don't need an override in the subclasses
         return Objects.toStringHelper(this)
                       .add("resource", resource)
-                      .add("weights", weights)
+                      .add("weights", Ints.asList(weights))
                       .toString();
     }
 
@@ -82,4 +84,6 @@ public abstract class Feature {
     public int hashCode() {
         return Objects.hashCode(getClass(), resource, Arrays.toString(weights));
     }
+
+    public String ident() { return getClass().getSimpleName() + "(" + resource + ")"; }
 }

@@ -28,6 +28,7 @@ import org.t3as.ner.resource.Configuration;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Scanner;
 
 /**
@@ -39,6 +40,8 @@ public class NamedEntityAnalyser {
 
     private final NameExtractor extractor;
     private final NameClassifier classifier;
+    private final boolean tracing;
+    public Collection<String> trace;
 
     /**
      * Constructor to create a NamedEntityAnalyser. This Analyser will extract and classify
@@ -47,6 +50,7 @@ public class NamedEntityAnalyser {
     public NamedEntityAnalyser(final Configuration config) {
         extractor = new NameExtractor(config);
         classifier = new NameClassifier(config);
+        tracing = config.tracing;
     }
 
     /**
@@ -59,6 +63,7 @@ public class NamedEntityAnalyser {
         //                         extractor                            classifier
         final NerResultSet rs = extractor.process(text);
         classifier.process(rs);
+        if (tracing) trace = classifier.trace;
         return rs;
     }
 

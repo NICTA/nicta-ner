@@ -21,12 +21,14 @@
  */
 package org.t3as.ner.classifier;
 
-import org.t3as.ner.NerResultSet;
-import org.t3as.ner.classifier.feature.FeatureMap;
 import org.t3as.ner.NameType;
+import org.t3as.ner.NerResultSet;
 import org.t3as.ner.Phrase;
+import org.t3as.ner.classifier.feature.FeatureMap;
 import org.t3as.ner.resource.Configuration;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +42,7 @@ import java.util.Set;
 public class NameClassifier {
 
     private final Configuration conf;
+    public Collection<String> trace;
 
     public NameClassifier(final Configuration _conf) { conf = _conf; }
 
@@ -51,6 +54,7 @@ public class NameClassifier {
     public void process(final NerResultSet resultSet) {
         final FeatureMap featureMap = conf.getFeatureMap();
         final List<NameType> nameTypes = conf.getNameTypes();
+        if (conf.tracing) trace = new ArrayList<>();
 
         // store the relationship of _phrases in memory for further use
         final Map<Phrase, Set<Phrase>> phraseInMemory = new HashMap<>();
@@ -65,6 +69,7 @@ public class NameClassifier {
                 for (int scoreIndex = 0; scoreIndex < nameTypes.size(); scoreIndex++) {
                     // score all the dimensions
                     phrase.score[scoreIndex] = featureMap.score(phrase, scoreIndex);
+                    if (conf.tracing) trace.addAll(featureMap.trace);
                 }
 
                 boolean isSubPhrase = false;

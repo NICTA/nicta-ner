@@ -21,25 +21,41 @@
  */
 package org.t3as.ner.classifier.feature;
 
+import com.google.common.collect.ImmutableList;
+import org.t3as.ner.NameType;
 import org.t3as.ner.Phrase;
 
 import javax.annotation.concurrent.Immutable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Immutable
 public class FeatureMap {
 
     private final Feature[] featureArray;
+    private final boolean tracing;
+    private final ImmutableList<NameType> nameTypes;
+    public Collection<String> trace;
 
-    public FeatureMap(final List<Feature> features) {
+    public FeatureMap(final List<Feature> features, final ImmutableList<NameType> nameTypes, final boolean tracing) {
         featureArray = features.toArray(new Feature[features.size()]);
+        //noinspection AssignmentToCollectionOrArrayFieldFromParameter
+        this.nameTypes = nameTypes;
+        this.tracing = tracing;
     }
 
     public double score(final Phrase p, final int wi) {
+        if (tracing) trace = new ArrayList<>();
         double score = 0.0f;
-        for (final Feature aFeatureArray : featureArray) {
-            score += aFeatureArray.score(p, wi);
+        for (final Feature feature : featureArray) {
+            final double s = feature.score(p, wi);
+            score += s;
+            if (tracing && s != 0) {
+                trace.add("'" + p.phraseString() + "', w=" + nameTypes.get(wi) + ":" + feature .getWeight(wi)
+                          + ", s=" + s + ", " + feature.ident());
+            }
         }
         return score;
     }
@@ -53,12 +69,8 @@ public class FeatureMap {
     }
 
     @Override
-    public int hashCode() {
-        return Arrays.hashCode(featureArray);
-    }
+    public int hashCode() { return Arrays.hashCode(featureArray); }
 
     @Override
-    public String toString() {
-        return "FeatureMap{featureArray=" + Arrays.toString(featureArray) + '}';
-    }
+    public String toString() { return "FeatureMap{featureArray=" + Arrays.toString(featureArray) + '}'; }
 }

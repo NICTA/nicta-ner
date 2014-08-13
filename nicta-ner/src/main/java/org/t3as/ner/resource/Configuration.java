@@ -42,19 +42,23 @@ public class Configuration {
     public static final String DEFAULT_CONFIG_RESOURCE = "config";
 
     /** NameType array specifies the possible types of names. */
-    private final ImmutableList<NameType> name_types;
+    private final ImmutableList<NameType> nameTypes;
 
     private final FeatureMap feature_map;
+    public final boolean tracing;
 
-    public Configuration() throws IOException { this(DEFAULT_CONFIG_RESOURCE); }
+    public Configuration() throws IOException { this(false); }
+
+    public Configuration(final boolean tracing) throws IOException { this(DEFAULT_CONFIG_RESOURCE, tracing); }
 
     /** Constructor. Read in the config file. */
-    public Configuration(final String configResource) throws IOException {
+    public Configuration(final String configResource, final boolean tracing) throws IOException {
+        this.tracing = tracing;
         final Pattern COLONS = Pattern.compile(":");
         final Splitter SPACES = Splitter.on(' ').trimResults().omitEmptyStrings();
 
         // name type texts
-        final List<NameType> nameTypes = new ArrayList<>();
+        final List<NameType> types = new ArrayList<>();
         // Feature array specifies the features used in name type recognition.
         final List<Feature> features = new ArrayList<>();
 
@@ -72,7 +76,7 @@ public class Configuration {
                 switch (parts[0]) {
                     case "Name Types":
                         for (final String s : SPACES.split(parts[1])) {
-                            nameTypes.add(NameType.valueOf(s));
+                            types.add(NameType.valueOf(s));
                         }
                         break;
 
@@ -98,17 +102,17 @@ public class Configuration {
             }
         }
 
-        if (nameTypes.isEmpty() || features.isEmpty())
+        if (types.isEmpty() || features.isEmpty())
             throw new IllegalArgumentException("Config File Syntax Error, no Name Types or Features");
 
-        // name_types information
-        name_types = ImmutableList.copyOf(nameTypes);
+        // nameTypes information
+        nameTypes = ImmutableList.copyOf(types);
 
         // create feature map
-        feature_map = new FeatureMap(features);
+        feature_map = new FeatureMap(features, nameTypes, tracing);
     }
 
     public FeatureMap getFeatureMap() { return feature_map; }
 
-    public ImmutableList<NameType> getNameTypes() { return name_types; }
+    public ImmutableList<NameType> getNameTypes() { return nameTypes; }
 }

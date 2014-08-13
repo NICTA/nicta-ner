@@ -58,7 +58,7 @@ public class ConfigurationTest {
                              add(generateFeatureByName("RuledWordFeature",          "WIKI_ORG_EXTRACTION",  new int[]{0,    0,   5}));
                              add(generateFeatureByName("RuledWordFeature",          "WIKI_PER_EXTRACTION",  new int[]{0,    5,   0}));
                              add(generateFeatureByName("RuledWordFeature",          "WIKI_LOC_EXTRACTION",  new int[]{5,    0,   0}));
-                         }}),
+                         }}, null, false),
                             new ArrayList<NameType>() {{
                                 add(NameType.LOCATION);
                                 add(NameType.PERSON);
@@ -70,7 +70,7 @@ public class ConfigurationTest {
 
     @Test(dataProvider = "configTest")
     public void configTest(final String configResource, final Result r) throws IOException {
-        final Configuration config = new Configuration(configResource);
+        final Configuration config = new Configuration(configResource, false);
         assertEquals(config.getFeatureMap(), r.featureMap);
         assertEquals(config.getNameTypes(), r.nameTypes);
     }

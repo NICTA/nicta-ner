@@ -44,7 +44,7 @@ public class ConllEvaluation {
     public ConllEvaluation(final File testInput) { this.testInput = testInput; }
 
     public void evaluate() throws IOException {
-        final NamedEntityAnalyser nea = new NamedEntityAnalyser(new Configuration());
+        final NamedEntityAnalyser nea = new NamedEntityAnalyser(new Configuration(true));
 
         try (final ConllReader r = new ConllReader(testInput)) {
             while (r.hasNext()) {
@@ -78,7 +78,7 @@ public class ConllEvaluation {
                     System.out.println();
 
                     if (!disagreements.isEmpty()) {
-                        printDisagreements(conllSentence, phraseMap, disagreements);
+                        printDisagreements(conllSentence, phraseMap, disagreements, nea.trace);
                     }
                 }
             }
@@ -87,7 +87,8 @@ public class ConllEvaluation {
 
     private static void printDisagreements(final Sentence conllSentence,
                                            final Map<Integer, NerClassification> phraseMap,
-                                           final Map<ConllToken, String> disagreements) {
+                                           final Map<ConllToken, String> disagreements,
+                                           final Collection<String> trace) {
         System.err.println(conllSentence.sentence);
         for (final Map.Entry<ConllToken, String> e : disagreements.entrySet()) {
             final ConllToken conllToken = e.getKey();
@@ -104,6 +105,7 @@ public class ConllEvaluation {
                                   nerClassification.scores);
             }
         }
+        for (final String t : trace) System.err.println(t);
         System.err.println();
     }
 }
