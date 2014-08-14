@@ -2,6 +2,11 @@ Steps to generate the COUNTRY_NAME data
 =======================================
 
 ## DBPedia query for CSV data
+
+You can submit the query below to DBPedia using your browser, setting the `Results Format` to `CSV`:
+
+<http://dbpedia.org/sparql>
+
     PREFIX dbprop: <http://dbpedia.org/property/>
     SELECT DISTINCT ?name
     WHERE {
