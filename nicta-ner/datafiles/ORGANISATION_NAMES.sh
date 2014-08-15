@@ -8,17 +8,17 @@ for f in $RANGE; do
     echo -n "Requesting ${TARGET} from $f... "
 
     QUERY=$(python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())' <<EOF
-SELECT ?name {{
-    SELECT DISTINCT ?name
-    WHERE {
-        ?x rdf:type dbpedia-owl:Organisation;
-        foaf:name ?name
-        FILTER (lang(?name) = 'en')
-    }
-    ORDER BY ?name
-}}
-OFFSET $f
-LIMIT $LIMIT
+        SELECT ?name {{
+            SELECT DISTINCT ?name
+            WHERE {
+                ?x rdf:type dbpedia-owl:Organisation .
+                ?x foaf:name ?name .
+                FILTER (lang(?name) = 'en')
+            }
+            ORDER BY ?name
+        }}
+        OFFSET $f
+        LIMIT $LIMIT
 EOF)
 
     FILE=${TARGET}_partial-$f.csv
@@ -33,7 +33,6 @@ cat ${TARGET}_partial-*.csv > ${TARGET}_unsanitised
 echo "Sanitising file:"
 wc -l ${TARGET}_unsanitised
 
-# TODO: don't sanitise orgs as much, some have funky chars
 # Sanitise stuff we don't want to keep
 ./sanitise.sh ${TARGET}_unsanitised ${TARGET}_sanitised
 
