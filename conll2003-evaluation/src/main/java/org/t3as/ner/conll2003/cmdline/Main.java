@@ -38,7 +38,7 @@ public final class Main {
     public static void main(final String[] args) throws IOException {
         final Options opts = getOptions(args);
 
-        new ConllEvaluation(opts.file.get(0)).evaluate();
+        new ConllEvaluation(opts.file.get(0), opts.config).evaluate();
     }
 
     @SuppressWarnings("CallToSystemExit")
@@ -65,6 +65,9 @@ public final class Main {
     private static class Options {
         @Parameter(help = true, names = {"-h", "--help"}, description = "Show this help message.")
         boolean showUsage;
+
+        @Parameter(names = "-config", description = "Specify a different config file to use.")
+        File config;
 
         // we are going to fail if there is anything else but 1 single file, so just call it file
         @Parameter(description = "<CoNLL 2003 test file>")

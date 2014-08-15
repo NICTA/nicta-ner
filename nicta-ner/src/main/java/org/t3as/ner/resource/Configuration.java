@@ -30,6 +30,7 @@ import org.t3as.ner.classifier.feature.FeatureMap;
 import javax.annotation.concurrent.Immutable;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +50,12 @@ public class Configuration {
 
     public Configuration() throws IOException { this(false); }
 
-    public Configuration(final boolean tracing) throws IOException { this(DEFAULT_CONFIG_RESOURCE, tracing); }
+    public Configuration(final boolean tracing) throws IOException {
+        this(Configuration.class.getResourceAsStream(DEFAULT_CONFIG_RESOURCE), tracing);
+    }
 
     /** Constructor. Read in the config file. */
-    public Configuration(final String configResource, final boolean tracing) throws IOException {
+    public Configuration(final InputStream config, final boolean tracing) throws IOException {
         this.tracing = tracing;
         final Pattern COLONS = Pattern.compile(":");
         final Splitter SPACES = Splitter.on(' ').trimResults().omitEmptyStrings();
@@ -62,8 +65,7 @@ public class Configuration {
         // Feature array specifies the features used in name type recognition.
         final List<Feature> features = new ArrayList<>();
 
-        try (final BufferedReader br = new BufferedReader(
-                new InputStreamReader(this.getClass().getResourceAsStream(configResource)))) {
+        try (final BufferedReader br = new BufferedReader(new InputStreamReader(config))) {
 
             // read each line from the file and put the information
             // in the temperate variables

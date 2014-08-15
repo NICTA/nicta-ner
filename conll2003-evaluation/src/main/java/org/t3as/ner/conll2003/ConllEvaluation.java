@@ -25,7 +25,9 @@ import org.t3as.ner.NamedEntityAnalyser;
 import org.t3as.ner.NerResultSet;
 import org.t3as.ner.resource.Configuration;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -40,11 +42,18 @@ import java.util.Map;
 public class ConllEvaluation {
 
     private final File testInput;
+    private final File config;
 
-    public ConllEvaluation(final File testInput) { this.testInput = testInput; }
+    public ConllEvaluation(final File testInput, final File config) {
+        this.testInput = testInput;
+        this.config = config;
+    }
 
     public void evaluate() throws IOException {
-        final NamedEntityAnalyser nea = new NamedEntityAnalyser(new Configuration(true));
+        final Configuration conf =
+                config == null ? new Configuration(true)
+                               : new Configuration(new BufferedInputStream(new FileInputStream(config)), true);
+        final NamedEntityAnalyser nea = new NamedEntityAnalyser(conf);
 
         try (final ConllReader r = new ConllReader(testInput)) {
             while (r.hasNext()) {

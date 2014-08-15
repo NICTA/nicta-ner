@@ -75,7 +75,7 @@ public class ConfigurationTest {
 
     @Test(dataProvider = "configTest")
     public void configTest(final String configResource, final Result r) throws IOException {
-        final Configuration config = new Configuration(configResource, false);
+        final Configuration config = new Configuration(this.getClass().getResourceAsStream(configResource), false);
         assertEquals(config.getFeatureMap(), r.featureMap);
         assertEquals(config.getNameTypes(), r.nameTypes);
     }
