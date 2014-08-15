@@ -7,7 +7,7 @@ echo -n "Requesting ${TARGET} from $f... "
 QUERY=$(python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())' <<EOF
 SELECT DISTINCT ?name
 WHERE {
-    ?country rdf:type dbpedia-owl:Country;
+    ?x rdf:type dbpedia-owl:Country;
     foaf:name ?name;
     rdfs:label ?label .
     FILTER (lang(?label) = 'en')
