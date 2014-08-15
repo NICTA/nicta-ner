@@ -19,7 +19,7 @@ sed -Ei .sed "s/&#39;/'/g" $F
 sed -Ei .sed '/^[^[:alpha:]]+$/d' $F
 
 # Remove lines which include weird chars we can't do anything with
-sed -Ei .sed '/[,\/:;#|{}()~]/d' $F
+sed -Ei .sed '/[,\/:;#|{}()~$%!?=+]/d' $F
 
 # Remove lines that start with &, '', -
 sed -Ei .sed "/^(\&|''|-)/d" $F
@@ -29,6 +29,9 @@ sed -Ei .sed '/^.$/d' $F
 
 # Remove lines longer than 60 columns (usually just random stuff people managed to stuff in this field)
 sed -i .sed '/^.\{60,\}$/d' $F
+
+# Remove lines 1 or 2 characters long
+sed -i .sed '/^.\{0,2\}$/d' $F
 
 # Remove `name`, "' or '", '[0-9]px'
 sed -Ei .sed "/^(name|' or ')\$/d" $F
