@@ -5,13 +5,13 @@ TARGET=COUNTRY_NAMES
 echo -n "Requesting ${TARGET} from $f... "
 
 QUERY=$(python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())' <<EOF
-SELECT DISTINCT ?name
-WHERE {
-    ?x rdf:type dbpedia-owl:Country .
-    ?x foaf:name ?name .
-    FILTER (lang(?name) = 'en')
-}
-ORDER BY ?name
+    SELECT DISTINCT ?name
+    WHERE {
+        ?x rdf:type dbpedia-owl:Country .
+        ?x foaf:name ?name .
+        FILTER (lang(?name) = 'en')
+    }
+    ORDER BY ?name
 EOF)
 
 FILE=${TARGET}_partial-$f.csv

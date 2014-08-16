@@ -8,16 +8,17 @@ for f in $RANGE; do
     echo -n "Requesting ${TARGET} from $f... "
 
     QUERY=$(python -c 'import sys,urllib;print urllib.quote(sys.stdin.read().strip())' <<EOF
-SELECT ?name {{
-    SELECT DISTINCT ?name
-    WHERE {
-       ?x rdf:type dbpedia-owl:Person;
-       foaf:name ?name
-    }
-    ORDER BY ?name
-}}
-OFFSET $f
-LIMIT $LIMIT
+        SELECT ?name {{
+            SELECT DISTINCT ?name
+            WHERE {
+                ?x rdf:type dbpedia-owl:Person .
+                ?x foaf:name ?name
+                FILTER (lang(?name) = 'en')
+            }
+            ORDER BY ?name
+        }}
+        OFFSET $f
+        LIMIT $LIMIT
 EOF)
 
     FILE=${TARGET}_partial-$f.csv
