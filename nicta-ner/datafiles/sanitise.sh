@@ -25,7 +25,7 @@ sed -Ei .sed '/[\/:;#|{}()~$%!?=+]/d' $F
 sed -Ei .sed "/^(\&|''|-)/d" $F
 
 # Remove anything after a comma
-sed -Ei .sed 's/,.*$//' ${TARGET}_unsanitised
+sed -Ei .sed 's/,.*$//' $F
 
 # Remove `name`, "' or '", '[0-9]px'
 sed -Ei .sed "/^(name|' or ')\$/d" $F
@@ -34,8 +34,9 @@ sed -Ei .sed '/[0-9]px/d' $F
 # Remove all leading lower case words, or complete lowercase lines, (that may also contain spaces, hypens, and dots)
 sed -Ei .sed 's/^[-a-z\ .]+//' $F
 
-# Add a space in front of all full stops, since that it how put frases back together
-sed -Ei .sed 's/([[:alpha:]])\. /\1 . /g' $F
+# Ensure there is a space on both sides of full stops, since that is how frases are put back together
+sed -Ei .sed 's/([[:alpha:]])\./\1 ./g' $F
+sed -Ei .sed 's/\.([[:alpha:]])/. \1/g' $F
 
 # Remove lines longer than 60 columns (usually just random stuff people managed to stuff in this field)
 sed -i .sed '/^.\{60,\}$/d' $F
