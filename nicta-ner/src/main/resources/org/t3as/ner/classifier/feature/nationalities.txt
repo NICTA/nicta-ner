@@ -3,195 +3,351 @@
 #   (although, feel free to do so by linking to us)."
 
 Afghan
+Afghans
 Albanian
+Albanians
 Algerian
+Algerians
 American
+Americans
 Andorran
+Andorrans
 Angolan
+Angolans
+Antiguan
 Antiguans
 Argentinean
+Argentineans
 Armenian
+Armenians
 Australian
+Australians
 Austrian
+Austrians
 Azerbaijani
+Azerbaijanis
 Bahamian
+Bahamians
 Bahraini
+Bahrainians
 Bangladeshi
+Bangladeshis
 Barbadian
+Barbadians
+Barbudan
 Barbudans
 Batswana
+Batswanans
 Belarusian
+Belarusians
 Belgian
+Belgians
 Belizean
+Belizeans
 Beninese
 Bhutanese
 Bolivian
+Bolivians
 Bosnian
+Bosnians
 Brazilian
+Brazilians
 British
 Bruneian
+Bruneians
 Bulgarian
+Bulgarians
 Burkinabe
 Burmese
 Burundian
+Burundians
 Cambodian
+Cambodians
 Cameroonian
+Cameroonians
 Canadian
+Canadians
 Cape Verdean
+Cape Verdeans
 Central African
+Central Africans
 Chadian
+Chadians
 Chilean
+Chileans
 Chinese
 Colombian
+Colombians
 Comoran
+Comorans
 Congolese
 Costa Rican
+Costa Ricans
 Croatian
+Croatians
 Cuban
+Cubans
 Cypriot
+Cypriots
 Czech
+Czechs
 Danish
 Djibouti
+Djiboutis
 Dominican
+Dominicans
 Dutch
 East Timorese
 Ecuadorean
+Ecuadoreans
 Egyptian
+Egyptians
 Emirian
+Emirians
 Equatorial Guinean
+Equatorial Guineans
 Eritrean
+Eritreans
 Estonian
+Estonians
 Ethiopian
+Ethiopians
 Fijian
+Fijians
 Filipino
+Filipinos
 Finnish
 French
 Gabonese
 Gambian
+Gambians
 Georgian
+Georgians
 German
+Germans
 Ghanaian
+Ghanaians
 Greek
+Greeks
 Grenadian
+Grenadians
 Guatemalan
+Guatemalans
 Guinea-Bissauan
+Guinea-Bissauans
 Guinean
+Guineans
 Guyanese
 Haitian
+Haitians
 Herzegovinian
+Herzegovinians
 Honduran
+Hondurans
 Hungarian
+Hungarians
 I-Kiribati
 Icelander
+Icelanders
 Indian
+Indians
 Indonesian
+Indonesians
 Iranian
+Iranians
 Iraqi
+Iraqis
 Irish
 Israeli
+Israelis
 Italian
+Italians
 Ivorian
+Ivorians
 Jamaican
+Jamaicans
 Japanese
 Jordanian
+Jordanians
 Kazakhstani
+Kazakhstanis
 Kenyan
+Kenyans
 Kittian and Nevisian
+Kittian and Nevisians
+Kiwi
+Kiwis
 Kuwaiti
+Kuwaitis
 Kyrgyz
 Laotian
+Laotians
 Latvian
+Latvians
 Lebanese
 Liberian
+Liberians
 Libyan
+Libyans
 Liechtensteiner
+Liechtensteiners
 Lithuanian
+Lithuanians
 Luxembourger
+Luxembourgers
 Macedonian
+Macedonians
 Malagasy
+Malagasys
 Malawian
+Malawians
 Malaysian
+Malaysians
 Maldivan
+Maldivans
 Malian
+Malians
 Maltese
 Marshallese
 Mauritanian
+Mauritanians
 Mauritian
+Mauritians
 Mexican
+Mexicans
 Micronesian
+Micronesians
 Moldovan
+Moldovans
 Monacan
+Monacans
 Mongolian
+Mongolians
 Moroccan
+Moroccans
 Mosotho
+Mosothos
 Motswana
+Motswanas
 Mozambican
+Mozambicans
 Namibian
+Namibians
 Nauruan
+Nauruans
 Nepalese
 New Zealander
+New Zealanders
 Nicaraguan
+Nicaraguans
 Nigerian
+Nigerians
 Nigerien
+Nigeriens
 North Korean
+North Koreans
 Northern Irish
 Norwegian
+Norwegians
 Omani
+Omanis
 Pakistani
+Pakistanis
 Palauan
+Palauans
 Panamanian
+Panamanians
 Papua New Guinean
+Papua New Guineans
 Paraguayan
+Paraguayans
 Peruvian
+Peruvians
 Polish
 Portuguese
 Qatari
+Qataris
 Romanian
+Romanians
 Russian
+Russians
 Rwandan
+Rwandans
 Saint Lucian
+Saint Lucians
 Salvadoran
+Salvadorans
 Samoan
+Samoans
 San Marinese
 Sao Tomean
+Sao Tomeans
 Saudi
+Saudis
 Scottish
 Senegalese
 Serbian
+Serbians
 Seychellois
 Sierra Leonean
+Sierra Leoneans
 Singaporean
+Singaporeans
 Slovakian
+Slovakians
 Slovenian
+Slovenians
 Solomon Islander
+Solomon Islanders
 Somali
+Somalis
 South African
+South Africans
 South Korean
+South Koreans
 Spanish
 Sri Lankan
+Sri Lankans
 Sudanese
 Surinamer
+Surinamers
 Swazi
+Swazis
 Swedish
 Swiss
 Syrian
+Syrians
 Taiwanese
 Tajik
+Tajiks
 Tanzanian
+Tanzanians
 Thai
+Thais
 Togolese
 Tongan
+Tongans
 Trinidadian or Tobagonian
+Trinidadian or Tobagonians
 Tunisian
+Tunisians
 Turkish
 Tuvaluan
+Tuvaluans
 Ugandan
+Ugandans
 Ukrainian
+Ukrainians
 Uruguayan
+Uruguayans
 Uzbekistani
+Uzbekistanis
 Venezuelan
+Venezuelans
 Vietnamese
 Welsh
 Yemenite
 Zambian
+Zambians
 Zimbabwean
+Zimbabweans
