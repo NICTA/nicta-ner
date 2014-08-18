@@ -31,10 +31,14 @@ Feature: RuledWordFeature STREET_TYPES                            10    0    0  
 Feature: ExistingCleanPhraseFeature country_names.freebase         5    0    0    0
 Feature: CaseSensitiveWordLookup country_codes.freebase            5    0    0    0
 
-Feature: ExistingCleanPhraseFeature PERSON_NAMES                   0   20    0    0
-Feature: RuledWordFeature PERSON_NAMES                             0    5    0    0
-Feature: RuledWordFeature names_sanitised                          0    5    0    0
+Feature: ExistingCleanPhraseFeature LongPersonNames.dbpedia        0   30    0    0
+Feature: RuledWordFeature LongPersonNames.dbpedia                  0    7    0    0
+Feature: RuledWordFeature ShortPersonNames.dbpedia                 0    7    0    0
+#Feature: RuledWordFeature names_sanitised                          0    5    0    0
 
+#Feature: ExistingCleanPhraseFeature LongOrganisationNames.dbpedia             5  -10    5    0
+#Feature: CaseInsensitiveWordLookup LongOrganisationNames.dbpedia             5  -10    5    0
+#Feature: CaseInsensitiveWordLookup ShortOrganisationNames.dbpedia             5  -10    5    0
 Feature: ExistingCleanPhraseFeature ORGANISATION_NAMES             5  -10    5    0
 Feature: ExistingCleanPhraseFeature stock_names_san                0    0   20    0
 Feature: RuledWordFeature stock_names_san                          0    0    5    0
