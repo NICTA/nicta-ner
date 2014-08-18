@@ -57,6 +57,8 @@ public abstract class Feature {
                 return new ExistingPhraseFeature(resource, scores);
             case "CaseSensitiveWordLookup":
                 return new CaseSensitiveWordLookup(resource, scores);
+            case "CaseInsensitiveWordLookup":
+                return new CaseInsensitiveWordLookup(resource, scores);
             default:
                 throw new IllegalArgumentException("Unknown feature: '" + feature + "'");
         }
