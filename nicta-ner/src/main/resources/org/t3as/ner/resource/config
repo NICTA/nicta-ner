@@ -24,7 +24,9 @@ Name Types: LOCATION PERSON ORGANIZATION NATIONALITIES
 Feature: ExistingPhraseFeature LONG_PLACES                   20    0    0    0
 Feature: RuledWordFeature LONG_PLACES                         3    0    0    0
 Feature: CaseInsensitiveWordLookup SHORT_PLACES               3    0    0    0
-Feature: RuledWordFeature COUNTRY_NAMES                       7    0    0    0
+Feature: ExistingCleanPhraseFeature LongCountries.dbpedia    10    0    0    0
+Feature: CaseInsensitiveWordLookup LongCountries.dbpedia      3    0    0    0
+Feature: CaseInsensitiveWordLookup ShortCountries.dbpedia     3    0    0    0
 Feature: RuledWordFeature STREET_TYPES                       10    0    0    0
 Feature: ExistingCleanPhraseFeature country_names.freebase    5    0    0    0
 Feature: CaseSensitiveWordLookup country_codes.freebase       5    0    0    0
