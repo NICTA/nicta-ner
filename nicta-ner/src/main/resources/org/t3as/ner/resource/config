@@ -36,14 +36,12 @@ Feature: RuledWordFeature LongPersonNames.dbpedia                  0    7    0  
 Feature: RuledWordFeature ShortPersonNames.dbpedia                 0    7    0    0
 #Feature: RuledWordFeature names_sanitised                          0    5    0    0
 
-#Feature: ExistingCleanPhraseFeature LongOrganisationNames.dbpedia             5  -10    5    0
-#Feature: CaseInsensitiveWordLookup LongOrganisationNames.dbpedia             5  -10    5    0
-#Feature: CaseInsensitiveWordLookup ShortOrganisationNames.dbpedia             5  -10    5    0
-Feature: ExistingCleanPhraseFeature ORGANISATION_NAMES             5  -10    5    0
+Feature: ExistingCleanPhraseFeature LongOrganisationNames.dbpedia  0    0   18    0
+Feature: CaseInsensitiveWordLookup LongOrganisationNames.dbpedia   0    0    2    0
+Feature: CaseInsensitiveWordLookup ShortOrganisationNames.dbpedia  0    0    6    0
 Feature: ExistingCleanPhraseFeature stock_names_san                0    0   20    0
 Feature: RuledWordFeature stock_names_san                          0    0    5    0
 Feature: CaseSensitiveWordLookup stock_symbols_san                 0    0    5    0
-Feature: CaseInsensitiveWordLookup ORGANISATION_NAMES              0    0    5    0
 Feature: CaseSensitiveWordLookup ORG_KEYWORD                       0    0   20    0
 
 Feature: CaseSensitiveWordLookup nationalities.txt                 0    0    0   40
