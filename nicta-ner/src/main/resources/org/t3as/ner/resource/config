@@ -21,9 +21,9 @@
 Name Types: LOCATION PERSON ORGANIZATION NATIONALITIES
 
 # FEATURES and weights:                                     LOC  PER  ORG  NAT
-Feature: ExistingPhraseFeature LONG_PLACES                   20    0    0    0
-Feature: RuledWordFeature LONG_PLACES                         3    0    0    0
-Feature: CaseInsensitiveWordLookup SHORT_PLACES               3    0    0    0
+Feature: ExistingPhraseFeature LongPopulatedPlaces.dbpedia       20    0    0    0
+Feature: CaseInsensitiveWordLookup LongPopulatedPlaces.dbpedia    3    0    0    0
+Feature: CaseInsensitiveWordLookup ShortPopulatedPlaces.dbpedia   3    0    0    0
 Feature: ExistingCleanPhraseFeature LongCountries.dbpedia    10    0    0    0
 Feature: CaseInsensitiveWordLookup LongCountries.dbpedia      3    0    0    0
 Feature: CaseInsensitiveWordLookup ShortCountries.dbpedia     3    0    0    0
