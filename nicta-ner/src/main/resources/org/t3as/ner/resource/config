@@ -27,7 +27,7 @@ Feature: RuledWordFeature SHORT_PLACES                 3       0      0         
 Feature: RuledWordFeature COUNTRY_NAMES                7       0      0         0
 Feature: RuledWordFeature STREET_TYPES                10       0      0         0
 Feature: ExistingPhraseFeature country_names.freebase  5        0      0         0
-Feature: RuledWordFeature country_codes.freebase       5        0      0         0
+Feature: CaseSensitiveWordLookup country_codes.freebase       5        0      0         0
 
 Feature: ExistingPhraseFeature PERSON_NAMES            0      20      0         0
 Feature: RuledWordFeature PERSON_NAMES                 0       5      0         0

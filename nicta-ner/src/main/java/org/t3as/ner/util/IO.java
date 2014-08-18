@@ -87,9 +87,8 @@ public final class IO {
         }});
     }
 
-    /** Return a set containing all non-comment non-empty lower cased words. */
-    public static ImmutableSet<String> wordSet(final Class<?> origin, final String resource)
-            throws IOException {
+    /** Return a set containing all non-comment non-empty words. */
+    public static ImmutableSet<String> wordSet(final Class<?> origin, final String resource) throws IOException {
         return ImmutableSet.copyOf(new HashSet<String>() {{
             readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override

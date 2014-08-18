@@ -55,6 +55,8 @@ public abstract class Feature {
                 return new PrepositionContextFeature(resource, scores);
             case "ExistingPhraseFeature":
                 return new ExistingPhraseFeature(resource, scores);
+            case "CaseSensitiveWordLookup":
+                return new CaseSensitiveWordLookup(resource, scores);
             default:
                 throw new IllegalArgumentException("Unknown feature: '" + feature + "'");
         }
