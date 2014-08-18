@@ -10,7 +10,7 @@ F=$FILE.sanitising
 FINISHED=$2
 
 # Remove quotation marks and any other char we don't want to deal with
-tr -d '"*' < $FILE > $F
+tr -d '"*.' < $FILE > $F
 
 # Replace &#39; with apostrophe
 sed -Ei .sed "s/&#39;/'/g" $F
@@ -31,12 +31,8 @@ sed -Ei .sed 's/,.*$//' $F
 sed -Ei .sed "/^(name|' or ')\$/d" $F
 sed -Ei .sed '/[0-9]px/d' $F
 
-# Remove all leading lower case words, or complete lowercase lines, (that may also contain spaces, hypens, and dots)
-sed -Ei .sed 's/^[-a-z\ .]+//' $F
-
-# Ensure there is a space on both sides of full stops, since that is how frases are put back together
-sed -Ei .sed 's/([[:alpha:]])\./\1 ./g' $F
-sed -Ei .sed 's/\.([[:alpha:]])/. \1/g' $F
+# Remove all leading lower case words, or complete lowercase lines, (that may also contain spaces and hypens)
+sed -Ei .sed 's/^[-a-z\ ]+//' $F
 
 # Remove lines longer than 60 columns (usually just random stuff people managed to stuff in this field)
 sed -i .sed '/^.\{60,\}$/d' $F
@@ -45,4 +41,4 @@ sed -i .sed '/^.\{60,\}$/d' $F
 sed -i .sed '/^.\{0,2\}$/d' $F
 
 # Sort and uniq to the final result
-sort < $F | uniq > $FINISHED
+sort < $F | uniq > $FINISHED && rm -f $F
