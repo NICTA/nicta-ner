@@ -22,7 +22,7 @@ Start by extracting all the country data together to an easier to deal with file
 
 ### Cleanup of the files:
 
-    cat <filename> | cut -f 2 | sed -e 's/["\\]//g' | sed -e 's/,.*$//' | sed -e '/[a-z]/d' |  sort | uniq > <newfile>
+    cat <filename> | cut -f 2 | sed -E 's/["\\]//g' | sed -E 's/,.*$//' | sed -E '/[a-z]/d' |  sort | uniq > <newfile>
 
 
 ## License
