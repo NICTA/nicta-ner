@@ -30,6 +30,14 @@ This project is also available on Maven Central under the `org.t3as` group id, a
 <http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22snomedct-lookup%22>
 
 
+## NER data files
+
+The NICTA t3as NER library makes use of rules and lists of known entities to detect entities in free text. These lists of entities are extracted from different sources. Two of the main sources are [DBPedia](http://dbpedia.org/) and [Freebase](http://www.freebase.com/). More information about how to get this data can be found below:
+
+* [DbpediaDataFiles](datafiles/DbpediaDataFiles.md)
+* [FreebaseDataFile](datafiles/FreebaseDataFiles.md)
+
+
 ## Quick start
 
 Command line shell interface to process the input text
