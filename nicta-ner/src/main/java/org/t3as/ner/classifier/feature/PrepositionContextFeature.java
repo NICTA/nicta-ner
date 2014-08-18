@@ -49,7 +49,6 @@ public class PrepositionContextFeature extends Feature {
 
         String prep = p.attachedWordMap.get("prep");
         if (prep != null) prep = toEngLowerCase(prep);
-        final double score = WORDS.contains(simplify(prep)) ? 1.0 : 0.0;
-        return score * w;
+        return WORDS.contains(simplify(prep)) ? w : 0;
     }
 }

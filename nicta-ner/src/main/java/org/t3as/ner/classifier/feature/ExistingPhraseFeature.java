@@ -48,7 +48,6 @@ public class ExistingPhraseFeature extends Feature {
         if (w == 0) return 0;
 
         final String phrase = Strings.simplify(p.phraseString());
-        final double score = PHRASES.contains(toEngLowerCase(phrase)) ? 1.0 : 0.0;
-        return score * w;
+        return PHRASES.contains(toEngLowerCase(phrase)) ? w : 0;
     }
 }

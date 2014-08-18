@@ -52,8 +52,7 @@ public class CaseInsensitiveWordLookup extends Feature {
         double score = 0.0;
         for (final Token t : p.phrase) {
             final String word = Strings.simplify(toEngLowerCase(t.text));
-            final double x = (WORDS.contains(word)) ? 1.0 : 0.0;
-            score += x;
+            score += (WORDS.contains(word)) ? 1.0 : 0.0;
         }
         return score * w;
     }
