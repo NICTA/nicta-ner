@@ -68,9 +68,9 @@ public final class IO {
             readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
                 public boolean processLine(@Nonnull final String line) {
-                    final String l = clean(simplify(line));
+                    final String l = simplify(line);
                     // add to the containing HashSet we are currently in the init block of
-                    if (!l.startsWith("#") && !l.isEmpty()) add(toEngLowerCase(l));
+                    if (!l.startsWith("#") && !l.isEmpty()) add(toEngLowerCase(clean(l)));
                     return true;
                 }
             });
@@ -78,8 +78,8 @@ public final class IO {
     }
 
     /** Returns a Set containing only single words. */
-    public static ImmutableSet<String> createLowercaseSingleWordSet(final Class<?> origin, final String resource,
-                                                                    final boolean eliminatePrepAndConj) throws IOException {
+    public static ImmutableSet<String> lowercaseWordSet(final Class<?> origin, final String resource,
+                                                        final boolean eliminatePrepAndConj) throws IOException {
         return ImmutableSet.copyOf(new HashSet<String>() {{
             readResource(origin, resource, new NullReturnLineProcessor() {
                 @Override
@@ -94,7 +94,7 @@ public final class IO {
                                 }
                             }
                             // add to the containing HashSet we are currently in the init block of
-                            add(toEngLowerCase(part));
+                            add(toEngLowerCase(clean(part)));
                         }
                     }
                     return true;
@@ -111,7 +111,11 @@ public final class IO {
                 public boolean processLine(@Nonnull final String line) {
                     final String l = simplify(line);
                     // add to the containing HashSet we are currently in the init block of
-                    if (!l.isEmpty() && !l.startsWith("#")) add(l);
+                    if (!l.isEmpty() && !l.startsWith("#")) {
+                        for (final String part : SPACES.split(l)) {
+                            add(clean(part));
+                        }
+                    }
                     return true;
                 }
             });

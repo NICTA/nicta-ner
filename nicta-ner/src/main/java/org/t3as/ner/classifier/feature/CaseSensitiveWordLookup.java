@@ -31,6 +31,8 @@ import org.t3as.ner.util.Strings;
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 
+import static org.t3as.ner.util.Strings.clean;
+
 @Immutable
 public class CaseSensitiveWordLookup extends Feature {
 
@@ -50,7 +52,7 @@ public class CaseSensitiveWordLookup extends Feature {
         double score = 0.0;
         for (final Token t : p.phrase) {
             final String word = Strings.simplify(t.text);
-            score += (WORDS.contains(word)) ? 1.0 : 0.0;
+            score += (WORDS.contains(clean(word))) ? 1.0 : 0.0;
         }
         return score * w;
     }

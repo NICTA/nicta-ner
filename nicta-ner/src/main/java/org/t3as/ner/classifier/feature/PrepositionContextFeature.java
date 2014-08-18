@@ -29,6 +29,7 @@ import org.t3as.ner.util.IO;
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 
+import static org.t3as.ner.util.Strings.clean;
 import static org.t3as.ner.util.Strings.simplify;
 import static org.t3as.ner.util.Strings.toEngLowerCase;
 
@@ -39,7 +40,7 @@ public class PrepositionContextFeature extends Feature {
 
     public PrepositionContextFeature(final String filename, final int[] weights) throws IOException {
         super(filename, weights);
-        WORDS = ImmutableSet.copyOf(IO.createLowercaseSingleWordSet(getClass(), filename, false));
+        WORDS = ImmutableSet.copyOf(IO.lowercaseWordSet(getClass(), filename, false));
     }
 
     @Override
@@ -48,7 +49,7 @@ public class PrepositionContextFeature extends Feature {
         if (w == 0) return 0;
 
         String prep = p.attachedWordMap.get("prep");
-        if (prep != null) prep = toEngLowerCase(prep);
+        if (prep != null) prep = toEngLowerCase(clean(prep));
         return WORDS.contains(simplify(prep)) ? w : 0;
     }
 }

@@ -31,6 +31,7 @@ import org.t3as.ner.util.Strings;
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 
+import static org.t3as.ner.util.Strings.clean;
 import static org.t3as.ner.util.Strings.toEngLowerCase;
 
 @Immutable
@@ -40,7 +41,7 @@ public class CaseInsensitiveWordLookup extends Feature {
 
     public CaseInsensitiveWordLookup(final String filename, final int[] weights) throws IOException {
         super(filename, weights);
-        WORDS = ImmutableSet.copyOf(IO.createLowercaseSingleWordSet(getClass(), filename, false));
+        WORDS = ImmutableSet.copyOf(IO.lowercaseWordSet(getClass(), filename, false));
     }
 
     @SuppressWarnings("MagicNumber")
@@ -51,7 +52,7 @@ public class CaseInsensitiveWordLookup extends Feature {
 
         double score = 0.0;
         for (final Token t : p.phrase) {
-            final String word = Strings.simplify(toEngLowerCase(t.text));
+            final String word = Strings.simplify(toEngLowerCase(clean(t.text)));
             score += (WORDS.contains(word)) ? 1.0 : 0.0;
         }
         return score * w;
