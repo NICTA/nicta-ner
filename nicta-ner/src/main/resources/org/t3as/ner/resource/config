@@ -20,24 +20,24 @@
 # NAME TYPES: (order matters, these are the columns in the weight numbers below)
 Name Types: LOCATION PERSON ORGANIZATION NATIONALITIES
 
-# FEATURES and weights:                           LOCATION  PERSON  ORGANIZATION  NATIONALITIES
-Feature: ExistingPhraseFeature LONG_PLACES              20       0      0         0
-Feature: RuledWordFeature LONG_PLACES                    3       0      0         0
-Feature: CaseInsensitiveWordLookup SHORT_PLACES          3       0      0         0
-Feature: RuledWordFeature COUNTRY_NAMES                  7       0      0         0
-Feature: RuledWordFeature STREET_TYPES                  10       0      0         0
-Feature: ExistingPhraseFeature country_names.freebase    5       0      0         0
-Feature: CaseSensitiveWordLookup country_codes.freebase  5       0      0         0
+# FEATURES and weights:                                LOC  PER  ORG  NAT
+Feature: ExistingPhraseFeature LONG_PLACES              20    0    0    0
+Feature: RuledWordFeature LONG_PLACES                    3    0    0    0
+Feature: CaseInsensitiveWordLookup SHORT_PLACES          3    0    0    0
+Feature: RuledWordFeature COUNTRY_NAMES                  7    0    0    0
+Feature: RuledWordFeature STREET_TYPES                  10    0    0    0
+Feature: ExistingPhraseFeature country_names.freebase    5    0    0    0
+Feature: CaseSensitiveWordLookup country_codes.freebase  5    0    0    0
 
-Feature: ExistingPhraseFeature PERSON_NAMES              0      20      0         0
-Feature: RuledWordFeature PERSON_NAMES                   0       5      0         0
-Feature: RuledWordFeature names_sanitised                0       5      0         0
+Feature: ExistingPhraseFeature PERSON_NAMES              0   20    0    0
+Feature: RuledWordFeature PERSON_NAMES                   0    5    0    0
+Feature: RuledWordFeature names_sanitised                0    5    0    0
 
-Feature: ExistingPhraseFeature ORGANISATION_NAMES        5     -10      5         0
-Feature: ExistingPhraseFeature stock_names_san           0       0     20         0
-Feature: RuledWordFeature stock_names_san                0       0      5         0
-Feature: CaseSensitiveWordLookup stock_symbols_san       0       0      5         0
-Feature: CaseInsensitiveWordLookup ORGANISATION_NAMES    0       0      5         0
-Feature: CaseSensitiveWordLookup ORG_KEYWORD             0       0     20         0
+Feature: ExistingPhraseFeature ORGANISATION_NAMES        5  -10    5    0
+Feature: ExistingPhraseFeature stock_names_san           0    0   20    0
+Feature: RuledWordFeature stock_names_san                0    0    5    0
+Feature: CaseSensitiveWordLookup stock_symbols_san       0    0    5    0
+Feature: CaseInsensitiveWordLookup ORGANISATION_NAMES    0    0    5    0
+Feature: CaseSensitiveWordLookup ORG_KEYWORD             0    0   20    0
 
-Feature: CaseSensitiveWordLookup nationalities.txt       0       0      0        40
+Feature: CaseSensitiveWordLookup nationalities.txt       0    0    0   40
