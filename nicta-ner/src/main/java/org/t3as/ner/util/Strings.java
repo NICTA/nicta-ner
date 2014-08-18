@@ -23,10 +23,13 @@ package org.t3as.ner.util;
 
 import java.text.Normalizer;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import static java.lang.Character.isUpperCase;
 
 public final class Strings {
+
+    private static final Pattern CLEAN = Pattern.compile("[^\\p{L}\\p{Nd}]+");
 
     private Strings() {}
 
@@ -84,4 +87,6 @@ public final class Strings {
     public static String toEngLowerCase(final String s) { return s.toLowerCase(Locale.ENGLISH); }
 
     public static boolean isAllUppercase(final String s) { return s.equals(s.toUpperCase(Locale.ENGLISH)); }
+
+    public static String clean(final String s) { return CLEAN.matcher(s).replaceAll(""); }
 }

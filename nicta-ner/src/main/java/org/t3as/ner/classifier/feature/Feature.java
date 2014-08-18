@@ -55,6 +55,8 @@ public abstract class Feature {
                 return new PrepositionContextFeature(resource, scores);
             case "ExistingPhraseFeature":
                 return new ExistingPhraseFeature(resource, scores);
+            case "ExistingCleanPhraseFeature":
+                return new ExistingCleanPhraseFeature(resource, scores);
             case "CaseSensitiveWordLookup":
                 return new CaseSensitiveWordLookup(resource, scores);
             case "CaseInsensitiveWordLookup":

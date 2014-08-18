@@ -36,6 +36,7 @@ import java.util.Set;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.io.Resources.getResource;
 import static com.google.common.io.Resources.readLines;
+import static org.t3as.ner.util.Strings.clean;
 import static org.t3as.ner.util.Strings.simplify;
 import static org.t3as.ner.util.Strings.toEngLowerCase;
 
@@ -53,6 +54,21 @@ public final class IO {
                 @Override
                 public boolean processLine(@Nonnull final String line) {
                     final String l = simplify(line);
+                    // add to the containing HashSet we are currently in the init block of
+                    if (!l.startsWith("#") && !l.isEmpty()) add(toEngLowerCase(l));
+                    return true;
+                }
+            });
+        }});
+    }
+
+    /** Return a Set containing lines with just the word characters of lines read from a file, skipping comments. */
+    public static Set<String> cleanLowercaseLines(final Class<?> origin, final String resource) throws IOException {
+        return ImmutableSet.copyOf(new HashSet<String>() {{
+            readResource(origin, resource, new NullReturnLineProcessor() {
+                @Override
+                public boolean processLine(@Nonnull final String line) {
+                    final String l = clean(simplify(line));
                     // add to the containing HashSet we are currently in the init block of
                     if (!l.startsWith("#") && !l.isEmpty()) add(toEngLowerCase(l));
                     return true;
