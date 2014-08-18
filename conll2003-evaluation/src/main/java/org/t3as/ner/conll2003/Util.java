@@ -77,6 +77,7 @@ public final class Util {
                 return prefix + "ORG";
             case PERSON:
                 return prefix + "PER";
+            case NATIONALITIES:
             case UNKNOWN:
                 return prefix + "MISC";
 

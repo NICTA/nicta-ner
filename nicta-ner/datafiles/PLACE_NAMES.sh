@@ -13,7 +13,7 @@ for f in $RANGE; do
             WHERE {
                 ?x rdf:type dbpedia-owl:Place .
                 ?x foaf:name ?name .
-                FILTER (lang(?label) = 'en')
+                FILTER (lang(?name) = 'en')
             }
             ORDER BY ?name
         }}
