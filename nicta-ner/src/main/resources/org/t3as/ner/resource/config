@@ -27,7 +27,7 @@ Feature: CaseInsensitiveWordLookup ShortPopulatedPlaces.dbpedia    3    0    0  
 Feature: ExistingCleanPhraseFeature LongCountries.dbpedia         10    0    0    0
 Feature: CaseInsensitiveWordLookup LongCountries.dbpedia           3    0    0    0
 Feature: CaseInsensitiveWordLookup ShortCountries.dbpedia          3    0    0    0
-Feature: RuledWordFeature STREET_TYPES                            10    0    0    0
+Feature: CaseInsensitiveWordLookup StreetTypes.txt                10    0    0    0
 Feature: ExistingCleanPhraseFeature country_names.freebase         5    0    0    0
 Feature: CaseSensitiveWordLookup country_codes.freebase            5    0    0    0
 
