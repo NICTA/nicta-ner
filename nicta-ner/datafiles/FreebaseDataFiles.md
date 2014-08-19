@@ -24,6 +24,19 @@ Start by extracting all the country data together to an easier to deal with file
 
     cat <filename> | cut -f 2 | sed -E 's/["\\]//g' | sed -E 's/,.*$//' | sed -E '/[a-z]/d' |  sort | uniq > <newfile>
 
+## Organisation data
+
+### Stock symbols
+
+First grab all the stock symbols out of the Freebase dump:
+
+    pv < freebase-rdf-2014-08-10-00-00.gz | gzcat | perl -ne '/business.stock_ticker_symbol.ticker_symbol/ && print' > business.stock_ticker_symbol.ticker_symbol
+    
+Then grab all the symbols out:
+
+    cut -f3 < business.stock_ticker_symbol.ticker_symbol | sed -E 's/"(.+)".*/\1/' | sed -E '/^[^A-Z]/d' | sed '/^.\{0,2\}$/d' | sort | uniq > StockSymbols.freebase
+
+The `sed` commands keep only the part between the double quotes, drops anything that doesn't start with a capital letter, drops lines between 1 and 2 characters long.
 
 ## License
 
