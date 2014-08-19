@@ -18,9 +18,9 @@
 
 
 # NAME TYPES: (order matters, these are the columns in the weight numbers below)
-Name Types: LOCATION PERSON ORGANIZATION NATIONALITIES
+Name Types: LOCATION PERSON ORGANIZATION ETHNIC
 
-# FEATURES and weights:                                          LOC  PER  ORG  NAT
+# FEATURES and weights:                                          LOC  PER  ORG  ETH
 Feature: ExistingPhraseFeature LongPopulatedPlaces.dbpedia        20    0    0    0
 Feature: CaseInsensitiveWordLookup LongPopulatedPlaces.dbpedia     3    0    0    0
 Feature: CaseInsensitiveWordLookup ShortPopulatedPlaces.dbpedia    3    0    0    0

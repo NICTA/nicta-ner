@@ -26,6 +26,6 @@ public enum NameType {
     PERSON,
     ORGANIZATION,
     LOCATION,
-    NATIONALITIES,
+    ETHNIC,
     DATE,
 }
