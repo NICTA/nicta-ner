@@ -20,6 +20,7 @@
 # NAME TYPES: (order matters, these are the columns in the weight numbers below)
 Name Types: LOCATION PERSON ORGANIZATION ETHNIC
 
+# TODO: looks like we can do away with the scoring matrix now and just have one score per feature
 # FEATURES and weights:                                          LOC  PER  ORG  ETH
 Feature: ExistingPhraseFeature LongPopulatedPlaces.dbpedia        20    0    0    0
 Feature: CaseInsensitiveWordLookup LongPopulatedPlaces.dbpedia     3    0    0    0
