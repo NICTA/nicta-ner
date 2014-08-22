@@ -21,6 +21,7 @@
 Name Types: LOCATION PERSON ORGANIZATION ETHNIC
 
 # TODO: looks like we can do away with the scoring matrix now and just have one score per feature
+
 # FEATURES and weights:                                          LOC  PER  ORG  ETH
 Feature: ExistingPhraseFeature LongPopulatedPlaces.dbpedia        20    0    0    0
 Feature: CaseInsensitiveWordLookup LongPopulatedPlaces.dbpedia     3    0    0    0
@@ -32,9 +33,12 @@ Feature: CaseInsensitiveWordLookup StreetTypes.txt                10    0    0  
 Feature: ExistingCleanPhraseFeature country_names.freebase         5    0    0    0
 Feature: CaseSensitiveWordLookup country_codes.freebase            5    0    0    0
 
-Feature: ExistingCleanPhraseFeature LongPersonNames.dbpedia        0   30    0    0
-Feature: RuledWordFeature LongPersonNames.dbpedia                  0    7    0    0
-Feature: RuledWordFeature ShortPersonNames.dbpedia                 0    7    0    0
+Feature: ExistingCleanPhraseFeature LongPersonNames.dbpedia        0   13    0    0
+Feature: RuledWordFeature LongPersonNames.dbpedia                  0    3    0    0
+Feature: RuledWordFeature ShortPersonNames.dbpedia                 0    3    0    0
+Feature: ExistingCleanPhraseFeature LongPersonNames.freebase       0    9    0    0
+Feature: RuledWordFeature LongPersonNames.freebase                 0    2    0    0
+Feature: RuledWordFeature ShortPersonNames.freebase                0    2    0    0
 
 Feature: ExistingPhraseFeature LongOrganisationNames.dbpedia       0    0   11    0
 Feature: CaseInsensitiveWordLookup LongOrganisationNames.dbpedia   0    0    2    0

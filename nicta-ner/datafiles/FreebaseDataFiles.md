@@ -73,6 +73,18 @@ Finish processing into files:
     grep -v " " OrganisationNames.freebase > ShortOrganisationNames.freebase
     
     
+### Person names
+
+    pv < freebase-rdf-2014-08-10-00-00.gz | gzcat | perl -ne '/people\.person/ && print' > people.person
+    pv < people.person | perl -ne '/\/people\.person>/ && print' | perl -ne '/\/type\.object\.type>/ && print' > person_ids
+    pv < person_ids | perl -ne '/com\/ns\/(m\..+?)>/ && print "$1\n"' > just_person_ids
+    java -Xmx12g OrgIdNameLookup just_person_ids id_name > person_names
+    sort < person_names | uniq > PersonNames.unsanitised
+    ./sanitise.sh PersonNames.unsanitised PersonNames.freebase
+    sed -Ei .sed '/^[0-9]/d' PersonNames.freebase
+    grep " " PersonNames.freebase > LongPersonNames.freebase
+    grep -v " " PersonNames.freebase > ShortPersonNames.freebase
+    
 
 ## License
 
