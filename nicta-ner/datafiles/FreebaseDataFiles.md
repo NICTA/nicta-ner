@@ -24,6 +24,7 @@ Start by extracting all the country data together to an easier to deal with file
 
     cat <filename> | cut -f 2 | sed -E 's/["\\]//g' | sed -E 's/,.*$//' | sed -E '/[a-z]/d' |  sort | uniq > <newfile>
 
+
 ## Organisation data
 
 ### Stock symbols
@@ -37,6 +38,41 @@ Then grab all the symbols out:
     cut -f3 < business.stock_ticker_symbol.ticker_symbol | sed -E 's/"(.+)".*/\1/' | sed -E '/^[^A-Z]/d' | sed '/^.\{0,2\}$/d' | sort | uniq > StockSymbols.freebase
 
 The `sed` commands keep only the part between the double quotes, drops anything that doesn't start with a capital letter, drops lines between 1 and 2 characters long.
+
+### Organisation names
+
+Do the first two steps together:
+
+    pv < freebase-rdf-2014-08-10-00-00.gz | gzcat | perl -ne '/organization\.organization/ && print' > organization.organization
+    pv < freebase-rdf-2014-08-10-00-00.gz | gzcat | perl -ne '/type\.object\.name/ && print' > type.object.name
+
+Extract the org ids (can be combined with the step above, but I already had that list by then):
+
+    perl -ne '/\/organization\.organization>/ && print' < organization.organization | perl -ne '/\/type\.object\.type>/ && print' > org_ids
+    
+Get only the English names out:
+
+    pv < type.object.name | perl -ne '/\@en/ && print' > type.object.name.en
+    
+Make a file of just the entity id and the name string:
+
+    pv < type.object.name.en | perl -ne '/com\/ns\/(m\..+?)>.*"(.+)"/ && print "$1\t$2\n"' > id_name
+
+Do something similar to get just the org ids we are interested in:
+
+    pv < org_ids | perl -ne '/com\/ns\/(m\..+?)>/ && print "$1\n"' > just_org_ids
+    
+Then use hacky java to get the names out:
+
+    java -Xmx12g OrgIdNameLookup just_org_ids id_name > OrganisationNames.freebase
+    
+Finish processing into files:
+
+    sort < org_names | uniq | sed '/^.\{0,2\}$/d' > OrganisationNames.freebase
+    grep " " OrganisationNames.freebase > LongOrganisationNames.freebase
+    grep -v " " OrganisationNames.freebase > ShortOrganisationNames.freebase
+    
+    
 
 ## License
 
