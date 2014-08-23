@@ -21,6 +21,9 @@
  */
 package org.t3as.ner;
 
+/**
+ * This isn't an enum because we want to keep it possible to specify arbitrary entity classes in the config.
+ */
 public class EntityType {
 
     public static final EntityType UNKNOWN = new EntityType("UNKNOWN");
