@@ -1,5 +1,8 @@
 #
-# Copyright (c) 2014 NICTA
+# This data has been extracted from DBPedia:
+#
+# http://dbpedia.org/
+#
 # Permission is granted to copy, distribute and/or modify this document
 # under the terms of the GNU Free Documentation License, Version 1.3
 # or any later version published by the Free Software Foundation;
@@ -9,8 +12,6 @@
 #
 # http://www.gnu.org/licenses/fdl-1.3.txt
 #
-# Original data from DBPedia:
-# http://dbpedia.org/
 
 'Abadilah
 'Adan

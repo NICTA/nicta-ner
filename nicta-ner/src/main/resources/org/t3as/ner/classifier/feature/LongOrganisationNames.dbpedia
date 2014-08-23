@@ -1,5 +1,8 @@
 #
-# Copyright (c) 2014 NICTA
+# This data has been extracted from DBPedia:
+#
+# http://dbpedia.org/
+#
 # Permission is granted to copy, distribute and/or modify this document
 # under the terms of the GNU Free Documentation License, Version 1.3
 # or any later version published by the Free Software Foundation;
@@ -9,8 +12,6 @@
 #
 # http://www.gnu.org/licenses/fdl-1.3.txt
 #
-# Original data from DBPedia:
-# http://dbpedia.org/
 
 & bide
 '60s Vibrations
@@ -16366,7 +16367,7 @@ Arya Samaj
 Arya Samaj Mauritius
 Arya Senior Secondary School
 Aryabhatta Institute Of Engineering & Management
-Aryabhatta Institute Of Engineering & Management 
+Aryabhatta Institute Of Engineering & Management
 Aryabhatta Knowledge University
 Aryabhatta Research Institute of Observational Sciences
 Aryan Cargo Express
@@ -27421,7 +27422,7 @@ Buffalo Tom
 Buffalo Traditional High School
 Buffalo Wild Wings
 Buffalo Wings and Rings
-Buffets 
+Buffets
 Buffles du Borgou
 Buffles du Borgou Football Club
 Buffy Lawson
@@ -29544,7 +29545,7 @@ Camelback High School
 Camelford Football Club
 Camelia  & Delgado
 Camellia Institute of Technology
-Camellia School Of Business Management 
+Camellia School Of Business Management
 Camelon Juniors FC
 Camelon Juniors Football Club
 Camelot Ghana
@@ -32490,7 +32491,7 @@ Champagnat Catholic School
 Champagne Coqueret-Benard
 Champagne Thiénot
 Champaign Central High School
-Champhai College 
+Champhai College
 Champion Air
 Champion Aircraft Corporation
 Champion Ballroom Academy
@@ -34027,7 +34028,7 @@ Christ on Parade
 Christ the King Catholic School
 Christ the King Catholic Secondary School
 Christ the King College
-Christ the King College 
+Christ the King College
 Christ the King College of Cavite Foundation
 Christ the King High School
 Christ the King Jesuit College Preparatory High School
@@ -38336,7 +38337,7 @@ Community Environmental Center
 Community Express Airlines
 Community Forestry International
 Community Foundation of the Eastern Shore
-Community Harvest Charter School 
+Community Harvest Charter School
 Community Health Systems
 Community High School
 Community Home Entertainment
@@ -56838,7 +56839,7 @@ Foundation for Science and Technology
 Foundation for the Development of Caribbean Children
 Founder Group
 Founder Technology Group Corporation
-Founder and current CEO of Alandia 
+Founder and current CEO of Alandia
 Founders Fund
 Foundry Networks
 Fountain Hills High School
@@ -58922,7 +58923,7 @@ GP Express Airlines
 GP Investments
 GP Wu
 GPI Holding
-GPMCE 
+GPMCE
 GPS Portland Phoenix
 GR Kinney Company
 GRACE Christian School
@@ -63563,7 +63564,7 @@ Gulf DTH FZ LLC
 Gulf FM
 Gulf Helicopters
 Gulf High School
-Gulf Indian High School 
+Gulf Indian High School
 Gulf International Bank
 Gulf Investment House
 Gulf Keystone Petroleum Limited
@@ -68446,7 +68447,7 @@ Hoërskool Schweizer-Reneke
 Hoërskool Stellenbosch
 Hoërskool Strand
 Hoërskool Voortrekker Boksburg
-Hrangbana College 
+Hrangbana College
 Hringiðan ehf
 Hristo Botev School
 Hrvatska demokratska seljačka stranka
@@ -71517,7 +71518,7 @@ Institute of Management Sciences
 Institute of Management Technology
 Institute of Management and Computer Studies
 Institute of Management and Development
-Institute of Management and Information Technology 
+Institute of Management and Information Technology
 Institute of Marine Sciences
 Institute of Materials
 Institute of Medical Sciences and Sum Hospital
@@ -73072,7 +73073,7 @@ Islamic Azad University of Mashhad
 Islamic Azad University of Najafabad
 Islamic Azad University of Neyshabur
 Islamic Azad University of Nishapur
-Islamic Azad University of Qazvin 
+Islamic Azad University of Qazvin
 Islamic Azad University of Ramsar
 Islamic Azad University of Sabzevar
 Islamic Azad University of Shahr Rey
@@ -89973,7 +89974,7 @@ Medium 21
 Medium Brigade
 Medium Medium
 Medix School
-Medixsysteme 
+Medixsysteme
 Medizinische Hochschule Hannover
 Mediæval Bæbes
 Medkila Idrettslag
@@ -98124,7 +98125,7 @@ New Horizons Governor's School for Science and Technology
 New Hormones
 New Hudson Motorcycles
 New Hyde Park Memorial High School
-New IBN-E-SEENA Science Secondary School 
+New IBN-E-SEENA Science Secondary School
 New Ideal Public School
 New Image College of Fine Arts
 New Imperial
@@ -119640,7 +119641,7 @@ Sagar Mahavidyalaya
 Sagar Pawan
 Sagar Prahari Bal
 Sagardighi Mahavidyalaya
-Sagarmatha English Boarding School Waling 
+Sagarmatha English Boarding School Waling
 Sagarmatha Television
 Sagavoll Folkehøgskole
 Sagawa Express
@@ -124585,7 +124586,7 @@ Sidsjö-Böle Idrottsförening
 Sidwell Friends School
 SieMatic Möbelwerke
 Siebe plc
-Siebel CRM Systems 
+Siebel CRM Systems
 Siegel High School
 Siegel Suites
 Siegel–Schwall Band
@@ -129661,7 +129662,7 @@ St Edward's Christian Brothers College
 St Edward's CofE School
 St Edward's College
 St Edward's School
-St Edward's School 
+St Edward's School
 St Edward's Secondary School
 St Edward's University
 St Elizabeth Academy
@@ -130435,7 +130436,7 @@ St Scholastica's Academy Marikina
 St Scholastica's College
 St Sebastian University
 St Sebastian's College
-St Sebastian's College 
+St Sebastian's College
 St Sebastian's Higher Secondary School
 St Servatius College Matara
 St Simon Stock Catholic School
