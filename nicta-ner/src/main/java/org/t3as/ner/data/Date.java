@@ -21,7 +21,7 @@
  */
 package org.t3as.ner.data;
 
-import org.t3as.ner.NameType;
+import org.t3as.ner.EntityType;
 import org.t3as.ner.Phrase;
 import org.t3as.ner.Token;
 
@@ -74,7 +74,7 @@ public class Date extends Phrase {
     public Date(final List<Token> tokens, final int pos, final int len, final int stubPos, final int typeDimension) {
         super(tokens, pos, len, stubPos);
         this.score = new double[typeDimension];
-        this.phraseType = NameType.DATE;
+        this.phraseType = EntityType.DATE;
         this.isDate = true;
     }
 

@@ -21,11 +21,26 @@
  */
 package org.t3as.ner;
 
-public enum NameType {
-    UNKNOWN,
-    PERSON,
-    ORGANIZATION,
-    LOCATION,
-    ETHNIC,
-    DATE,
+public class EntityType {
+
+    public static final EntityType UNKNOWN = new EntityType("UNKNOWN");
+    public static final EntityType DATE = new EntityType("DATE");
+
+    private final String type;
+
+    public EntityType(final String type) { this.type = type; }
+
+    @Override
+    public String toString() { return type; }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final EntityType that = (EntityType) o;
+        return type.equals(that.type);
+    }
+
+    @Override
+    public int hashCode() { return type.hashCode(); }
 }

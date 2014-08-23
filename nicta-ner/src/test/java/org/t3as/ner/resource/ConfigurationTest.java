@@ -21,7 +21,7 @@
  */
 package org.t3as.ner.resource;
 
-import org.t3as.ner.NameType;
+import org.t3as.ner.EntityType;
 import org.t3as.ner.classifier.feature.Feature;
 import org.t3as.ner.classifier.feature.FeatureMap;
 import org.testng.annotations.DataProvider;
@@ -35,6 +35,10 @@ import static org.t3as.ner.classifier.feature.Feature.generateFeatureByName;
 import static org.testng.Assert.assertEquals;
 
 public class ConfigurationTest {
+
+    static final EntityType PERSON = new EntityType("PERSON");
+    static final EntityType ORGANIZATION = new EntityType("ORGANIZATION");
+    static final EntityType LOCATION = new EntityType("LOCATION");
 
     @DataProvider(name = "configTest")
     public Object[][] configTestProvider() throws IOException {
@@ -59,10 +63,10 @@ public class ConfigurationTest {
                              add(generateFeatureByName("RuledWordFeature",          "WIKI_PER_EXTRACTION",  new int[]{0,    5,   0}));
                              add(generateFeatureByName("RuledWordFeature",          "WIKI_LOC_EXTRACTION",  new int[]{5,    0,   0}));
                          }}, null, false),
-                            new ArrayList<NameType>() {{
-                                add(NameType.LOCATION);
-                                add(NameType.PERSON);
-                                add(NameType.ORGANIZATION);
+                            new ArrayList<EntityType>() {{
+                                add(LOCATION);
+                                add(PERSON);
+                                add(ORGANIZATION);
                             }}
                  )},
         };
@@ -77,16 +81,16 @@ public class ConfigurationTest {
     public void configTest(final String configResource, final Result r) throws IOException {
         final Configuration config = new Configuration(this.getClass().getResourceAsStream(configResource), false);
         assertEquals(config.getFeatureMap(), r.featureMap);
-        assertEquals(config.getNameTypes(), r.nameTypes);
+        assertEquals(config.getEntityTypes(), r.entityTypes);
     }
 
     private static class Result {
         private final FeatureMap featureMap;
-        private final Collection<NameType> nameTypes;
+        private final Collection<EntityType> entityTypes;
 
-        private Result(final FeatureMap featureMap, final Collection<NameType> nameTypes) {
+        private Result(final FeatureMap featureMap, final Collection<EntityType> entityTypes) {
             this.featureMap = featureMap;
-            this.nameTypes = nameTypes;
+            this.entityTypes = entityTypes;
         }
     }
 }

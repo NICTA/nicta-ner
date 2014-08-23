@@ -67,22 +67,22 @@ public final class Util {
         //   classification using 'B-' prefix, otherwise it is the same phrase and we use the regular 'I-' prefix.
         final String prefix = previous != null
                               && previous.phraseStartIndex != nerClas.phraseStartIndex
-                              && previous.type == nerClas.type
+                              && previous.type.equals(nerClas.type)
                               ? "B-" : "I-";
 
-        switch (nerClas.type) {
-            case LOCATION:
+        switch (nerClas.type.toString()) {
+            case "LOCATION":
                 return prefix + "LOC";
-            case ORGANIZATION:
+            case "ORGANIZATION":
                 return prefix + "ORG";
-            case PERSON:
+            case "PERSON":
                 return prefix + "PER";
-            case ETHNIC:
-            case UNKNOWN:
+            case "ETHNIC":
+            case "UNKNOWN":
                 return prefix + "MISC";
 
             // DATE and any other new classes we add should return nothing found, since CoNLL only do the 4 types above
-            case DATE:
+            case "DATE":
             default:
                 return NOTHING;
         }

@@ -67,7 +67,7 @@ public class NameExtractor {
     private final int nameTypeScoreDimension;
 
     public NameExtractor(final Configuration conf) {
-        nameTypeScoreDimension = conf.getNameTypes().size();
+        nameTypeScoreDimension = conf.getEntityTypes().size();
     }
 
     /** This method will parse the text input into tokens and name phrases. */

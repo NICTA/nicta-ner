@@ -21,7 +21,7 @@
  */
 package org.t3as.ner.classifier;
 
-import org.t3as.ner.NameType;
+import org.t3as.ner.EntityType;
 import org.t3as.ner.NerResultSet;
 import org.t3as.ner.Phrase;
 import org.t3as.ner.classifier.feature.FeatureMap;
@@ -53,7 +53,7 @@ public class NameClassifier {
      */
     public void process(final NerResultSet resultSet) {
         final FeatureMap featureMap = conf.getFeatureMap();
-        final List<NameType> nameTypes = conf.getNameTypes();
+        final List<EntityType> entityTypes = conf.getEntityTypes();
         if (conf.tracing) trace = new ArrayList<>();
 
         // store the relationship of _phrases in memory for further use
@@ -66,7 +66,7 @@ public class NameClassifier {
                 // for each phrase in the sentence
                 if (phrase.isDate) continue;
 
-                for (int scoreIndex = 0; scoreIndex < nameTypes.size(); scoreIndex++) {
+                for (int scoreIndex = 0; scoreIndex < entityTypes.size(); scoreIndex++) {
                     // score all the dimensions
                     phrase.score[scoreIndex] = featureMap.score(phrase, scoreIndex);
                     if (conf.tracing) trace.addAll(featureMap.trace);
@@ -93,13 +93,12 @@ public class NameClassifier {
             final Set<Phrase> aSet = inMemoryPhrase.getValue();
             final double[] score = inMemoryPhrase.getKey().score;
             for (final Phrase phrase : aSet) {
-                phrase.classify(nameTypes);
-                if (phrase.phraseType == NameType.UNKNOWN) {
+                phrase.classify(entityTypes);
+                if (EntityType.UNKNOWN.equals(phrase.phraseType)) {
                     phrase.score = score;
-                    phrase.classify(nameTypes);
+                    phrase.classify(entityTypes);
                 }
             }
         }
     }
-
 }

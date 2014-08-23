@@ -23,7 +23,7 @@ package org.t3as.ner.resource;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import org.t3as.ner.NameType;
+import org.t3as.ner.EntityType;
 import org.t3as.ner.classifier.feature.Feature;
 import org.t3as.ner.classifier.feature.FeatureMap;
 
@@ -42,8 +42,8 @@ public class Configuration {
 
     public static final String DEFAULT_CONFIG_RESOURCE = "config";
 
-    /** NameType array specifies the possible types of names. */
-    private final ImmutableList<NameType> nameTypes;
+    /** EntityType array specifies the possible types of names. */
+    private final ImmutableList<EntityType> entityTypes;
 
     private final FeatureMap feature_map;
     public final boolean tracing;
@@ -61,7 +61,7 @@ public class Configuration {
         final Splitter SPACES = Splitter.on(' ').trimResults().omitEmptyStrings();
 
         // name type texts
-        final List<NameType> types = new ArrayList<>();
+        final List<EntityType> types = new ArrayList<>();
         // Feature array specifies the features used in name type recognition.
         final List<Feature> features = new ArrayList<>();
 
@@ -78,7 +78,7 @@ public class Configuration {
                 switch (parts[0]) {
                     case "Name Types":
                         for (final String s : SPACES.split(parts[1])) {
-                            types.add(NameType.valueOf(s));
+                            types.add(new EntityType(s));
                         }
                         break;
 
@@ -107,14 +107,14 @@ public class Configuration {
         if (types.isEmpty() || features.isEmpty())
             throw new IllegalArgumentException("Config File Syntax Error, no Name Types or Features");
 
-        // nameTypes information
-        nameTypes = ImmutableList.copyOf(types);
+        // entityTypes information
+        entityTypes = ImmutableList.copyOf(types);
 
         // create feature map
-        feature_map = new FeatureMap(features, nameTypes, tracing);
+        feature_map = new FeatureMap(features, entityTypes, tracing);
     }
 
     public FeatureMap getFeatureMap() { return feature_map; }
 
-    public ImmutableList<NameType> getNameTypes() { return nameTypes; }
+    public ImmutableList<EntityType> getEntityTypes() { return entityTypes; }
 }

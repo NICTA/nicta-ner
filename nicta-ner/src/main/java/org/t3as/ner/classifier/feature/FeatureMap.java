@@ -22,7 +22,7 @@
 package org.t3as.ner.classifier.feature;
 
 import com.google.common.collect.ImmutableList;
-import org.t3as.ner.NameType;
+import org.t3as.ner.EntityType;
 import org.t3as.ner.Phrase;
 
 import javax.annotation.concurrent.Immutable;
@@ -36,13 +36,13 @@ public class FeatureMap {
 
     private final Feature[] featureArray;
     private final boolean tracing;
-    private final ImmutableList<NameType> nameTypes;
+    private final ImmutableList<EntityType> entityTypes;
     public Collection<String> trace;
 
-    public FeatureMap(final List<Feature> features, final ImmutableList<NameType> nameTypes, final boolean tracing) {
+    public FeatureMap(final List<Feature> features, final ImmutableList<EntityType> entityTypes, final boolean tracing) {
         featureArray = features.toArray(new Feature[features.size()]);
         //noinspection AssignmentToCollectionOrArrayFieldFromParameter
-        this.nameTypes = nameTypes;
+        this.entityTypes = entityTypes;
         this.tracing = tracing;
     }
 
@@ -53,7 +53,7 @@ public class FeatureMap {
             final double s = feature.score(p, wi);
             score += s;
             if (tracing && s != 0) {
-                trace.add("'" + p.phraseString() + "', w=" + nameTypes.get(wi) + ":" + feature .getWeight(wi)
+                trace.add("'" + p.phraseString() + "', w=" + entityTypes.get(wi) + ":" + feature .getWeight(wi)
                           + ", s=" + s + ", " + feature.ident());
             }
         }

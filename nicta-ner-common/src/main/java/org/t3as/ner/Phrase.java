@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.t3as.ner.EntityType.UNKNOWN;
+
 /**
  * Instance of this class indicates a Phrase.
  * A phrase can have one or more than one word.
@@ -39,7 +41,7 @@ public class Phrase {
     /** phrase text array */
     public final List<Token> phrase;
     /** corresponding name type */
-    public NameType phraseType;
+    public EntityType phraseType;
     /** the start position of the phase in a sentence */
     public final int phrasePosition;
     /** the length of the phrase */
@@ -63,7 +65,7 @@ public class Phrase {
         phrasePosition = _phrasePos;
         phraseLength = _phraseLen;
         phrase = ImmutableList.copyOf(tokens);
-        phraseType = NameType.UNKNOWN;
+        phraseType = UNKNOWN;
         //score = new double[_typeDimension];
         attachedWordMap = new HashMap<>();
         phraseStubPosition = _stubPos;
@@ -98,12 +100,12 @@ public class Phrase {
         return is;
     }
 
-    /** This method will do the classification of a Phrase with a NameType. */
-    public void classify(final List<NameType> nameTypes) {
+    /** This method will do the classification of a Phrase with a EntityType. */
+    public void classify(final List<EntityType> entityTypes) {
         int argmaxIndex = 0;
         double argmaxValue = this.score[argmaxIndex];
         boolean ambious = false;
-        for (int scoreIndex = 1; scoreIndex < nameTypes.size(); scoreIndex++) {
+        for (int scoreIndex = 1; scoreIndex < entityTypes.size(); scoreIndex++) {
             if (this.score[scoreIndex] > argmaxValue) {
                 argmaxValue = this.score[scoreIndex];
                 argmaxIndex = scoreIndex;
@@ -113,7 +115,7 @@ public class Phrase {
                 ambious = true;
             }
         }
-        this.phraseType = ambious ? NameType.UNKNOWN : nameTypes.get(argmaxIndex);
+        this.phraseType = ambious ? UNKNOWN : entityTypes.get(argmaxIndex);
     }
 
     @Override

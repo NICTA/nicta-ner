@@ -40,16 +40,17 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableList.of;
-import static org.t3as.ner.NameType.DATE;
-import static org.t3as.ner.NameType.LOCATION;
-import static org.t3as.ner.NameType.ORGANIZATION;
-import static org.t3as.ner.NameType.PERSON;
-import static org.t3as.ner.NameType.UNKNOWN;
+import static org.t3as.ner.EntityType.DATE;
+import static org.t3as.ner.EntityType.UNKNOWN;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 public class NamedEntityAnalyserTest {
+
+    static final EntityType PERSON = new EntityType("PERSON");
+    static final EntityType ORGANIZATION = new EntityType("ORGANIZATION");
+    static final EntityType LOCATION = new EntityType("LOCATION");
 
     private NamedEntityAnalyser namedEntityAnalyser;
 
@@ -215,7 +216,7 @@ public class NamedEntityAnalyserTest {
         final NerResultSet result = namedEntityAnalyser.process(phrase);
 
         // check that we have the correctly matched phrases and types
-        final Map<NameType, Set<String>> mappedResult = result.getMappedResult();
+        final Map<EntityType, Set<String>> mappedResult = result.getMappedResult();
         for (final Result r : resultList) {
             assertTrue(mappedResult.containsKey(r.type), "Could not find the phrase '" + r.phrase + "', type " + r.type
                                                          + ", in results map containing: " + mappedResult + ": ");
@@ -254,11 +255,11 @@ public class NamedEntityAnalyserTest {
 
     private static class Result {
         final String phrase;
-        final NameType type;
+        final EntityType type;
         final double[] scores;
         final Map<String, String> attachedWordMap;
 
-        private Result(final String phrase, final NameType type, final Collection<Double> scores,
+        private Result(final String phrase, final EntityType type, final Collection<Double> scores,
                        final Map<String, String> attachedWordMap) {
             this.phrase = phrase;
             this.type = type;

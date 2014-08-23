@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +54,8 @@ public class NerResultSet {
 
     /** This method returns a map format set of the result. */
     @JsonIgnore
-    public Map<NameType, Set<String>> getMappedResult() {
-        final Map<NameType, Set<String>> m = new EnumMap<>(NameType.class);
+    public Map<EntityType, Set<String>> getMappedResult() {
+        final Map<EntityType, Set<String>> m = new HashMap<>();
         for (final List<Phrase> pa : phrases) {
             for (final Phrase p : pa) {
                 Set<String> c = m.get(p.phraseType);
