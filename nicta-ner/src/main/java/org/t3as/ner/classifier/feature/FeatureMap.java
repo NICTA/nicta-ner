@@ -21,56 +21,57 @@
  */
 package org.t3as.ner.classifier.feature;
 
-import com.google.common.collect.ImmutableList;
 import org.t3as.ner.EntityType;
 import org.t3as.ner.Phrase;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Immutable
 public class FeatureMap {
 
-    private final Feature[] featureArray;
+    private final Map<EntityType, List<Feature>> featureMap = new LinkedHashMap<>();
     private final boolean tracing;
-    private final ImmutableList<EntityType> entityTypes;
     public Collection<String> trace;
 
-    public FeatureMap(final List<Feature> features, final ImmutableList<EntityType> entityTypes, final boolean tracing) {
-        featureArray = features.toArray(new Feature[features.size()]);
-        //noinspection AssignmentToCollectionOrArrayFieldFromParameter
-        this.entityTypes = entityTypes;
-        this.tracing = tracing;
-    }
+    public FeatureMap(final boolean tracing) { this.tracing = tracing; }
 
-    public double score(final Phrase p, final int wi) {
-        if (tracing) trace = new ArrayList<>();
-        double score = 0.0f;
-        for (final Feature feature : featureArray) {
-            final double s = feature.score(p, wi);
-            score += s;
-            if (tracing && s != 0) {
-                trace.add("'" + p.phraseString() + "', w=" + entityTypes.get(wi) + ":" + feature .getWeight(wi)
-                          + ", s=" + s + ", " + feature.ident());
-            }
+    public void addFeature(final String entityType, final Feature feature) {
+        final EntityType type = new EntityType(entityType);
+        List<Feature> features = featureMap.get(type);
+        if (features == null) {
+            features = new ArrayList<>();
+            featureMap.put(type, features);
         }
-        return score;
+        features.add(feature);
+    }
+
+    public Map<EntityType, Double> score(final Phrase p) {
+        final Map<EntityType, Double> scores = new LinkedHashMap<>();
+        if (tracing) trace = new ArrayList<>();
+        for (final Map.Entry<EntityType, List<Feature>> e : featureMap.entrySet()) {
+            double score = 0;
+            for (final Feature f : e.getValue()) {
+                final double s = f.score(p);
+                score += s;
+                if (tracing && s != 0) {
+                    trace.add("'" + p.phraseString() + "', w=" + e.getKey() + ":" + f.getWeight()
+                              + ", s=" + s + ", " + f.ident());
+                }
+            }
+            scores.put(e.getKey(), score);
+        }
+        return scores;
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FeatureMap)) return false;
-        final FeatureMap that = (FeatureMap) o;
-        return Arrays.equals(featureArray, that.featureArray);
+    public String toString() {
+        return "FeatureMap{" +
+               "featureMap=" + featureMap +
+               '}';
     }
-
-    @Override
-    public int hashCode() { return Arrays.hashCode(featureArray); }
-
-    @Override
-    public String toString() { return "FeatureMap{featureArray=" + Arrays.toString(featureArray) + '}'; }
 }

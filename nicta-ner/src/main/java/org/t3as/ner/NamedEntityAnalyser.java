@@ -48,7 +48,7 @@ public class NamedEntityAnalyser {
      * the named entities in the input text.
      */
     public NamedEntityAnalyser(final Configuration config) {
-        extractor = new NameExtractor(config);
+        extractor = new NameExtractor();
         classifier = new NameClassifier(config);
         tracing = config.tracing;
     }

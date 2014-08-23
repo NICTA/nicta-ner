@@ -22,16 +22,12 @@
 package org.t3as.ner.resource;
 
 import org.t3as.ner.EntityType;
-import org.t3as.ner.classifier.feature.Feature;
 import org.t3as.ner.classifier.feature.FeatureMap;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.t3as.ner.classifier.feature.Feature.generateFeatureByName;
 import static org.testng.Assert.assertEquals;
 
 public class ConfigurationTest {
@@ -40,6 +36,7 @@ public class ConfigurationTest {
     static final EntityType ORGANIZATION = new EntityType("ORGANIZATION");
     static final EntityType LOCATION = new EntityType("LOCATION");
 
+    /*
     @DataProvider(name = "configTest")
     public Object[][] configTestProvider() throws IOException {
         //noinspection MagicNumber
@@ -71,17 +68,19 @@ public class ConfigurationTest {
                  )},
         };
     }
+    */
 
+    /*
     @Test
     public void testDataProviders() throws IOException {
         configTestProvider();
     }
+    */
 
     @Test(dataProvider = "configTest")
     public void configTest(final String configResource, final Result r) throws IOException {
         final Configuration config = new Configuration(this.getClass().getResourceAsStream(configResource), false);
         assertEquals(config.getFeatureMap(), r.featureMap);
-        assertEquals(config.getEntityTypes(), r.entityTypes);
     }
 
     private static class Result {

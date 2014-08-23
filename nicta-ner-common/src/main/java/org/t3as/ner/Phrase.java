@@ -25,8 +25,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableList;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +51,7 @@ public class Phrase {
     /** the length of the phrase stub */
     public final int phraseStubLength;
     /** score array, dimension equals to name type array */
-    public double[] score = new double[0];
+    public Map<EntityType, Double> score = new LinkedHashMap<>();
     /** attached word map */
     public Map<String, String> attachedWordMap;
     /** true if the phrase is a date; false if not */
@@ -101,21 +101,26 @@ public class Phrase {
     }
 
     /** This method will do the classification of a Phrase with a EntityType. */
-    public void classify(final List<EntityType> entityTypes) {
-        int argmaxIndex = 0;
-        double argmaxValue = this.score[argmaxIndex];
-        boolean ambious = false;
-        for (int scoreIndex = 1; scoreIndex < entityTypes.size(); scoreIndex++) {
-            if (this.score[scoreIndex] > argmaxValue) {
-                argmaxValue = this.score[scoreIndex];
-                argmaxIndex = scoreIndex;
-                ambious = false;
+    public void classify() {
+        EntityType type = null;
+        double s = 0;
+        boolean ambiguous = false;
+        for (final Map.Entry<EntityType, Double> e : score.entrySet()) {
+            if (type == null) {
+                type = e.getKey();
+                s = e.getValue();
             }
-            else if (Double.compare(this.score[scoreIndex], argmaxValue) == 0) {
-                ambious = true;
+            else {
+                if (Double.compare(s, e.getValue()) < 0) {
+                    type = e.getKey();
+                    s = e.getValue();
+                }
+                else if (Double.compare(s, e.getValue()) == 0) {
+                    ambiguous = true;
+                }
             }
         }
-        this.phraseType = ambious ? UNKNOWN : entityTypes.get(argmaxIndex);
+        this.phraseType = ambiguous ? UNKNOWN : type;
     }
 
     @Override
@@ -127,7 +132,7 @@ public class Phrase {
                ", phraseLength=" + phraseLength +
                ", phraseStubPosition=" + phraseStubPosition +
                ", phraseStubLength=" + phraseStubLength +
-               ", score=" + Arrays.toString(score) +
+               ", score=" + score.toString() +
                ", attachedWordMap=" + attachedWordMap +
                ", isDate=" + isDate +
                '}';

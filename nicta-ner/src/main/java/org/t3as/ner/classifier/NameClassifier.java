@@ -53,7 +53,6 @@ public class NameClassifier {
      */
     public void process(final NerResultSet resultSet) {
         final FeatureMap featureMap = conf.getFeatureMap();
-        final List<EntityType> entityTypes = conf.getEntityTypes();
         if (conf.tracing) trace = new ArrayList<>();
 
         // store the relationship of _phrases in memory for further use
@@ -66,10 +65,10 @@ public class NameClassifier {
                 // for each phrase in the sentence
                 if (phrase.isDate) continue;
 
-                for (int scoreIndex = 0; scoreIndex < entityTypes.size(); scoreIndex++) {
-                    // score all the dimensions
-                    phrase.score[scoreIndex] = featureMap.score(phrase, scoreIndex);
-                    if (conf.tracing) trace.addAll(featureMap.trace);
+                // score the phrase
+                phrase.score = featureMap.score(phrase);
+                if (conf.tracing) {
+                    trace.addAll(featureMap.trace);
                 }
 
                 boolean isSubPhrase = false;
@@ -91,12 +90,12 @@ public class NameClassifier {
         // copy the score of _phrases that have relationships
         for (final Map.Entry<Phrase, Set<Phrase>> inMemoryPhrase : phraseInMemory.entrySet()) {
             final Set<Phrase> aSet = inMemoryPhrase.getValue();
-            final double[] score = inMemoryPhrase.getKey().score;
+            final Map<EntityType, Double> score = inMemoryPhrase.getKey().score;
             for (final Phrase phrase : aSet) {
-                phrase.classify(entityTypes);
+                phrase.classify();
                 if (EntityType.UNKNOWN.equals(phrase.phraseType)) {
                     phrase.score = score;
-                    phrase.classify(entityTypes);
+                    phrase.classify();
                 }
             }
         }

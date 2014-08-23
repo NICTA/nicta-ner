@@ -28,6 +28,9 @@ import org.t3as.ner.util.IO;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.t3as.ner.util.Strings.clean;
 import static org.t3as.ner.util.Strings.simplify;
@@ -38,14 +41,18 @@ public class PrepositionContextFeature extends Feature {
 
     private final ImmutableCollection<String> WORDS;
 
-    public PrepositionContextFeature(final String filename, final int[] weights) throws IOException {
-        super(filename, weights);
-        WORDS = ImmutableSet.copyOf(IO.lowercaseWordSet(getClass(), filename, false));
+    public PrepositionContextFeature(final List<String> resources, final int weight) throws IOException {
+        super(resources, weight);
+        final Set<String> s = new HashSet<>();
+        for (final String resource : resources) {
+            s.addAll(IO.lowercaseWordSet(getClass(), resource, false));
+        }
+        WORDS = ImmutableSet.copyOf(s);
     }
 
     @Override
-    public double score(final Phrase p, final int weightIndex) {
-        final int w = getWeight(weightIndex);
+    public double score(final Phrase p) {
+        final int w = getWeight();
         if (w == 0) return 0;
 
         String prep = p.attachedWordMap.get("prep");

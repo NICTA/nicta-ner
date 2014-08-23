@@ -71,9 +71,8 @@ public class Date extends Phrase {
             "Thursday", "Friday", "Saturday"
     };
 
-    public Date(final List<Token> tokens, final int pos, final int len, final int stubPos, final int typeDimension) {
+    public Date(final List<Token> tokens, final int pos, final int len, final int stubPos) {
         super(tokens, pos, len, stubPos);
-        this.score = new double[typeDimension];
         this.phraseType = EntityType.DATE;
         this.isDate = true;
     }

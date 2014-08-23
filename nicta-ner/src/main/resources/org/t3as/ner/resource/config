@@ -16,38 +16,32 @@
 # License along with this program.  If not, see
 # <http://www.gnu.org/licenses/gpl-3.0.html>.
 
+# Features and weights:
+Feature: ExistingPhraseFeature       LOCATION      20  LongPopulatedPlaces.dbpedia
+Feature: CaseInsensitiveWordLookup   LOCATION       3  LongPopulatedPlaces.dbpedia
+Feature: CaseInsensitiveWordLookup   LOCATION       3  ShortPopulatedPlaces.dbpedia
+Feature: ExistingCleanPhraseFeature  LOCATION      10  LongCountries.dbpedia
+Feature: CaseInsensitiveWordLookup   LOCATION       3  LongCountries.dbpedia
+Feature: CaseInsensitiveWordLookup   LOCATION       3  ShortCountries.dbpedia
+Feature: CaseInsensitiveWordLookup   LOCATION      10  StreetTypes.txt
+Feature: ExistingCleanPhraseFeature  LOCATION       5  country_names.freebase
+Feature: CaseSensitiveWordLookup     LOCATION       5  country_codes.freebase
 
-# NAME TYPES: (order matters, these are the columns in the weight numbers below)
-Name Types: LOCATION PERSON ORGANIZATION ETHNIC
+Feature: ExistingCleanPhraseFeature  PERSON        13  LongPersonNames.dbpedia
+Feature: RuledWordFeature            PERSON         3  LongPersonNames.dbpedia
+Feature: RuledWordFeature            PERSON         3  ShortPersonNames.dbpedia
+Feature: ExistingCleanPhraseFeature  PERSON         9  LongPersonNames.freebase
+Feature: RuledWordFeature            PERSON         2  LongPersonNames.freebase
+Feature: RuledWordFeature            PERSON         2  ShortPersonNames.freebase
 
-# TODO: looks like we can do away with the scoring matrix now and just have one score per feature
+Feature: ExistingPhraseFeature       ORGANIZATION  11  LongOrganisationNames.dbpedia
+Feature: CaseInsensitiveWordLookup   ORGANIZATION   2  LongOrganisationNames.dbpedia
+Feature: CaseInsensitiveWordLookup   ORGANIZATION   3  ShortOrganisationNames.dbpedia
+Feature: CaseSensitiveWordLookup     ORGANIZATION  13  StockSymbols.freebase
+Feature: CaseInsensitiveWordLookup   ORGANIZATION   7  OrganisationKeywords.dbpedia
+Feature: ExistingPhraseFeature       ORGANIZATION  11  LongOrganisationNames.freebase
+Feature: CaseInsensitiveWordLookup   ORGANIZATION   2  LongOrganisationNames.freebase
+Feature: CaseInsensitiveWordLookup   ORGANIZATION   3  ShortOrganisationNames.freebase
 
-# FEATURES and weights:                                          LOC  PER  ORG  ETH
-Feature: ExistingPhraseFeature LongPopulatedPlaces.dbpedia        20    0    0    0
-Feature: CaseInsensitiveWordLookup LongPopulatedPlaces.dbpedia     3    0    0    0
-Feature: CaseInsensitiveWordLookup ShortPopulatedPlaces.dbpedia    3    0    0    0
-Feature: ExistingCleanPhraseFeature LongCountries.dbpedia         10    0    0    0
-Feature: CaseInsensitiveWordLookup LongCountries.dbpedia           3    0    0    0
-Feature: CaseInsensitiveWordLookup ShortCountries.dbpedia          3    0    0    0
-Feature: CaseInsensitiveWordLookup StreetTypes.txt                10    0    0    0
-Feature: ExistingCleanPhraseFeature country_names.freebase         5    0    0    0
-Feature: CaseSensitiveWordLookup country_codes.freebase            5    0    0    0
-
-Feature: ExistingCleanPhraseFeature LongPersonNames.dbpedia        0   13    0    0
-Feature: RuledWordFeature LongPersonNames.dbpedia                  0    3    0    0
-Feature: RuledWordFeature ShortPersonNames.dbpedia                 0    3    0    0
-Feature: ExistingCleanPhraseFeature LongPersonNames.freebase       0    9    0    0
-Feature: RuledWordFeature LongPersonNames.freebase                 0    2    0    0
-Feature: RuledWordFeature ShortPersonNames.freebase                0    2    0    0
-
-Feature: ExistingPhraseFeature LongOrganisationNames.dbpedia       0    0   11    0
-Feature: CaseInsensitiveWordLookup LongOrganisationNames.dbpedia   0    0    2    0
-Feature: CaseInsensitiveWordLookup ShortOrganisationNames.dbpedia  0    0    3    0
-Feature: CaseSensitiveWordLookup StockSymbols.freebase             0    0   13    0
-Feature: CaseInsensitiveWordLookup OrganisationKeywords.dbpedia    0    0    7    0
-Feature: ExistingPhraseFeature LongOrganisationNames.freebase      0    0   11    0
-Feature: CaseInsensitiveWordLookup LongOrganisationNames.freebase  0    0    2    0
-Feature: CaseInsensitiveWordLookup ShortOrganisationNames.freebase 0    0    3    0
-
-Feature: CaseSensitiveWordLookup nationalities.txt                 0    0    0   15
-Feature: CaseSensitiveWordLookup ethnic_groups.txt                 0    0    0   12
+Feature: CaseSensitiveWordLookup     ETHNIC        15  nationalities.txt
+Feature: ExistingCleanPhraseFeature  ETHNIC        12  ethnic_groups.txt

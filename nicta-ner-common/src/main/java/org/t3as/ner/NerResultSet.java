@@ -85,9 +85,9 @@ public class NerResultSet {
                 ptext = ptext.trim();
 
                 final StringBuilder stext = new StringBuilder();
-                for (int sci = 0; sci < p.score.length; sci++) {
-                    if (sci != 0) stext.append(", ");
-                    stext.append(p.score[sci]);
+                for (final Map.Entry<EntityType, Double> e : p.score.entrySet()) {
+                    if (stext.length() != 0) stext.append(", ");
+                    stext.append(e.getKey()).append(":").append(e.getValue());
                 }
 
                 // what we are trying to generate:

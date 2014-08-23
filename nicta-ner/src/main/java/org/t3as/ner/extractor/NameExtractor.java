@@ -27,7 +27,6 @@ import org.t3as.ner.Token;
 import org.t3as.ner.data.Date;
 import org.t3as.ner.data.DatePhraseModel;
 import org.t3as.ner.data.Name;
-import org.t3as.ner.resource.Configuration;
 import org.t3as.ner.util.Dictionary;
 import org.t3as.ner.util.IO;
 import org.t3as.ner.util.Tokenizer;
@@ -64,13 +63,8 @@ public class NameExtractor {
         catch (final IOException ioe) { throw new RuntimeException("Could not load the NON_NAME_WORDS file.", ioe); }
     }
 
-    private final int nameTypeScoreDimension;
-
-    public NameExtractor(final Configuration conf) {
-        nameTypeScoreDimension = conf.getEntityTypes().size();
-    }
-
     /** This method will parse the text input into tokens and name phrases. */
+    @SuppressWarnings("MethodMayBeStatic")
     public NerResultSet process(final String _text) {
         // tokenization
         final List<List<Token>> tokens = TOKENIZER.process(_text);
@@ -170,15 +164,13 @@ public class NameExtractor {
                     }
                     if (dpm.isDate()) {
                         // add the phrase to phrase array
-                        sentencePhrase.add(new Date(currentDatePhrase, wordPtr, currentDatePhrase.size(), wordPtr,
-                                                    nameTypeScoreDimension));
+                        sentencePhrase.add(new Date(currentDatePhrase, wordPtr, currentDatePhrase.size(), wordPtr));
                         wordPtr = tempPtr;
                     }
                 }
                 else if (!(currentPhrase.size() == 1
                            && (isPastTense(currentPhrase.get(0).text) || isPlural(currentPhrase.get(0).text)))) {
-                    sentencePhrase.add(new Name(currentPhrase, phrasePos, phraseLen, phraseStubStartPtr,
-                                                nameTypeScoreDimension));
+                    sentencePhrase.add(new Name(currentPhrase, phrasePos, phraseLen, phraseStubStartPtr));
                 }
 
                 wordPtr++;

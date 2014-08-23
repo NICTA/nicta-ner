@@ -22,8 +22,6 @@
 package org.t3as.ner.resource;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-import org.t3as.ner.EntityType;
 import org.t3as.ner.classifier.feature.Feature;
 import org.t3as.ner.classifier.feature.FeatureMap;
 
@@ -32,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -42,11 +39,8 @@ public class Configuration {
 
     public static final String DEFAULT_CONFIG_RESOURCE = "config";
 
-    /** EntityType array specifies the possible types of names. */
-    private final ImmutableList<EntityType> entityTypes;
-
-    private final FeatureMap feature_map;
     public final boolean tracing;
+    private final FeatureMap featureMap;
 
     public Configuration() throws IOException { this(false); }
 
@@ -60,42 +54,25 @@ public class Configuration {
         final Pattern COLONS = Pattern.compile(":");
         final Splitter SPACES = Splitter.on(' ').trimResults().omitEmptyStrings();
 
-        // name type texts
-        final List<EntityType> types = new ArrayList<>();
-        // Feature array specifies the features used in name type recognition.
-        final List<Feature> features = new ArrayList<>();
+        featureMap = new FeatureMap(tracing);
 
         try (final BufferedReader br = new BufferedReader(new InputStreamReader(config))) {
 
-            // read each line from the file and put the information
-            // in the temperate variables
-            // need further process to extract the information
             for (String line; (line = br.readLine()) != null; ) {
-                if (line.startsWith("#")) continue;
-                if (line.trim().isEmpty()) continue;
+                final String s = line.trim();
+                if (s.startsWith("#")) continue;
+                if (s.trim().isEmpty()) continue;
 
-                final String[] parts = COLONS.split(line, 2);
+                final String[] parts = COLONS.split(s, 2);
                 switch (parts[0]) {
-                    case "Name Types":
-                        for (final String s : SPACES.split(parts[1])) {
-                            types.add(new EntityType(s));
-                        }
-                        break;
-
                     case "Feature":
-                        final List<String> c = SPACES.limit(3).splitToList(parts[1]);
-                        if (c.size() != 3) {
-                            throw new IllegalArgumentException("Config File Syntax Error: '" + line + "'");
-                        }
-                        final List<String> ss = SPACES.splitToList(c.get(2));
-                        if (ss.isEmpty()) {
-                            throw new IllegalArgumentException("No weights found for config line '" + parts[1] + "'");
-                        }
-                        final int[] weights = new int[ss.size()];
-                        for (int i = 0; i < ss.size(); i++) {
-                            weights[i] = Integer.parseInt(ss.get(i));
-                        }
-                        features.add(Feature.generateFeatureByName(c.get(0), c.get(1), weights));
+                        final List<String> l = SPACES.limit(4).splitToList(parts[1]);
+                        final String featureType = l.get(0);
+                        final String entityType = l.get(1);
+                        final int weight = Integer.parseInt(l.get(2));
+                        final List<String> resourceNames = SPACES.splitToList(l.get(3));
+                        featureMap.addFeature(entityType,
+                                               Feature.generateFeatureByName(featureType, weight, resourceNames));
                         break;
 
                     default:
@@ -103,18 +80,7 @@ public class Configuration {
                 }
             }
         }
-
-        if (types.isEmpty() || features.isEmpty())
-            throw new IllegalArgumentException("Config File Syntax Error, no Name Types or Features");
-
-        // entityTypes information
-        entityTypes = ImmutableList.copyOf(types);
-
-        // create feature map
-        feature_map = new FeatureMap(features, entityTypes, tracing);
     }
 
-    public FeatureMap getFeatureMap() { return feature_map; }
-
-    public ImmutableList<EntityType> getEntityTypes() { return entityTypes; }
+    public FeatureMap getFeatureMap() { return featureMap; }
 }

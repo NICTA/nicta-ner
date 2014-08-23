@@ -30,6 +30,9 @@ import org.t3as.ner.util.Strings;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.t3as.ner.util.Strings.clean;
 
@@ -38,15 +41,18 @@ public class CaseSensitiveWordLookup extends Feature {
 
     private final ImmutableCollection<String> WORDS;
 
-    public CaseSensitiveWordLookup(final String filename, final int[] weights) throws IOException {
-        super(filename, weights);
-        WORDS = ImmutableSet.copyOf(IO.wordSet(getClass(), filename));
+    public CaseSensitiveWordLookup(final List<String> resources, final int weight) throws IOException {
+        super(resources, weight);
+        final Set<String> s = new HashSet<>();
+        for (final String resource : resources) {
+            s.addAll(IO.wordSet(getClass(), resource));
+        }
+        WORDS = ImmutableSet.copyOf(s);
     }
 
-    @SuppressWarnings("MagicNumber")
     @Override
-    public double score(final Phrase p, final int weightIndex) {
-        final int w = getWeight(weightIndex);
+    public double score(final Phrase p) {
+        final int w = getWeight();
         if (w == 0) return 0;
 
         double score = 0.0;

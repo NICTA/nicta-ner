@@ -22,58 +22,57 @@
 package org.t3as.ner.classifier.feature;
 
 import com.google.common.base.Objects;
-import com.google.common.primitives.Ints;
+import com.google.common.collect.ImmutableList;
 import org.t3as.ner.Phrase;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 
 /** This abstract class is a parent of features. */
 @Immutable
 public abstract class Feature {
 
-    private final String resource;
-    private final int[] weights;
+    private final List<String> resources;
+    private final int weight;
 
-    protected Feature(final String resource, final int[] weights) {
-        this.resource = resource;
-        this.weights = new int[weights.length];
-        System.arraycopy(weights, 0, this.weights, 0, weights.length);
+    protected Feature(final List<String> resources, final int weight) {
+        this.resources = ImmutableList.copyOf(resources);
+        this.weight = weight;
     }
 
     /** Returns a score of the phrase according to the particular feature. */
-    public abstract double score(final Phrase _p, final int weightIndex);
+    public abstract double score(final Phrase _p);
 
     /** Factory method create features by name. */
-    public static Feature generateFeatureByName(final String feature, final String resource, final int[] scores)
+    public static Feature generateFeatureByName(final String featureType, final int weight, final List<String> resourceNames)
             throws IllegalArgumentException, IOException {
-        switch (feature) {
+        switch (featureType) {
             case "RuledWordFeature":
-                return new RuledWordFeature(resource, scores);
+                return new RuledWordFeature(resourceNames, weight);
             case "PrepositionContextFeature":
-                return new PrepositionContextFeature(resource, scores);
+                return new PrepositionContextFeature(resourceNames, weight);
             case "ExistingPhraseFeature":
-                return new ExistingPhraseFeature(resource, scores);
+                return new ExistingPhraseFeature(resourceNames, weight);
             case "ExistingCleanPhraseFeature":
-                return new ExistingCleanPhraseFeature(resource, scores);
+                return new ExistingCleanPhraseFeature(resourceNames, weight);
             case "CaseSensitiveWordLookup":
-                return new CaseSensitiveWordLookup(resource, scores);
+                return new CaseSensitiveWordLookup(resourceNames, weight);
             case "CaseInsensitiveWordLookup":
-                return new CaseInsensitiveWordLookup(resource, scores);
+                return new CaseInsensitiveWordLookup(resourceNames, weight);
             default:
-                throw new IllegalArgumentException("Unknown feature: '" + feature + "'");
+                throw new IllegalArgumentException("Unknown feature: '" + featureType + "'");
         }
     }
 
-    protected int getWeight(final int weightIndex) { return weights[weightIndex]; }
+    protected int getWeight() { return weight; }
 
     @Override
     public String toString() {
         // useful toString helper as it will also show class name - so we don't need an override in the subclasses
         return Objects.toStringHelper(this)
-                      .add("resource", resource)
-                      .add("weights", Ints.asList(weights))
+                      .add("weight", weight)
+                      .add("resources", resources)
                       .toString();
     }
 
@@ -82,14 +81,15 @@ public abstract class Feature {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Feature feature = (Feature) o;
-        return resource.equals(feature.resource)
-               && Arrays.toString(weights).equals(Arrays.toString(feature.weights));
+        return weight == feature.weight && resources.equals(feature.resources);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getClass(), resource, Arrays.toString(weights));
+        int result = resources.hashCode();
+        result = 31 * result + weight;
+        return result;
     }
 
-    public String ident() { return getClass().getSimpleName() + "(" + resource + ")"; }
+    public String ident() { return getClass().getSimpleName() + resources.toString(); }
 }

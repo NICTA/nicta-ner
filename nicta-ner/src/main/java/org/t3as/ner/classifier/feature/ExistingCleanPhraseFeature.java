@@ -29,6 +29,9 @@ import org.t3as.ner.util.Strings;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.t3as.ner.util.Strings.clean;
 import static org.t3as.ner.util.Strings.toEngLowerCase;
@@ -38,14 +41,18 @@ public class ExistingCleanPhraseFeature extends Feature {
 
     private final ImmutableCollection<String> PHRASES;
 
-    public ExistingCleanPhraseFeature(final String filename, final int[] weights) throws IOException {
-        super(filename, weights);
-        PHRASES = ImmutableSet.copyOf(IO.cleanLowercaseLines(getClass(), filename));
+    public ExistingCleanPhraseFeature(final List<String> resources, final int weight) throws IOException {
+        super(resources, weight);
+        final Set<String> s = new HashSet<>();
+        for (final String resource : resources) {
+            s.addAll(IO.cleanLowercaseLines(getClass(), resource));
+        }
+        PHRASES = ImmutableSet.copyOf(s);
     }
 
     @Override
-    public double score(final Phrase p, final int weightIndex) {
-        final int w = getWeight(weightIndex);
+    public double score(final Phrase p) {
+        final int w = getWeight();
         if (w == 0) return 0;
 
         final String phrase = Strings.simplify(p.phraseString());

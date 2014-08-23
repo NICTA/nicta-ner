@@ -244,8 +244,8 @@ public class NamedEntityAnalyserTest {
             final Result r = resultList.get(i);
 
             assertEquals(p.score, r.scores,
-                         "Phrase '" + p.phraseString() + "', expected '" + Arrays.toString(r.scores)
-                         + "' but found '" + Arrays.toString(p.score) + "'");
+                         "Phrase '" + p.phraseString() + "', expected '" + r.scores
+                         + "' but found '" + p.score + "'");
 
             assertEquals(p.attachedWordMap, r.attachedWordMap);
         }

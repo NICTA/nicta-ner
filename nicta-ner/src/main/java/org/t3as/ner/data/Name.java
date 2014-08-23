@@ -27,8 +27,7 @@ import org.t3as.ner.Token;
 import java.util.List;
 
 public class Name extends Phrase {
-    public Name(final List<Token> tokens, final int pos, final int len, final int stubPos, final int typeDimension) {
+    public Name(final List<Token> tokens, final int pos, final int len, final int stubPos) {
         super(tokens, pos, len, stubPos);
-        this.score = new double[typeDimension];
     }
 }
