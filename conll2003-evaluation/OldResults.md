@@ -1,5 +1,38 @@
 ## Old NICTA t3as NER scores
 
+### 2014-08-13
+#### testa
+    processed 51578 tokens with 5942 phrases; found: 6065 phrases; correct: 3361.
+    accuracy:  91.34%; precision:  55.42%; recall:  56.56%; FB1:  55.98
+                  LOC: precision:  62.60%; recall:  79.37%; FB1:  70.00  2329
+                 MISC: precision:  28.70%; recall:  41.65%; FB1:  33.98  1338
+                  ORG: precision:  40.00%; recall:  11.33%; FB1:  17.66  380
+                  PER: precision:  67.74%; recall:  74.21%; FB1:  70.83  2018
+
+#### testb
+    processed 46666 tokens with 5648 phrases; found: 5767 phrases; correct: 2978.
+    accuracy:  89.55%; precision:  51.64%; recall:  52.73%; FB1:  52.18
+                  LOC: precision:  57.86%; recall:  77.70%; FB1:  66.33  2240
+                 MISC: precision:  25.38%; recall:  42.31%; FB1:  31.73  1170
+                  ORG: precision:  43.72%; recall:  13.00%; FB1:  20.05  494
+                  PER: precision:  62.75%; recall:  72.29%; FB1:  67.18  1863
+
+#### testa + testb
+    processed 98244 tokens with 11590 phrases; found: 11832 phrases; correct: 6339.
+    accuracy:  90.49%; precision:  53.58%; recall:  54.69%; FB1:  54.13
+                  LOC: precision:  60.28%; recall:  78.57%; FB1:  68.22  4569
+                 MISC: precision:  27.15%; recall:  41.93%; FB1:  32.96  2508
+                  ORG: precision:  42.11%; recall:  12.26%; FB1:  18.99  874
+                  PER: precision:  65.34%; recall:  73.32%; FB1:  69.10  3881
+
+#### all data
+    processed 302811 tokens with 35089 phrases; found: 35986 phrases; correct: 19200.
+    accuracy:  90.70%; precision:  53.35%; recall:  54.72%; FB1:  54.03
+                  LOC: precision:  61.46%; recall:  79.49%; FB1:  69.32  13768
+                 MISC: precision:  25.75%; recall:  40.22%; FB1:  31.40  7908
+                  ORG: precision:  49.27%; recall:  14.88%; FB1:  22.85  2815
+                  PER: precision:  63.64%; recall:  72.72%; FB1:  67.88  11495
+
 ### 2014-08-12
 #### testa
     processed 51578 tokens with 5942 phrases; found: 6065 phrases; correct: 3305.

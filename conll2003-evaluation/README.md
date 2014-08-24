@@ -22,38 +22,38 @@ When the `conll2003` tool is run it prints out all the disagreements on `stderr`
 
 The `testa + testb` results are simply the two test files concatenated together after one of the empty lines at the end of `eng.testa` has been removed (to make the `DOCSTART` break correct). The `all data` is the `eng.train + eng.testa + eng.testb` files concatenated together (no `baseline` can be computed for this dataset). 
 
-### 2014-08-13 - Current score
+### 2014-08-24 - Current score
 #### testa
-    processed 51578 tokens with 5942 phrases; found: 6065 phrases; correct: 3361.
-    accuracy:  91.34%; precision:  55.42%; recall:  56.56%; FB1:  55.98
-                  LOC: precision:  62.60%; recall:  79.37%; FB1:  70.00  2329
-                 MISC: precision:  28.70%; recall:  41.65%; FB1:  33.98  1338
-                  ORG: precision:  40.00%; recall:  11.33%; FB1:  17.66  380
-                  PER: precision:  67.74%; recall:  74.21%; FB1:  70.83  2018
+    processed 51578 tokens with 5942 phrases; found: 6065 phrases; correct: 3805.
+    accuracy:  92.80%; precision:  62.74%; recall:  64.04%; FB1:  63.38
+                  LOC: precision:  71.14%; recall:  68.15%; FB1:  69.61  1760
+                 MISC: precision:  59.11%; recall:  50.33%; FB1:  54.36  785
+                  ORG: precision:  37.88%; recall:  48.62%; FB1:  42.59  1721
+                  PER: precision:  79.88%; recall:  78.01%; FB1:  78.93  1799
 
 #### testb
-    processed 46666 tokens with 5648 phrases; found: 5767 phrases; correct: 2978.
-    accuracy:  89.55%; precision:  51.64%; recall:  52.73%; FB1:  52.18
-                  LOC: precision:  57.86%; recall:  77.70%; FB1:  66.33  2240
-                 MISC: precision:  25.38%; recall:  42.31%; FB1:  31.73  1170
-                  ORG: precision:  43.72%; recall:  13.00%; FB1:  20.05  494
-                  PER: precision:  62.75%; recall:  72.29%; FB1:  67.18  1863
+    processed 46666 tokens with 5648 phrases; found: 5767 phrases; correct: 3521.
+    accuracy:  91.59%; precision:  61.05%; recall:  62.34%; FB1:  61.69
+                  LOC: precision:  65.73%; recall:  64.39%; FB1:  65.05  1634
+                 MISC: precision:  54.66%; recall:  43.45%; FB1:  48.41  558
+                  ORG: precision:  48.27%; recall:  55.33%; FB1:  51.56  1904
+                  PER: precision:  73.19%; recall:  75.63%; FB1:  74.39  1671
 
 #### testa + testb
-    processed 98244 tokens with 11590 phrases; found: 11832 phrases; correct: 6339.
-    accuracy:  90.49%; precision:  53.58%; recall:  54.69%; FB1:  54.13
-                  LOC: precision:  60.28%; recall:  78.57%; FB1:  68.22  4569
-                 MISC: precision:  27.15%; recall:  41.93%; FB1:  32.96  2508
-                  ORG: precision:  42.11%; recall:  12.26%; FB1:  18.99  874
-                  PER: precision:  65.34%; recall:  73.32%; FB1:  69.10  3881
+    processed 98244 tokens with 11590 phrases; found: 11832 phrases; correct: 7326.
+    accuracy:  92.23%; precision:  61.92%; recall:  63.21%; FB1:  62.56
+                  LOC: precision:  68.53%; recall:  66.36%; FB1:  67.43  3394
+                 MISC: precision:  57.26%; recall:  47.35%; FB1:  51.84  1343
+                  ORG: precision:  43.34%; recall:  52.33%; FB1:  47.41  3625
+                  PER: precision:  76.66%; recall:  76.90%; FB1:  76.78  3470
 
 #### all data
-    processed 302811 tokens with 35089 phrases; found: 35986 phrases; correct: 19200.
-    accuracy:  90.70%; precision:  53.35%; recall:  54.72%; FB1:  54.03
-                  LOC: precision:  61.46%; recall:  79.49%; FB1:  69.32  13768
-                 MISC: precision:  25.75%; recall:  40.22%; FB1:  31.40  7908
-                  ORG: precision:  49.27%; recall:  14.88%; FB1:  22.85  2815
-                  PER: precision:  63.64%; recall:  72.72%; FB1:  67.88  11495
+    processed 302811 tokens with 35089 phrases; found: 35986 phrases; correct: 22110.
+    accuracy:  92.41%; precision:  61.44%; recall:  63.01%; FB1:  62.22
+                  LOC: precision:  68.98%; recall:  66.71%; FB1:  67.83  10294
+                 MISC: precision:  56.15%; recall:  46.56%; FB1:  50.91  4198
+                  ORG: precision:  43.66%; recall:  52.69%; FB1:  47.75  11251
+                  PER: precision:  75.56%; recall:  76.95%; FB1:  76.25  10243
 
 
 ### Old scores
