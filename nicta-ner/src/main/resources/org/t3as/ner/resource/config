@@ -44,4 +44,4 @@ Feature: CaseInsensitiveWordLookup   ORGANIZATION   2  LongOrganisationNames.fre
 Feature: CaseInsensitiveWordLookup   ORGANIZATION   3  ShortOrganisationNames.freebase
 
 Feature: CaseSensitiveWordLookup     ETHNIC        15  nationalities.txt
-Feature: ExistingCleanPhraseFeature  ETHNIC        12  ethnic_groups.txt
+Feature: CaseSensitiveWordLookup     ETHNIC        12  ethnic_groups.txt
