@@ -63,4 +63,7 @@ public class CaseInsensitiveWordLookup extends Feature {
         }
         return score * w;
     }
+
+    @Override
+    protected int getSize() { return WORDS.size(); }
 }

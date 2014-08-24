@@ -59,4 +59,7 @@ public class PrepositionContextFeature extends Feature {
         if (prep != null) prep = toEngLowerCase(clean(prep));
         return WORDS.contains(simplify(prep)) ? w : 0;
     }
+
+    @Override
+    protected int getSize() { return WORDS.size(); }
 }

@@ -67,12 +67,15 @@ public abstract class Feature {
 
     protected int getWeight() { return weight; }
 
+    protected abstract int getSize();
+
     @Override
     public String toString() {
         // useful toString helper as it will also show class name - so we don't need an override in the subclasses
         return Objects.toStringHelper(this)
                       .add("weight", weight)
                       .add("resources", resources)
+                      .add("size", getSize())
                       .toString();
     }
 

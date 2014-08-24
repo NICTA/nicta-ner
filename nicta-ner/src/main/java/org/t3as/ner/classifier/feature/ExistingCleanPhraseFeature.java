@@ -58,4 +58,7 @@ public class ExistingCleanPhraseFeature extends Feature {
         final String phrase = Strings.simplify(p.phraseString());
         return PHRASES.contains(toEngLowerCase(clean(phrase))) ? w : 0;
     }
+
+    @Override
+    protected int getSize() { return PHRASES.size(); }
 }
