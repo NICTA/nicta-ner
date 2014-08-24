@@ -28,20 +28,23 @@ Feature: ExistingCleanPhraseFeature  LOCATION       5  country_names.freebase
 Feature: CaseSensitiveWordLookup     LOCATION       5  country_codes.freebase
 
 Feature: ExistingCleanPhraseFeature  PERSON        13  LongPersonNames.dbpedia
-Feature: RuledWordFeature            PERSON         3  LongPersonNames.dbpedia
-Feature: RuledWordFeature            PERSON         3  ShortPersonNames.dbpedia
 Feature: ExistingCleanPhraseFeature  PERSON         9  LongPersonNames.freebase
+
+Feature: RuledWordFeature            PERSON         3  LongPersonNames.dbpedia
 Feature: RuledWordFeature            PERSON         2  LongPersonNames.freebase
+
+Feature: RuledWordFeature            PERSON         3  ShortPersonNames.dbpedia
 Feature: RuledWordFeature            PERSON         2  ShortPersonNames.freebase
 
 Feature: ExistingPhraseFeature       ORGANIZATION  13  LongOrganisationNames.dbpedia
-Feature: CaseInsensitiveWordLookup   ORGANIZATION   2  LongOrganisationNames.dbpedia
-Feature: CaseInsensitiveWordLookup   ORGANIZATION   3  ShortOrganisationNames.dbpedia
 Feature: CaseSensitiveWordLookup     ORGANIZATION  15  StockSymbols.freebase
 Feature: CaseInsensitiveWordLookup   ORGANIZATION   7  OrganisationKeywords.dbpedia
 Feature: ExistingPhraseFeature       ORGANIZATION  25  LongOrganisationNames.freebase
+
+Feature: CaseInsensitiveWordLookup   ORGANIZATION   2  LongOrganisationNames.dbpedia
 Feature: CaseInsensitiveWordLookup   ORGANIZATION   2  LongOrganisationNames.freebase
-Feature: CaseInsensitiveWordLookup   ORGANIZATION   3  ShortOrganisationNames.freebase
+
+Feature: CaseInsensitiveWordLookup   ORGANIZATION   3  ShortOrganisationNames.dbpedia ShortOrganisationNames.freebase
 
 Feature: CaseSensitiveWordLookup     ETHNIC        15  nationalities.txt
 Feature: CaseSensitiveWordLookup     ETHNIC        12  ethnic_groups.txt
