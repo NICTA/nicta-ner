@@ -111,9 +111,10 @@ public class Phrase {
                 s = e.getValue();
             }
             else {
-                if (Double.compare(s, e.getValue()) < 0) {
+                if (Double.compare(e.getValue(), s) > 0) {
                     type = e.getKey();
                     s = e.getValue();
+                    ambiguous = false;
                 }
                 else if (Double.compare(s, e.getValue()) == 0) {
                     ambiguous = true;
