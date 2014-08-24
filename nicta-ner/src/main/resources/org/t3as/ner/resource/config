@@ -34,12 +34,12 @@ Feature: ExistingCleanPhraseFeature  PERSON         9  LongPersonNames.freebase
 Feature: RuledWordFeature            PERSON         2  LongPersonNames.freebase
 Feature: RuledWordFeature            PERSON         2  ShortPersonNames.freebase
 
-Feature: ExistingPhraseFeature       ORGANIZATION  11  LongOrganisationNames.dbpedia
+Feature: ExistingPhraseFeature       ORGANIZATION  13  LongOrganisationNames.dbpedia
 Feature: CaseInsensitiveWordLookup   ORGANIZATION   2  LongOrganisationNames.dbpedia
 Feature: CaseInsensitiveWordLookup   ORGANIZATION   3  ShortOrganisationNames.dbpedia
-Feature: CaseSensitiveWordLookup     ORGANIZATION  13  StockSymbols.freebase
+Feature: CaseSensitiveWordLookup     ORGANIZATION  15  StockSymbols.freebase
 Feature: CaseInsensitiveWordLookup   ORGANIZATION   7  OrganisationKeywords.dbpedia
-Feature: ExistingPhraseFeature       ORGANIZATION  11  LongOrganisationNames.freebase
+Feature: ExistingPhraseFeature       ORGANIZATION  25  LongOrganisationNames.freebase
 Feature: CaseInsensitiveWordLookup   ORGANIZATION   2  LongOrganisationNames.freebase
 Feature: CaseInsensitiveWordLookup   ORGANIZATION   3  ShortOrganisationNames.freebase
 
