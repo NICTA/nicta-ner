@@ -23,7 +23,7 @@ import           Import
 import           Control.Monad            (liftM)
 import qualified Data.List          as L  (concat, length, head)
 import           Data.Maybe               (fromJust, fromMaybe)
-import qualified Data.Text          as T  (intercalate, unpack)
+import qualified Data.Text          as T  (intercalate, unpack, concat, pack)
 import qualified Data.Text.Encoding as TE (encodeUtf8)
 import           Nicta.Ner.Client
 
@@ -66,7 +66,9 @@ toEntity :: Phrase -> NerEntity
 toEntity p = NerEntity t typ prep scr idx
     where
         t    = tokensToText (phrase p)
-        typ  = nerType (phraseType p)
+        typ  = nerType ((entityClass . phraseType) p)
         prep = fromMaybe "" (lookup "prep" (attachedWordMap p))
-        scr  = T.intercalate ", " (map (pack . show) (score p))
+        scr  = T.intercalate ", "
+                (map (\(c, s) -> T.concat [c, ":", (T.pack . show) s])
+                    (toList $ score p))
         idx  = startIndex (L.head (phrase p))
