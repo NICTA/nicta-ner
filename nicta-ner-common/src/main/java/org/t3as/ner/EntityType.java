@@ -21,6 +21,9 @@
  */
 package org.t3as.ner;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * This isn't an enum because we want to keep it possible to specify arbitrary entity classes in the config.
  */
@@ -31,7 +34,10 @@ public class EntityType {
 
     private final String type;
 
-    public EntityType(final String type) { this.type = type; }
+    @JsonCreator
+    public EntityType(@JsonProperty("type") final String type) { this.type = type; }
+
+    public String getType() { return type; }
 
     @Override
     public String toString() { return type; }

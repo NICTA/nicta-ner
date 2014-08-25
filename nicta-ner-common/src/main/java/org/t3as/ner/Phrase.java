@@ -61,12 +61,12 @@ public class Phrase {
     public Phrase(@JsonProperty("phrase") final List<Token> tokens,
                   @JsonProperty("phrasePosition") final int _phrasePos,
                   @JsonProperty("phraseLength") final int _phraseLen,
-                  @JsonProperty("phraseStubPosition") final int _stubPos) {
+                  @JsonProperty("phraseStubPosition") final int _stubPos,
+                  @JsonProperty("phraseType") final EntityType type) {
         phrasePosition = _phrasePos;
         phraseLength = _phraseLen;
         phrase = ImmutableList.copyOf(tokens);
-        phraseType = UNKNOWN;
-        //score = new double[_typeDimension];
+        phraseType = type;
         attachedWordMap = new HashMap<>();
         phraseStubPosition = _stubPos;
         phraseStubLength = phrase.size();

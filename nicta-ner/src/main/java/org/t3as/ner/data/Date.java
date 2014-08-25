@@ -72,8 +72,7 @@ public class Date extends Phrase {
     };
 
     public Date(final List<Token> tokens, final int pos, final int len, final int stubPos) {
-        super(tokens, pos, len, stubPos);
-        this.phraseType = EntityType.DATE;
+        super(tokens, pos, len, stubPos, EntityType.DATE);
         this.isDate = true;
     }
 
