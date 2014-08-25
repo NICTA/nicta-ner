@@ -21,6 +21,7 @@
  */
 package org.t3as.ner.resource;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import org.t3as.ner.classifier.feature.Feature;
 import org.t3as.ner.classifier.feature.FeatureMap;
@@ -31,6 +32,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /** This class specifies the configurations. */
@@ -42,17 +46,18 @@ public class Configuration {
     public final boolean tracing;
     private final FeatureMap featureMap;
 
-    public Configuration() throws IOException { this(false); }
+    public Configuration() throws IOException, InterruptedException { this(false); }
 
-    public Configuration(final boolean tracing) throws IOException {
+    public Configuration(final boolean tracing) throws IOException, InterruptedException {
         this(Configuration.class.getResourceAsStream(DEFAULT_CONFIG_RESOURCE), tracing);
     }
 
     /** Constructor. Read in the config file. */
-    public Configuration(final InputStream config, final boolean tracing) throws IOException {
+    public Configuration(final InputStream config, final boolean tracing) throws IOException, InterruptedException {
         this.tracing = tracing;
         final Pattern COLONS = Pattern.compile(":");
         final Splitter SPACES = Splitter.on(' ').trimResults().omitEmptyStrings();
+        final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         featureMap = new FeatureMap(tracing);
 
@@ -71,8 +76,9 @@ public class Configuration {
                         final String entityType = l.get(1);
                         final int weight = Integer.parseInt(l.get(2));
                         final List<String> resourceNames = SPACES.splitToList(l.get(3));
-                        featureMap.addFeature(entityType,
-                                               Feature.generateFeatureByName(featureType, weight, resourceNames));
+                        final Feature f = Feature.generateFeatureByName(featureType, weight, resourceNames);
+                        featureMap.addFeature(entityType, f);
+                        exec.execute(new FeatureInitialiserRunnable(f));
                         break;
 
                     default:
@@ -80,7 +86,26 @@ public class Configuration {
                 }
             }
         }
+        exec.shutdown();
+        exec.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
     }
 
     public FeatureMap getFeatureMap() { return featureMap; }
+
+    private static class FeatureInitialiserRunnable implements Runnable {
+
+        final Feature f;
+
+        FeatureInitialiserRunnable(final Feature f) { this.f = f; }
+
+        @Override
+        public void run() {
+            final String s = Objects.toStringHelper(f)
+                                    .add("weight", f.getWeight())
+                                    .add("resources", f.getResources())
+                                    .toString();
+            try { f.loadResources(); }
+            catch (final IOException e) { throw new RuntimeException("Could not load resources for feature: " + s, e); }
+        }
+    }
 }

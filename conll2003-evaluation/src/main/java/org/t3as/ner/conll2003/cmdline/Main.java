@@ -35,7 +35,7 @@ public final class Main {
     private Main() {}
 
     @SuppressWarnings("MethodNamesDifferingOnlyByCase")
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException, InterruptedException {
         final Options opts = getOptions(args);
 
         new ConllEvaluation(opts.file.get(0), opts.config).evaluate();

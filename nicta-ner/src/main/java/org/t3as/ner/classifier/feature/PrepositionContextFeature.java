@@ -39,15 +39,10 @@ import static org.t3as.ner.util.Strings.toEngLowerCase;
 @Immutable
 public class PrepositionContextFeature extends Feature {
 
-    private final ImmutableCollection<String> WORDS;
+    private ImmutableCollection<String> words;
 
     public PrepositionContextFeature(final List<String> resources, final int weight) throws IOException {
         super(resources, weight);
-        final Set<String> s = new HashSet<>();
-        for (final String resource : resources) {
-            s.addAll(IO.lowercaseWordSet(getClass(), resource, false));
-        }
-        WORDS = ImmutableSet.copyOf(s);
     }
 
     @Override
@@ -57,9 +52,18 @@ public class PrepositionContextFeature extends Feature {
 
         String prep = p.attachedWordMap.get("prep");
         if (prep != null) prep = toEngLowerCase(clean(prep));
-        return WORDS.contains(simplify(prep)) ? w : 0;
+        return words.contains(simplify(prep)) ? w : 0;
     }
 
     @Override
-    protected int getSize() { return WORDS.size(); }
+    public int getSize() { return words.size(); }
+
+    @Override
+    public void loadResources() throws IOException {
+        final Set<String> s = new HashSet<>();
+        for (final String resource : getResources()) {
+            s.addAll(IO.lowercaseWordSet(getClass(), resource, false));
+        }
+        words = ImmutableSet.copyOf(s);
+    }
 }

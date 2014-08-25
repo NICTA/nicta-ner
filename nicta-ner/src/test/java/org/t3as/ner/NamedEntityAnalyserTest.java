@@ -190,7 +190,7 @@ public class NamedEntityAnalyserTest {
     }
 
     @BeforeClass
-    public void init() throws IOException {
+    public void init() throws IOException, InterruptedException {
         this.namedEntityAnalyser = new NamedEntityAnalyser(new Configuration());
     }
 
@@ -200,7 +200,7 @@ public class NamedEntityAnalyserTest {
     }
 
     @Test
-    public void doubleCreateNea() throws IOException {
+    public void doubleCreateNea() throws IOException, InterruptedException {
         // check that we don't have any leaky static references
         final Configuration config = new Configuration();
         final NerResultSet result1 = new NamedEntityAnalyser(config).process("John");

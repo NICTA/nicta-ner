@@ -33,7 +33,7 @@ import java.util.List;
 @Immutable
 public abstract class Feature {
 
-    private final List<String> resources;
+    private final ImmutableList<String> resources;
     private final int weight;
 
     protected Feature(final List<String> resources, final int weight) {
@@ -65,9 +65,11 @@ public abstract class Feature {
         }
     }
 
-    protected int getWeight() { return weight; }
+    public int getWeight() { return weight; }
 
-    protected abstract int getSize();
+    public ImmutableList<String> getResources() { return resources; }
+
+    public abstract int getSize();
 
     @Override
     public String toString() {
@@ -95,4 +97,6 @@ public abstract class Feature {
     }
 
     public String ident() { return getClass().getSimpleName() + resources.toString(); }
+
+    public abstract void loadResources() throws IOException;
 }

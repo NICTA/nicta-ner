@@ -71,7 +71,7 @@ public class NamedEntityAnalyser {
      * The main() method takes a file as input and output the
      * process result on the screen.
      */
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException, InterruptedException {
         final NamedEntityAnalyser nea = new NamedEntityAnalyser(new Configuration());
         if (args.length >= 1) {
             final String content = new String(Files.readAllBytes(Paths.get(args[0])));

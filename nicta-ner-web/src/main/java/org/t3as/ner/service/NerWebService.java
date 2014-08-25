@@ -49,7 +49,9 @@ public class NerWebService {
 
     static {
         try { conf = new Configuration(); }
-        catch (final IOException e) { throw new RuntimeException("Could not load configuraton.", e); }
+        catch (final IOException | InterruptedException e) {
+            throw new RuntimeException("Could not load configuraton.", e);
+        }
     }
 
     /** Show some documentation when somebody does a GET request. */

@@ -78,7 +78,7 @@ public class ConfigurationTest {
     */
 
     @Test(dataProvider = "configTest")
-    public void configTest(final String configResource, final Result r) throws IOException {
+    public void configTest(final String configResource, final Result r) throws IOException, InterruptedException {
         final Configuration config = new Configuration(this.getClass().getResourceAsStream(configResource), false);
         assertEquals(config.getFeatureMap(), r.featureMap);
     }

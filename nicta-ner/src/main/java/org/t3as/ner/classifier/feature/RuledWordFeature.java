@@ -39,15 +39,10 @@ import static org.t3as.ner.util.Strings.toEngLowerCase;
 @Immutable
 public class RuledWordFeature extends Feature {
 
-    private final ImmutableCollection<String> WORDS;
+    private ImmutableCollection<String> words;
 
     public RuledWordFeature(final List<String> resources, final int weight) throws IOException {
         super(resources, weight);
-        final Set<String> s = new HashSet<>();
-        for (final String resource : resources) {
-            s.addAll(IO.lowercaseWordSet(getClass(), resource, true));
-        }
-        WORDS = ImmutableSet.copyOf(s);
     }
 
     @SuppressWarnings("MagicNumber")
@@ -61,7 +56,7 @@ public class RuledWordFeature extends Feature {
         for (int i = 0; i < p.phrase.size(); i++) {
             final String word = simplify(toEngLowerCase(clean(p.phrase.get(i).text)));
             if ("of".equalsIgnoreCase(word)) break;
-            final double x = (WORDS.contains(word)) ? 1.0 : 0.0;
+            final double x = (words.contains(word)) ? 1.0 : 0.0;
             score += weight * x;
             weight += 0.25;
         }
@@ -69,5 +64,14 @@ public class RuledWordFeature extends Feature {
     }
 
     @Override
-    protected int getSize() { return WORDS.size(); }
+    public int getSize() { return words.size(); }
+
+    @Override
+    public void loadResources() throws IOException {
+        final Set<String> s = new HashSet<>();
+        for (final String resource : getResources()) {
+            s.addAll(IO.lowercaseWordSet(getClass(), resource, true));
+        }
+        words = ImmutableSet.copyOf(s);
+    }
 }

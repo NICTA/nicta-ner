@@ -38,15 +38,10 @@ import static org.t3as.ner.util.Strings.toEngLowerCase;
 @Immutable
 public class ExistingPhraseFeature extends Feature {
 
-    private final ImmutableCollection<String> PHRASES;
+    private ImmutableCollection<String> phrases;
 
     public ExistingPhraseFeature(final List<String> resources, final int weight) throws IOException {
         super(resources, weight);
-        final Set<String> s = new HashSet<>();
-        for (final String resource : resources) {
-            s.addAll(IO.lowercaseLines(getClass(), resource));
-        }
-        PHRASES = ImmutableSet.copyOf(s);
     }
 
     @Override
@@ -55,9 +50,18 @@ public class ExistingPhraseFeature extends Feature {
         if (w == 0) return 0;
 
         final String phrase = Strings.simplify(p.phraseString());
-        return PHRASES.contains(toEngLowerCase(phrase)) ? w : 0;
+        return phrases.contains(toEngLowerCase(phrase)) ? w : 0;
     }
 
     @Override
-    protected int getSize() { return PHRASES.size(); }
+    public int getSize() { return phrases.size(); }
+
+    @Override
+    public void loadResources() throws IOException {
+        final Set<String> s = new HashSet<>();
+        for (final String resource : getResources()) {
+            s.addAll(IO.lowercaseLines(getClass(), resource));
+        }
+        phrases = ImmutableSet.copyOf(s);
+    }
 }

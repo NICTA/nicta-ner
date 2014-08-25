@@ -40,15 +40,10 @@ import static org.t3as.ner.util.Strings.toEngLowerCase;
 @Immutable
 public class CaseInsensitiveWordLookup extends Feature {
 
-    private final ImmutableCollection<String> WORDS;
+    private ImmutableCollection<String> words;
 
-    public CaseInsensitiveWordLookup(final List<String> resources, final int weight) throws IOException {
+    public CaseInsensitiveWordLookup(final List<String> resources, final int weight) {
         super(resources, weight);
-        final Set<String> s = new HashSet<>();
-        for (final String resource : resources) {
-            s.addAll(IO.lowercaseWordSet(getClass(), resource, false));
-        }
-        WORDS = ImmutableSet.copyOf(s);
     }
 
     @Override
@@ -59,11 +54,20 @@ public class CaseInsensitiveWordLookup extends Feature {
         double score = 0.0;
         for (final Token t : p.phrase) {
             final String word = Strings.simplify(toEngLowerCase(clean(t.text)));
-            score += (WORDS.contains(word)) ? 1.0 : 0.0;
+            score += (words.contains(word)) ? 1.0 : 0.0;
         }
         return score * w;
     }
 
     @Override
-    protected int getSize() { return WORDS.size(); }
+    public int getSize() { return words.size(); }
+
+    @Override
+    public void loadResources() throws IOException {
+        final Set<String> s = new HashSet<>();
+        for (final String resource : getResources()) {
+            s.addAll(IO.lowercaseWordSet(getClass(), resource, false));
+        }
+        words = ImmutableSet.copyOf(s);
+    }
 }

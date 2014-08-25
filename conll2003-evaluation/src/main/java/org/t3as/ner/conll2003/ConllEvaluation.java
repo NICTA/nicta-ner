@@ -49,7 +49,7 @@ public class ConllEvaluation {
         this.config = config;
     }
 
-    public void evaluate() throws IOException {
+    public void evaluate() throws IOException, InterruptedException {
         final Configuration conf =
                 config == null ? new Configuration(true)
                                : new Configuration(new BufferedInputStream(new FileInputStream(config)), true);
