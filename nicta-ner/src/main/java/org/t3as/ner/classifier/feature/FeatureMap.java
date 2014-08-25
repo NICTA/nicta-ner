@@ -74,4 +74,15 @@ public class FeatureMap {
                "featureMap=" + featureMap +
                '}';
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final FeatureMap that = (FeatureMap) o;
+        return featureMap.equals(that.featureMap);
+    }
+
+    @Override
+    public int hashCode() { return featureMap.hashCode(); }
 }

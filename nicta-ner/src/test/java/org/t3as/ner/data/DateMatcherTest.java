@@ -31,7 +31,6 @@ public class DateMatcherTest {
 
     @DataProvider(name = "dateStrings")
     public Object[][] configTestProvider() throws IOException {
-        //noinspection HardcodedFileSeparator
         return new Object[][]{
                 {"asdf 01/02/1995 asdf", true},
                 {"31-12-2012", true},

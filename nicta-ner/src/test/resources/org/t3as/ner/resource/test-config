@@ -17,21 +17,16 @@
 # <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 
-# NAME TYPES: (order matters, these are the columns in the weight numbers below)
-Name Types: LOCATION PERSON ORGANIZATION
+# Test features and weights - do not use this to build your own config.
+Feature: ExistingPhraseFeature       LOCATION       3  PREP_LOCATION
+Feature: CaseInsensitiveWordLookup   LOCATION       3  ShortCountries.dbpedia
+Feature: CaseInsensitiveWordLookup   LOCATION      10  StreetTypes.txt
+Feature: ExistingCleanPhraseFeature  LOCATION       5  country_names.freebase
+Feature: CaseSensitiveWordLookup     LOCATION       5  country_codes.freebase
 
-# FEATURES and weights:                       LOCATION  PERSON   ORGANIZATION
-Feature: RuledWordFeature PERSON_NAME                0      20      0
-Feature: RuledWordFeature PERSON_KEYWORD             0      30      0
-Feature: RuledWordFeature CITY_NAME                 15       0      0
-Feature: RuledWordFeature ORG_KEYWORD                0       0     25
-Feature: ExistingPhraseFeature WIKI_ORG              0     -10     25
-Feature: ExistingPhraseFeature WIKI_PERSON           0      25    -10
-Feature: ExistingPhraseFeature WIKI_PLACE           25     -10    -10
-Feature: RuledWordFeature PLACE_KEYWORD             20       0      0
-Feature: ExistingPhraseFeature STATES               10       0      0
-Feature: PrepositionContextFeature PREP_LOCATION    10       0      0
-#Feature: PrepositionContextFeature PREP_ORG          0       0     10
-Feature: RuledWordFeature WIKI_ORG_EXTRACTION        0       0      5
-Feature: RuledWordFeature WIKI_PER_EXTRACTION        0       5      0
-Feature: RuledWordFeature WIKI_LOC_EXTRACTION        5       0      0
+Feature: RuledWordFeature            PERSON         2  PERSON_KEYWORD
+
+Feature: CaseInsensitiveWordLookup   ORGANIZATION   7  OrganisationKeywords.dbpedia
+Feature: PrepositionContextFeature   ORGANIZATION   3  PREP_ORG
+
+Feature: CaseSensitiveWordLookup     ETHNIC        15  nationalities.txt ethnic_groups.txt

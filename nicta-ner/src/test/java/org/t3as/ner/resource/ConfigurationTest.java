@@ -21,61 +21,46 @@
  */
 package org.t3as.ner.resource;
 
-import org.t3as.ner.EntityType;
 import org.t3as.ner.classifier.feature.FeatureMap;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.Collection;
 
+import static com.google.common.collect.ImmutableList.of;
+import static org.t3as.ner.classifier.feature.Feature.generateFeatureByName;
 import static org.testng.Assert.assertEquals;
 
 public class ConfigurationTest {
 
-    static final EntityType PERSON = new EntityType("PERSON");
-    static final EntityType ORGANIZATION = new EntityType("ORGANIZATION");
-    static final EntityType LOCATION = new EntityType("LOCATION");
-
-    /*
     @DataProvider(name = "configTest")
     public Object[][] configTestProvider() throws IOException {
-        //noinspection MagicNumber
-        return new Object[][]{
-                {"test-config" +
-                 "",
-                 new Result(new FeatureMap(
-                         new ArrayList<Feature>() {{
-                             add(generateFeatureByName("RuledWordFeature",          "PERSON_NAME",          new int[]{0,   20,   0}));
-                             add(generateFeatureByName("RuledWordFeature",          "PERSON_KEYWORD",       new int[]{0,   30,   0}));
-                             add(generateFeatureByName("RuledWordFeature",          "CITY_NAME",            new int[]{15,   0,   0}));
-                             add(generateFeatureByName("RuledWordFeature",          "ORG_KEYWORD",          new int[]{0,    0,  25}));
-                             add(generateFeatureByName("ExistingPhraseFeature",     "WIKI_ORG",             new int[]{0,  -10,  25}));
-                             add(generateFeatureByName("ExistingPhraseFeature",     "WIKI_PERSON",          new int[]{0,   25, -10}));
-                             add(generateFeatureByName("ExistingPhraseFeature",     "WIKI_PLACE",           new int[]{25, -10, -10}));
-                             add(generateFeatureByName("RuledWordFeature",          "PLACE_KEYWORD",        new int[]{20,   0,   0}));
-                             add(generateFeatureByName("ExistingPhraseFeature",     "STATES",               new int[]{10,   0,   0}));
-                             add(generateFeatureByName("PrepositionContextFeature", "PREP_LOCATION",        new int[]{10,   0,   0}));
-                             //add(generateFeatureByName("PrepositionContextFeature", "PREP_ORG",             new int[]{0,    0,  10}));
-                             add(generateFeatureByName("RuledWordFeature",          "WIKI_ORG_EXTRACTION",  new int[]{0,    0,   5}));
-                             add(generateFeatureByName("RuledWordFeature",          "WIKI_PER_EXTRACTION",  new int[]{0,    5,   0}));
-                             add(generateFeatureByName("RuledWordFeature",          "WIKI_LOC_EXTRACTION",  new int[]{5,    0,   0}));
-                         }}, null, false),
-                            new ArrayList<EntityType>() {{
-                                add(LOCATION);
-                                add(PERSON);
-                                add(ORGANIZATION);
-                            }}
-                 )},
-        };
+        final FeatureMap featureMap = new FeatureMap(false);
+        featureMap.addFeature("LOCATION",     generateFeatureByName("ExistingPhraseFeature", 3,
+                                                                    of("PREP_LOCATION")));
+        featureMap.addFeature("LOCATION",     generateFeatureByName("CaseInsensitiveWordLookup", 3,
+                                                                    of("ShortCountries.dbpedia")));
+        featureMap.addFeature("LOCATION",     generateFeatureByName("CaseInsensitiveWordLookup", 10,
+                                                                    of("StreetTypes.txt")));
+        featureMap.addFeature("LOCATION",     generateFeatureByName("ExistingCleanPhraseFeature", 5,
+                                                                    of("country_names.freebase")));
+        featureMap.addFeature("LOCATION",     generateFeatureByName("CaseSensitiveWordLookup", 5,
+                                                                    of("country_codes.freebase")));
+        featureMap.addFeature("PERSON",       generateFeatureByName("RuledWordFeature", 2,
+                                                                    of("PERSON_KEYWORD")));
+        featureMap.addFeature("ORGANIZATION", generateFeatureByName("CaseInsensitiveWordLookup", 7,
+                                                                    of("OrganisationKeywords.dbpedia")));
+        featureMap.addFeature("ORGANIZATION", generateFeatureByName("PrepositionContextFeature", 3,
+                                                                    of("PREP_ORG")));
+        featureMap.addFeature("ETHNIC",       generateFeatureByName("CaseSensitiveWordLookup", 15,
+                                                                    of("nationalities.txt", "ethnic_groups.txt")));
+        return new Object[][]{{"test-config", new Result(featureMap)}};
     }
-    */
 
-    /*
     @Test
     public void testDataProviders() throws IOException {
         configTestProvider();
     }
-    */
 
     @Test(dataProvider = "configTest")
     public void configTest(final String configResource, final Result r) throws IOException, InterruptedException {
@@ -85,11 +70,11 @@ public class ConfigurationTest {
 
     private static class Result {
         private final FeatureMap featureMap;
-        private final Collection<EntityType> entityTypes;
 
-        private Result(final FeatureMap featureMap, final Collection<EntityType> entityTypes) {
-            this.featureMap = featureMap;
-            this.entityTypes = entityTypes;
-        }
+        private Result(final FeatureMap featureMap) { this.featureMap = featureMap; }
+
+        // necessary for when we are running the tests in IDEA
+        @Override
+        public String toString() { return super.toString(); }
     }
 }
