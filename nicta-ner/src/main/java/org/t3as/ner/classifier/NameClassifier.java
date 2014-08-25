@@ -21,7 +21,7 @@
  */
 package org.t3as.ner.classifier;
 
-import org.t3as.ner.EntityType;
+import org.t3as.ner.EntityClass;
 import org.t3as.ner.NerResultSet;
 import org.t3as.ner.Phrase;
 import org.t3as.ner.classifier.feature.FeatureMap;
@@ -90,10 +90,10 @@ public class NameClassifier {
         // copy the score of _phrases that have relationships
         for (final Map.Entry<Phrase, Set<Phrase>> inMemoryPhrase : phraseInMemory.entrySet()) {
             final Set<Phrase> aSet = inMemoryPhrase.getValue();
-            final Map<EntityType, Double> score = inMemoryPhrase.getKey().score;
+            final Map<EntityClass, Double> score = inMemoryPhrase.getKey().score;
             for (final Phrase phrase : aSet) {
                 phrase.classify();
-                if (EntityType.UNKNOWN.equals(phrase.phraseType)) {
+                if (EntityClass.UNKNOWN.equals(phrase.phraseType)) {
                     phrase.score = score;
                     phrase.classify();
                 }

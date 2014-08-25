@@ -25,7 +25,7 @@ import Control.Monad.IO.Class   (liftIO)
 import Data.Aeson               (Value (Object), FromJSON, parseJSON, (.:)
                                 , decode)
 import Data.ByteString          (ByteString)
-import qualified Data.Map as M  (Map, lookup)
+import qualified Data.Map as M  (Map, lookup, toList)
 import Data.Maybe               (fromMaybe)
 import qualified Data.Text as T (Text, pack, intercalate, unpack, empty, concat)
 import Network.HTTP.Conduit     (RequestBody (RequestBodyBS) , Response (..)
@@ -34,20 +34,23 @@ import Network.HTTP.Conduit     (RequestBody (RequestBodyBS) , Response (..)
 import Network.HTTP.Types       (urlEncode)
 
 
-data NerType = Person | Organization | Location | Date | Unknown deriving (Show)
+data NerType = Person | Organization | Location | Date | Ethnic | Unknown
+               deriving (Show)
 
 data Token = Token { startIndex    :: Int
                    , text          :: T.Text
                    } deriving (Show)
 
+data PhraseType = PhraseType { entityClass :: T.Text } deriving (Show)
+
 data Phrase = Phrase { phrase             :: [Token]
-                     , phraseType         :: T.Text
+                     , phraseType         :: PhraseType
                      , phrasePosition     :: Int
                      , phraseStubPosition :: Int
                      , phraseStubLength   :: Int
                      , phraseLength       :: Int
                      , attachedWordMap    :: M.Map T.Text T.Text
-                     , score              :: [Double]
+                     , score              :: M.Map T.Text Double
                      } deriving (Show)
 
 data NerResponse = NerResponse  { phrases   :: [[Phrase]]
@@ -76,6 +79,11 @@ instance FromJSON NerResponse where
     parseJSON (Object v) = NerResponse <$>
                             v .: "phrases" <*>
                             v .: "tokens"
+    parseJSON _          = mzero
+
+instance FromJSON PhraseType where
+    parseJSON (Object v) = PhraseType <$>
+                            v .: "entityClass"
     parseJSON _          = mzero
 
 data Opts = Opts { usage :: Bool
@@ -112,15 +120,19 @@ responseToString NerResponse {phrases = pss, tokens = tss} =
 phrasesToText :: [Phrase] -> T.Text
 phrasesToText = T.concat . map
     -- the text we want to generate
-    -- 0: John  PERSON  11.25, 40.0, -10.0  null    0:0:0:1:1
+    -- 0: Jack  PERSON  LOCATION:6.0, PERSON:7.5, ORGANIZATION:7.0, ETHNIC:0.0  null    0:0:0:1:1
     (\p -> T.concat
-        -- 0: John\t
+        -- 0: Jack\t
         [ t $ phrasePosition p, ": "
         , tokensToText (phrase p), "\t"
         -- PERSON\t
-        , phraseType p, "\t"
-        -- 11.25, 40.0, -10.0\t
-        , T.intercalate ", " (map (T.pack . show) (score p)), "\t"
+        , (entityClass . phraseType) p, "\t"
+        -- LOCATION:6.0, PERSON:7.5, ORGANIZATION:7.0, ETHNIC:0.0\t
+        --, T.intercalate ", " (map (T.pack . show) (score p)), "\t"
+        , T.intercalate ", "
+            (map (\(c, s) -> T.concat [c, ":", (T.pack . show) s])
+                (M.toList $ score p))
+        , "\t"
         -- null\t  this is a bad example...
         , fromMaybe "null" (M.lookup "prep" (attachedWordMap p)), "\t"
         -- 0:0:1:1\n
@@ -144,4 +156,5 @@ nerType "PERSON"       = Person
 nerType "ORGANIZATION" = Organization
 nerType "LOCATION"     = Location
 nerType "DATE"         = Date
+nerType "ETHNIC"       = Ethnic
 nerType _              = Unknown

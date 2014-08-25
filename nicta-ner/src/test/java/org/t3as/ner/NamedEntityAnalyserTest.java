@@ -36,18 +36,18 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableMap.of;
-import static org.t3as.ner.EntityType.DATE;
-import static org.t3as.ner.EntityType.UNKNOWN;
+import static org.t3as.ner.EntityClass.DATE;
+import static org.t3as.ner.EntityClass.UNKNOWN;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 public class NamedEntityAnalyserTest {
 
-    static final EntityType PER = new EntityType("PERSON");
-    static final EntityType ORG = new EntityType("ORGANIZATION");
-    static final EntityType LOC = new EntityType("LOCATION");
-    static final EntityType ETH = new EntityType("ETHNIC");
+    static final EntityClass PER = new EntityClass("PERSON");
+    static final EntityClass ORG = new EntityClass("ORGANIZATION");
+    static final EntityClass LOC = new EntityClass("LOCATION");
+    static final EntityClass ETH = new EntityClass("ETHNIC");
 
     private NamedEntityAnalyser namedEntityAnalyser;
 
@@ -69,14 +69,14 @@ public class NamedEntityAnalyserTest {
                      add(new Result("Jane Doe Doe", PER, of(LOC, 12.0, PER, 30.0, ORG, 15.0, ETH, 0.0), none()));
                      add(new Result("New Zealand", LOC, of(LOC, 47.0, PER, 8.75, ORG, 31.0, ETH, 15.0),
                                     of("prep", "in")));
-                     add(new Result("November", DATE, ImmutableMap.<EntityType, Double>of(), of("prep", "in")));
+                     add(new Result("November", DATE, ImmutableMap.<EntityClass, Double>of(), of("prep", "in")));
                  }}},
 
                 {"Jim bought 300 shares of Acme Corp. in 2006.",
                  new ArrayList<Result>() {{
                      add(new Result("Jim", PER, of(LOC, 3.0, PER, 7.5, ORG, 7.0, ETH, 0.0), none()));
                      add(new Result("Acme Corp", ORG, of(LOC, 9.0, PER, 6.5, ORG, 14.0, ETH, 0.0), of("prep", "of")));
-                     add(new Result("2006", DATE, ImmutableMap.<EntityType, Double>of(), of("prep", "in")));
+                     add(new Result("2006", DATE, ImmutableMap.<EntityClass, Double>of(), of("prep", "in")));
                  }}},
 
                 {"Næsby is in Denmark, as is Næsbyholm Slot, which is outside the town of Glumsø.",
@@ -90,7 +90,7 @@ public class NamedEntityAnalyserTest {
                 {new String(Files.readAllBytes(Paths.get("src/test/resources/test1.txt"))),
                  new ArrayList<Result>() {{
                      add(new Result("UK", LOC, of(LOC, 8.0, PER, 3.75, ORG, 7.0, ETH, 0.0), of("prep", "in")));
-                     add(new Result("1965", DATE, ImmutableMap.<EntityType, Double>of(), none()));
+                     add(new Result("1965", DATE, ImmutableMap.<EntityClass, Double>of(), none()));
                      add(new Result("Eoghan", PER, of(LOC, 0.0, PER, 3.75, ORG, 2.0, ETH, 0.0), none()));
                      add(new Result("Ford Escort", ORG, of(LOC, 9.0, PER, 7.5, ORG, 11.0, ETH, 0.0), none()));
                      add(new Result("Toyota Camry", PER, of(LOC, 3.0, PER, 5.75, ORG, 4.0, ETH, 0.0), none()));
@@ -118,19 +118,19 @@ public class NamedEntityAnalyserTest {
                 {new String(Files.readAllBytes(Paths.get("src/test/resources/date1.txt"))),
                  new ArrayList<Result>() {{
                      //On the 1st of December, 2014.
-                     add(new Result("1st of December , 2014", DATE, ImmutableMap.<EntityType, Double>of(), none()));
+                     add(new Result("1st of December , 2014", DATE, ImmutableMap.<EntityClass, Double>of(), none()));
                      //When it is December 7th.
-                     add(new Result("December 7th", DATE, ImmutableMap.<EntityType, Double>of(), none()));
+                     add(new Result("December 7th", DATE, ImmutableMap.<EntityClass, Double>of(), none()));
                      //Sometime in February.
-                     add(new Result("February", DATE, ImmutableMap.<EntityType, Double>of(), of("prep", "in")));
+                     add(new Result("February", DATE, ImmutableMap.<EntityClass, Double>of(), of("prep", "in")));
                      //It is now 2014.
-                     add(new Result("2014", DATE, ImmutableMap.<EntityType, Double>of(), none()));
+                     add(new Result("2014", DATE, ImmutableMap.<EntityClass, Double>of(), none()));
                      //Some date 2014-05-21.
-                     add(new Result("2014", DATE, ImmutableMap.<EntityType, Double>of(), none()));
+                     add(new Result("2014", DATE, ImmutableMap.<EntityClass, Double>of(), none()));
                      //It happened in 200 BC.
                      add(new Result("BC", LOC, of(LOC, 8.0, PER, 3.75, ORG, 4.0, ETH, 0.0), none()));
                      //Around 2am, then at 4pm, and also 17:00.
-                     add(new Result("17:00", DATE, ImmutableMap.<EntityType, Double>of(), none()));
+                     add(new Result("17:00", DATE, ImmutableMap.<EntityClass, Double>of(), none()));
                  }}},
 
                 {"John Smith, John.",
@@ -160,7 +160,7 @@ public class NamedEntityAnalyserTest {
         final NerResultSet result = namedEntityAnalyser.process(phrase);
 
         // check that we have the correctly matched phrases and types
-        final Map<EntityType, Set<String>> mappedResult = result.getMappedResult();
+        final Map<EntityClass, Set<String>> mappedResult = result.getMappedResult();
         for (final Result r : resultList) {
             assertTrue(mappedResult.containsKey(r.type), "Could not find the phrase '" + r.phrase + "', type " + r.type
                                                          + ", in results map containing: " + mappedResult + ": ");
@@ -199,11 +199,11 @@ public class NamedEntityAnalyserTest {
 
     private static class Result {
         final String phrase;
-        final EntityType type;
-        final Map<EntityType, Double> scores;
+        final EntityClass type;
+        final Map<EntityClass, Double> scores;
         final Map<String, String> attachedWordMap;
 
-        private Result(final String phrase, final EntityType type, final Map<EntityType, Double> scores,
+        private Result(final String phrase, final EntityClass type, final Map<EntityClass, Double> scores,
                        final Map<String, String> attachedWordMap) {
             this.phrase = phrase;
             this.type = type;

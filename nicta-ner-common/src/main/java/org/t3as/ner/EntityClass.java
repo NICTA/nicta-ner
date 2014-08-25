@@ -27,29 +27,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * This isn't an enum because we want to keep it possible to specify arbitrary entity classes in the config.
  */
-public class EntityType {
+public class EntityClass {
 
-    public static final EntityType UNKNOWN = new EntityType("UNKNOWN");
-    public static final EntityType DATE = new EntityType("DATE");
+    public static final EntityClass UNKNOWN = new EntityClass("UNKNOWN");
+    public static final EntityClass DATE = new EntityClass("DATE");
 
-    private final String type;
+    private final String entityClass;
 
     @JsonCreator
-    public EntityType(@JsonProperty("type") final String type) { this.type = type; }
+    public EntityClass(@JsonProperty("entityClass") final String entityClass) { this.entityClass = entityClass; }
 
-    public String getType() { return type; }
+    // required for JSON
+    @SuppressWarnings("UnusedDeclaration")
+    public String getEntityClass() { return entityClass; }
 
     @Override
-    public String toString() { return type; }
+    public String toString() { return entityClass; }
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final EntityType that = (EntityType) o;
-        return type.equals(that.type);
+        final EntityClass that = (EntityClass) o;
+        return entityClass.equals(that.entityClass);
     }
 
     @Override
-    public int hashCode() { return type.hashCode(); }
+    public int hashCode() { return entityClass.hashCode(); }
 }

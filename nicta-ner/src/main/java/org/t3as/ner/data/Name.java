@@ -21,7 +21,7 @@
  */
 package org.t3as.ner.data;
 
-import org.t3as.ner.EntityType;
+import org.t3as.ner.EntityClass;
 import org.t3as.ner.Phrase;
 import org.t3as.ner.Token;
 
@@ -29,6 +29,6 @@ import java.util.List;
 
 public class Name extends Phrase {
     public Name(final List<Token> tokens, final int pos, final int len, final int stubPos) {
-        super(tokens, pos, len, stubPos, EntityType.UNKNOWN);
+        super(tokens, pos, len, stubPos, EntityClass.UNKNOWN);
     }
 }

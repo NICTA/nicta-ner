@@ -54,8 +54,8 @@ public class NerResultSet {
 
     /** This method returns a map format set of the result. */
     @JsonIgnore
-    public Map<EntityType, Set<String>> getMappedResult() {
-        final Map<EntityType, Set<String>> m = new HashMap<>();
+    public Map<EntityClass, Set<String>> getMappedResult() {
+        final Map<EntityClass, Set<String>> m = new HashMap<>();
         for (final List<Phrase> pa : phrases) {
             for (final Phrase p : pa) {
                 Set<String> c = m.get(p.phraseType);
@@ -85,7 +85,7 @@ public class NerResultSet {
                 ptext = ptext.trim();
 
                 final StringBuilder stext = new StringBuilder();
-                for (final Map.Entry<EntityType, Double> e : p.score.entrySet()) {
+                for (final Map.Entry<EntityClass, Double> e : p.score.entrySet()) {
                     if (stext.length() != 0) stext.append(", ");
                     stext.append(e.getKey()).append(":").append(e.getValue());
                 }

@@ -21,7 +21,7 @@
  */
 package org.t3as.ner.classifier.feature;
 
-import org.t3as.ner.EntityType;
+import org.t3as.ner.EntityClass;
 import org.t3as.ner.Phrase;
 
 import javax.annotation.concurrent.Immutable;
@@ -34,14 +34,14 @@ import java.util.Map;
 @Immutable
 public class FeatureMap {
 
-    private final Map<EntityType, List<Feature>> featureMap = new LinkedHashMap<>();
+    private final Map<EntityClass, List<Feature>> featureMap = new LinkedHashMap<>();
     private final boolean tracing;
     public Collection<String> trace;
 
     public FeatureMap(final boolean tracing) { this.tracing = tracing; }
 
     public void addFeature(final String entityType, final Feature feature) {
-        final EntityType type = new EntityType(entityType);
+        final EntityClass type = new EntityClass(entityType);
         List<Feature> features = featureMap.get(type);
         if (features == null) {
             features = new ArrayList<>();
@@ -50,10 +50,10 @@ public class FeatureMap {
         features.add(feature);
     }
 
-    public Map<EntityType, Double> score(final Phrase p) {
-        final Map<EntityType, Double> scores = new LinkedHashMap<>();
+    public Map<EntityClass, Double> score(final Phrase p) {
+        final Map<EntityClass, Double> scores = new LinkedHashMap<>();
         if (tracing) trace = new ArrayList<>();
-        for (final Map.Entry<EntityType, List<Feature>> e : featureMap.entrySet()) {
+        for (final Map.Entry<EntityClass, List<Feature>> e : featureMap.entrySet()) {
             double score = 0;
             for (final Feature f : e.getValue()) {
                 final double s = f.score(p);

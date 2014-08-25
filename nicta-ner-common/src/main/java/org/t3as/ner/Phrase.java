@@ -30,7 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.t3as.ner.EntityType.UNKNOWN;
+import static org.t3as.ner.EntityClass.UNKNOWN;
 
 /**
  * Instance of this class indicates a Phrase.
@@ -41,7 +41,7 @@ public class Phrase {
     /** phrase text array */
     public final List<Token> phrase;
     /** corresponding name type */
-    public EntityType phraseType;
+    public EntityClass phraseType;
     /** the start position of the phase in a sentence */
     public final int phrasePosition;
     /** the length of the phrase */
@@ -51,7 +51,7 @@ public class Phrase {
     /** the length of the phrase stub */
     public final int phraseStubLength;
     /** score array, dimension equals to name type array */
-    public Map<EntityType, Double> score = new LinkedHashMap<>();
+    public Map<EntityClass, Double> score = new LinkedHashMap<>();
     /** attached word map */
     public Map<String, String> attachedWordMap;
     /** true if the phrase is a date; false if not */
@@ -62,7 +62,7 @@ public class Phrase {
                   @JsonProperty("phrasePosition") final int _phrasePos,
                   @JsonProperty("phraseLength") final int _phraseLen,
                   @JsonProperty("phraseStubPosition") final int _stubPos,
-                  @JsonProperty("phraseType") final EntityType type) {
+                  @JsonProperty("phraseType") final EntityClass type) {
         phrasePosition = _phrasePos;
         phraseLength = _phraseLen;
         phrase = ImmutableList.copyOf(tokens);
@@ -100,12 +100,12 @@ public class Phrase {
         return is;
     }
 
-    /** This method will do the classification of a Phrase with a EntityType. */
+    /** This method will do the classification of a Phrase with a EntityClass. */
     public void classify() {
-        EntityType type = null;
+        EntityClass type = null;
         double s = 0;
         boolean ambiguous = false;
-        for (final Map.Entry<EntityType, Double> e : score.entrySet()) {
+        for (final Map.Entry<EntityClass, Double> e : score.entrySet()) {
             if (type == null) {
                 type = e.getKey();
                 s = e.getValue();

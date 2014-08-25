@@ -22,19 +22,19 @@
 package org.t3as.ner.conll2003;
 
 import com.google.common.collect.ImmutableMap;
-import org.t3as.ner.EntityType;
+import org.t3as.ner.EntityClass;
 
 import java.util.Map;
 
 public class NerClassification {
 
     public final String nerToken;
-    public final EntityType type;
+    public final EntityClass type;
     public final int phraseStartIndex;
-    public final ImmutableMap<EntityType, Double> scores;
+    public final ImmutableMap<EntityClass, Double> scores;
 
-    public NerClassification(final String nerToken, final EntityType type, final int phraseStartIndex,
-                             final Map<EntityType, Double> scores) {
+    public NerClassification(final String nerToken, final EntityClass type, final int phraseStartIndex,
+                             final Map<EntityClass, Double> scores) {
         this.nerToken = nerToken;
         this.type = type;
         this.phraseStartIndex = phraseStartIndex;
