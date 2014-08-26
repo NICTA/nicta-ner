@@ -42,8 +42,15 @@ The service will respond with `application/json` content of the following format
                     "phrasePosition": 0,
                     "phraseStubLength": 2,
                     "phraseStubPosition": 0,
-                    "phraseType": "PERSON",
-                    "score": [ 11.25, 35.0, 0.0 ]
+                    "phraseType": {
+                        "entityClass": "PERSON"
+                    },
+                    "score": {
+                        "ETHNIC": 0.0,
+                        "LOCATION": 9.0,
+                        "ORGANIZATION": 15.0,
+                        "PERSON": 39.5
+                    }
                 }
             ]
         ],
@@ -70,4 +77,5 @@ the NICTA t3as Named-Entity Recognition library currently returns result classif
     PERSON
     ORGANIZATION
     LOCATION
+    ETHNIC
     DATE
