@@ -2,6 +2,8 @@
 
 NICTA t3as Named-Entity Recognition is a rule based Named-Entity Recognition library which extracts named entities from text, such as Organisation, Location and Person names. It is written in Java.
 
+This currently has a fairly long startup time due to the large amount of data that has to be loaded into memory. It is therefore recommended that the [web service](../nicta-ner-web/) is used, and one of the clients (or even just `curl`) is invoked repeatedly.
+
 ## Contributed by:
 
 - Mats Henrikson
