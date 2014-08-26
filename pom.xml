@@ -11,7 +11,7 @@
 
     <groupId>org.t3as</groupId>
     <artifactId>t3as-nicta-ner</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <name>NICTA t3as Named-Entity Recognition</name>
