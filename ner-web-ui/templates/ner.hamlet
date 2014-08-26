@@ -46,12 +46,20 @@
                 <th>Entity
                 <th>Type
                 <th>Preposition
-                <th>Scores
+                $forall typ <- nerTypes
+                    <th>#{show typ}
                 <th>Word start index
             $forall NerEntity word typ prep scores index <- nerResponse
                 <tr>
                     <td>#{word}
                     <td>#{show typ}
                     <td>#{prep}
-                    <td style="white-space: nowrap">#{scores}
+                    $forall t <- nerTypes
+                        $maybe s <- lookup t scores
+                            $if t == typ
+                                <td><b><i>#{s}
+                            $else
+                                <td>#{s}
+                        $nothing
+                            <td>
                     <td>#{index}

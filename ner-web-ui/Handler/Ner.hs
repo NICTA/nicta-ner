@@ -22,14 +22,15 @@ module Handler.Ner where
 import           Import
 import           Control.Monad            (liftM)
 import qualified Data.List          as L  (concat, length, head)
+import qualified Data.Map           as M  (Map, mapKeys, keys, empty)
 import           Data.Maybe               (fromJust, fromMaybe)
-import qualified Data.Text          as T  (intercalate, unpack, concat, pack)
+import qualified Data.Text          as T  (unpack)
 import qualified Data.Text.Encoding as TE (encodeUtf8)
 import           Nicta.Ner.Client
 
 
 type Prep = Text
-type Scores = Text
+type Scores = M.Map NerType Double
 type StartIndex = Int
 
 data NerEntity = NerEntity Text NerType Prep Scores StartIndex
@@ -39,6 +40,7 @@ getNerR :: Handler Html
 getNerR = do
     let nerText = "" :: Text
         nerResponse = []
+        nerTypes = [] :: [NerType]
     defaultLayout $(widgetFile "ner")
 
 
@@ -49,6 +51,7 @@ postNerR = do
     webServiceUrl <- liftM nerWebServiceUrl getExtra
     response <- liftIO $ analyse (T.unpack webServiceUrl) nerText
     let nerResponse = toNerEntities $ fromJust response
+        nerTypes = types nerResponse
     defaultLayout $(widgetFile "ner")
 
 
@@ -68,7 +71,13 @@ toEntity p = NerEntity t typ prep scr idx
         t    = tokensToText (phrase p)
         typ  = nerType ((entityClass . phraseType) p)
         prep = fromMaybe "" (lookup "prep" (attachedWordMap p))
-        scr  = T.intercalate ", "
-                (map (\(c, s) -> T.concat [c, ":", (T.pack . show) s])
-                    (toList $ score p))
+        scr  = M.mapKeys nerType (score p)
         idx  = startIndex (L.head (phrase p))
+
+types :: [NerEntity] -> [NerType]
+types [] = []
+types ((NerEntity _ _ _ scors _):es) =
+    if scors == M.empty
+        then types es
+        else M.keys scors
+

@@ -34,8 +34,9 @@ import Network.HTTP.Conduit     (RequestBody (RequestBodyBS) , Response (..)
 import Network.HTTP.Types       (urlEncode)
 
 
+-- hardcoded entity class types, maybe this should handle arbitrary classes too?
 data NerType = Person | Organization | Location | Date | Ethnic | Unknown
-               deriving (Show)
+               deriving (Show, Eq, Ord)
 
 data Token = Token { startIndex    :: Int
                    , text          :: T.Text
