@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                nicta-ner-client-hs
-version:             1.0.0
+version:             1.0.1-SNAPSHOT
 synopsis:            NICTA t3as Named-Entity Recognition client
 description:         A simple client for the NICTA t3as Named-Entity Recognition web service.
 homepage:            http://t3as.org/

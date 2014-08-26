@@ -1,5 +1,5 @@
 name:              ner-web-ui
-version:           1.0.0
+version:           1.0.1-SNAPSHOT
 synopsis:          Simple demo web interface for NICTA t3as NER.
 description:       This is a simple demo web interface for testing the
                    NICTA t3as Named-Entity Recognition library.
